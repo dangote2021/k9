@@ -2068,9 +2068,27 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         <div class="label" data-i18n="menu_help">Aide & support</div>
         <div class="arr">›</div>
       </div>
+      <div class="menu-row" onclick="exportUserData()">
+        <div class="ic">📤</div>
+        <div class="label" data-i18n="menu_export">Exporter mes données</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" onclick="document.getElementById('importFileInput').click()">
+        <div class="ic">📥</div>
+        <div class="label" data-i18n="menu_import">Importer une sauvegarde</div>
+        <div class="arr">›</div>
+        <input type="file" id="importFileInput" accept="application/json" style="display:none" onchange="importUserData(event)" />
+      </div>
+      <div class="menu-row danger" onclick="confirmResetData()">
+        <div class="ic">🗑️</div>
+        <div class="label" data-i18n="menu_reset">Réinitialiser mes données</div>
+      </div>
       <div class="menu-row danger">
         <div class="ic">🚪</div>
         <div class="label" data-i18n="menu_logout">Se déconnecter</div>
+      </div>
+      <div style="padding: 14px 16px 8px; text-align: center; font-size: 11px; color: var(--ink-2); line-height: 1.55;" data-i18n="data_footer">
+        Tes données sont stockées localement sur cet appareil. Exporte-les régulièrement pour les sauvegarder.
       </div>
     </div>
 
@@ -2788,6 +2806,136 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
    K9 — Application logic
    ========================================================= */
 
+// ====================================================================
+// K9Store — Persistance locale (localStorage)
+// Survit au refresh. Prêt à être synchronisé avec un backend (Supabase)
+// via `K9Store.sync()` quand l'utilisateur se connecte.
+// ====================================================================
+const K9Store = (function() {
+  const KEY = "k9.state.v1";
+  const VERSION = 1;
+
+  function available() {
+    try {
+      const k = "__k9t";
+      localStorage.setItem(k, "1");
+      localStorage.removeItem(k);
+      return true;
+    } catch { return false; }
+  }
+  const OK = available();
+
+  function load() {
+    if (!OK) return null;
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || data.v !== VERSION) return null;
+      return data;
+    } catch { return null; }
+  }
+
+  function snapshot() {
+    return {
+      v: VERSION,
+      savedAt: new Date().toISOString(),
+      owner: (typeof ownerState !== "undefined") ? ownerState : { name: "" },
+      dogs: (typeof DOGS !== "undefined") ? DOGS : [],
+      activeDogIdx: (typeof activeDogIdx !== "undefined") ? activeDogIdx : 0,
+      dogState: (typeof dogState !== "undefined") ? { ...dogState } : null,
+      calendarEvents: (typeof calendarEvents !== "undefined") ? calendarEvents : [],
+      walkHistory: (typeof walkHistory !== "undefined") ? walkHistory : [],
+      rescueEntries: (typeof rescueEntries !== "undefined") ? rescueEntries : [],
+      settings: {
+        lang: (typeof currentLang !== "undefined") ? currentLang : "fr",
+        useImperial: (typeof useImperial !== "undefined") ? useImperial : false,
+        aiSoftMode: (typeof aiSoftMode !== "undefined") ? aiSoftMode : false,
+        a11y: !!document.body?.classList?.contains("a11y-large"),
+        notifEnabled: (typeof Notification !== "undefined") ? Notification.permission === "granted" : false,
+      },
+      onboardingDone: (typeof onboardingDone !== "undefined") ? onboardingDone : ((typeof DOGS !== "undefined") && DOGS.length > 0),
+    };
+  }
+
+  let saveTimer = null;
+  function save() {
+    if (!OK) return;
+    // Debounce : évite 100 writes en rafale
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try {
+        const data = snapshot();
+        localStorage.setItem(KEY, JSON.stringify(data));
+      } catch (e) {
+        console.warn("K9Store save failed:", e);
+      }
+    }, 150);
+  }
+
+  function clear() {
+    if (!OK) return;
+    try { localStorage.removeItem(KEY); } catch {}
+  }
+
+  function exportJSON() {
+    return JSON.stringify(snapshot(), null, 2);
+  }
+
+  function importJSON(json) {
+    try {
+      const data = typeof json === "string" ? JSON.parse(json) : json;
+      if (!data || data.v !== VERSION) throw new Error("Version incompatible");
+      localStorage.setItem(KEY, JSON.stringify(data));
+      return true;
+    } catch (e) {
+      console.warn("K9Store import failed:", e);
+      return false;
+    }
+  }
+
+  return { OK, load, save, clear, exportJSON, importJSON, snapshot };
+})();
+
+// Applique un snapshot aux états globaux (appelé au démarrage si localStorage contient qqch)
+function k9ApplySnapshot(data) {
+  try {
+    if (data.owner && typeof ownerState !== "undefined") {
+      ownerState.name = data.owner.name || "";
+    }
+    if (Array.isArray(data.dogs) && typeof DOGS !== "undefined") {
+      DOGS.length = 0;
+      data.dogs.forEach(d => DOGS.push(d));
+    }
+    if (typeof data.activeDogIdx === "number") {
+      activeDogIdx = Math.max(0, Math.min(data.activeDogIdx, DOGS.length - 1));
+    }
+    if (data.dogState && typeof dogState !== "undefined") {
+      Object.assign(dogState, data.dogState);
+    }
+    if (Array.isArray(data.calendarEvents)) {
+      calendarEvents = data.calendarEvents;
+    }
+    if (Array.isArray(data.walkHistory)) {
+      walkHistory = data.walkHistory;
+    }
+    if (Array.isArray(data.rescueEntries)) {
+      rescueEntries = data.rescueEntries;
+    }
+    if (data.settings) {
+      if (data.settings.lang) currentLang = data.settings.lang;
+      useImperial = !!data.settings.useImperial;
+      aiSoftMode = !!data.settings.aiSoftMode;
+      if (data.settings.a11y) document.body.classList.add("a11y-large");
+    }
+    if (typeof data.onboardingDone === "boolean") {
+      onboardingDone = data.onboardingDone;
+    }
+  } catch (e) {
+    console.warn("k9ApplySnapshot error:", e);
+  }
+}
+
 // ---------- Breed list (FR/EN) ----------
 const BREEDS = [
   { emoji: "🦮", fr: "Labrador Retriever", en: "Labrador Retriever" },
@@ -3140,6 +3288,11 @@ const I18N = {
     plan_allergy_t: "Allergies", plan_allergy_d: "Cutanée ou alimentaire · identifier & agir",
     plan_senior_t: "Senior", plan_senior_d: "Transition · exercice · confort",
     plan_hygiene_t: "Hygiène", plan_hygiene_d: "Dents · pattes · oreilles · routine hebdo",
+    // Data management
+    menu_export: "Exporter mes données",
+    menu_import: "Importer une sauvegarde",
+    menu_reset: "Réinitialiser mes données",
+    data_footer: "Tes données sont stockées localement sur cet appareil. Exporte-les régulièrement pour les sauvegarder.",
   },
   en: {
     welcome_title: "Welcome to K9",
@@ -3447,6 +3600,11 @@ const I18N = {
     plan_allergy_t: "Allergies", plan_allergy_d: "Skin or food · identify & act",
     plan_senior_t: "Senior transition", plan_senior_d: "Transition · exercise · comfort",
     plan_hygiene_t: "Hygiene", plan_hygiene_d: "Teeth · paws · ears · weekly routine",
+    // Data management
+    menu_export: "Export my data",
+    menu_import: "Import a backup",
+    menu_reset: "Reset my data",
+    data_footer: "Your data is stored locally on this device. Export regularly to back it up.",
   }
 };
 
@@ -3471,6 +3629,10 @@ let activeDogIdx = 0;
 function getActiveDog() { return DOGS[activeDogIdx] || dogState; }
 
 let currentLang = "fr";
+
+// Historique balades persistées + flag onboarding terminé
+let walkHistory = [];
+let onboardingDone = false;
 
 // ---------- Render breed list ----------
 function renderBreeds(filter = "") {
@@ -3586,6 +3748,8 @@ function obFinish() {
     DOGS[activeDogIdx] = snap;
   }
   renderDogSwitcher();
+  onboardingDone = true;
+  K9Store.save();
 }
 
 // ---------- Multi-chien switcher ----------
@@ -3608,6 +3772,7 @@ function renderDogSwitcher() {
 }
 function selectDog(i) {
   activeDogIdx = i;
+  K9Store.save();
   const d = DOGS[i];
   Object.assign(dogState, d);
   const breed = BREEDS[d.breed] || BREEDS[BREEDS.length - 1];
@@ -3641,16 +3806,80 @@ function addNewDog() {
     showStep(0);
   }
 }
+// ---------- Walk tracking (timer local, pas GPS) ----------
+let currentWalk = null; // { startedAt, intervalId }
 function mockStartWalk() {
-  alert(currentLang === "fr"
-    ? "🗺️ Sortie démarrée !\n\nLe GPS temps réel arrive bientôt. En attendant, enregistre ta sortie quand tu rentres."
-    : "🗺️ Walk started!\n\nReal-time GPS is coming soon. For now, log your walk when you get back.");
+  // Démarre/arrête un chrono local. Enregistre à la fin une entrée persistée.
+  if (currentWalk) {
+    // Stop
+    clearInterval(currentWalk.intervalId);
+    const endedAt = Date.now();
+    const durationMin = Math.max(1, Math.round((endedAt - currentWalk.startedAt) / 60000));
+    const entry = {
+      id: "w" + endedAt,
+      dogIdx: activeDogIdx,
+      dogName: (DOGS[activeDogIdx]?.name) || dogState.name || "",
+      startedAt: new Date(currentWalk.startedAt).toISOString(),
+      endedAt: new Date(endedAt).toISOString(),
+      durationMin,
+      // Distance estimée : 4 km/h en moyenne (sans GPS)
+      distanceKm: +(durationMin / 60 * 4).toFixed(2),
+      source: "timer",
+    };
+    walkHistory.unshift(entry);
+    currentWalk = null;
+    K9Store.save();
+    renderWalkHistory();
+    const prompt = currentLang === "fr"
+      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · ~${entry.distanceKm} km`
+      : `🐾 Walk logged!\n\n${entry.durationMin} min · ~${entry.distanceKm} km`;
+    alert(prompt);
+    return;
+  }
+  // Start
+  currentWalk = {
+    startedAt: Date.now(),
+    intervalId: setInterval(() => {
+      const mins = Math.floor((Date.now() - currentWalk.startedAt) / 60000);
+      const secs = Math.floor(((Date.now() - currentWalk.startedAt) % 60000) / 1000);
+      const btns = document.querySelectorAll("[data-walk-timer]");
+      btns.forEach(b => { b.textContent = `⏱ ${mins}:${String(secs).padStart(2,"0")} · ${currentLang === "fr" ? "Arrêter" : "Stop"}`; });
+    }, 500),
+  };
+  const msg = currentLang === "fr"
+    ? "🗺️ Sortie démarrée !\n\nRe-tape sur \"Démarrer\" quand tu rentres pour enregistrer la balade."
+    : "🗺️ Walk started!\n\nTap \"Start\" again when you're back to log the walk.";
+  alert(msg);
+}
+
+function renderWalkHistory() {
+  const el = document.getElementById("walkHistoryList");
+  if (!el) return;
+  if (!walkHistory.length) {
+    el.innerHTML = `<div class="cal-empty">${currentLang === "fr" ? "Pas encore de balade enregistrée" : "No walks logged yet"}</div>`;
+    return;
+  }
+  el.innerHTML = walkHistory.slice(0, 20).map(w => {
+    const d = new Date(w.startedAt);
+    const dateLbl = d.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US", { weekday: "short", day: "numeric", month: "short" });
+    const timeLbl = d.toLocaleTimeString(currentLang === "fr" ? "fr-FR" : "en-US", { hour: "2-digit", minute: "2-digit" });
+    const unit = useImperial ? "mi" : "km";
+    const dist = useImperial ? (w.distanceKm * 0.621371).toFixed(2) : w.distanceKm;
+    return `<div class="cal-event">
+      <div class="ic vax">🗺️</div>
+      <div class="body">
+        <div class="title">${escapeHtml(w.dogName || "—")} · ${dist} ${unit}</div>
+        <div class="sub">${w.durationMin} min · ${dateLbl} ${timeLbl}</div>
+      </div>
+    </div>`;
+  }).join("");
 }
 
 // ---------- Accessibility toggle ----------
 function toggleA11y(el) {
   el.classList.toggle("on");
   document.body.classList.toggle("a11y-large", el.classList.contains("on"));
+  K9Store.save();
 }
 
 // ---------- AI soft mode ----------
@@ -3665,6 +3894,7 @@ function toggleAIsoft(el) {
   // masque la grosse barre IA sur home
   const bar = document.querySelector(".ai-home-bar");
   if (bar) bar.style.display = aiSoftMode ? "none" : "";
+  K9Store.save();
 }
 
 // ---------- Units (km/mi) ----------
@@ -3676,6 +3906,8 @@ function toggleUnits(el) {
   applyUnits();
   const cur = document.getElementById("unitsCurrent");
   if (cur) cur.textContent = useImperial ? "mi" : "km";
+  if (typeof renderWalkHistory === "function") renderWalkHistory();
+  K9Store.save();
 }
 function kmToDisplay(kmValue) {
   if (!useImperial) return { num: kmValue, unit: "km" };
@@ -3749,6 +3981,7 @@ function handleDogPhoto(ev) {
     // Persiste sur le chien actif
     dogState.photo = dataUrl;
     if (DOGS[activeDogIdx]) DOGS[activeDogIdx].photo = dataUrl;
+    K9Store.save();
   };
   reader.readAsDataURL(file);
 }
@@ -3767,7 +4000,8 @@ function saveRescueEntry() {
   const now = new Date();
   const dateStr = now.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US",
     { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
-  rescueEntries.unshift({ text: txt, date: dateStr });
+  rescueEntries.unshift({ text: txt, date: dateStr, iso: now.toISOString() });
+  K9Store.save();
   renderRescueFeed();
   inp.value = "";
   // micro-confirmation visuelle
@@ -3868,6 +4102,8 @@ function setLang(lang) {
     }
     applyUnits();
   }
+  if (typeof renderWalkHistory === "function") renderWalkHistory();
+  K9Store.save();
 }
 function toggleLang() { setLang(currentLang === "fr" ? "en" : "fr"); }
 
@@ -4161,6 +4397,7 @@ function saveCalEvent() {
     notes: notes.trim(),
   };
   calendarEvents.push(ev);
+  K9Store.save();
   // Reset form
   document.getElementById("calAddTitle").value = "";
   document.getElementById("calAddDate").value = "";
@@ -4271,17 +4508,103 @@ function renderPlanMarkdown(md) {
   return htmlSections.join("") + `<div style="font-size:11px; color: var(--ink-2); text-align:center; margin-top: 10px; line-height: 1.5;">${disclaimer}</div>`;
 }
 
+// ==================== EXPORT / IMPORT / RESET ====================
+function exportUserData() {
+  const json = K9Store.exportJSON();
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const now = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `k9-backup-${now}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function importUserData(ev) {
+  const file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ok = K9Store.importJSON(e.target.result);
+    if (!ok) {
+      alert(currentLang === "fr" ? "Fichier invalide ou version incompatible." : "Invalid file or incompatible version.");
+      return;
+    }
+    alert(currentLang === "fr" ? "Sauvegarde importée. L'app va se recharger." : "Backup imported. App will reload.");
+    location.reload();
+  };
+  reader.readAsText(file);
+  ev.target.value = "";
+}
+
+function confirmResetData() {
+  const msg = currentLang === "fr"
+    ? "Vraiment tout effacer ?\n\nTon profil, tes chiens, le calendrier, les balades et les préférences seront supprimés. Action irréversible."
+    : "Really wipe everything?\n\nYour profile, dogs, calendar, walks and preferences will be deleted. Cannot be undone.";
+  if (!confirm(msg)) return;
+  K9Store.clear();
+  alert(currentLang === "fr" ? "Données effacées. Redémarrage..." : "Data cleared. Restarting...");
+  location.reload();
+}
+
 // ---------- Init ----------
 renderBreeds();
 renderEmojis();
-showStep(0);
-// Détection auto de la langue du navigateur
-const navLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
-setLang(navLang.startsWith("en") ? "en" : "fr");
+
+// 1. Tente de charger l'état persisté AVANT toute init visuelle
+const _k9Saved = K9Store.load();
+if (_k9Saved) {
+  k9ApplySnapshot(_k9Saved);
+}
+
+// 2. Langue : priorité à la préférence sauvegardée, sinon détection navigateur
+if (!_k9Saved || !_k9Saved.settings?.lang) {
+  const navLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
+  setLang(navLang.startsWith("en") ? "en" : "fr");
+} else {
+  setLang(currentLang);
+}
+
+// 3. Si l'utilisateur a déjà onboardé (chien existant), on saute directement à l'app
+if (onboardingDone && DOGS.length > 0) {
+  document.getElementById("onboarding").classList.remove("show");
+  // Réhydrate l'affichage avec le chien actif
+  selectDog(activeDogIdx);
+  // Réapplique les toggles persistés
+  if (aiSoftMode) {
+    const tog = document.getElementById("togAIsoft");
+    if (tog) { tog.classList.add("on"); }
+    document.querySelectorAll(".ask-ai-cta").forEach(c => c.style.display = "none");
+    const bar = document.querySelector(".ai-home-bar"); if (bar) bar.style.display = "none";
+  }
+  if (useImperial) {
+    const tog = document.getElementById("togUnits");
+    if (tog) { tog.classList.remove("on"); tog.dataset.userTouched = "1"; }
+    const cur = document.getElementById("unitsCurrent"); if (cur) cur.textContent = "mi";
+    if (typeof applyUnits === "function") applyUnits();
+  }
+  if (document.body.classList.contains("a11y-large")) {
+    const tog = document.getElementById("togA11y"); if (tog) tog.classList.add("on");
+  }
+  if (ownerState.name) {
+    const disp = document.getElementById("ownerNameDisp");
+    if (disp) disp.textContent = ownerState.name;
+  }
+} else {
+  showStep(0);
+}
+
+// 4. Init calendrier + chips
 renderCalTypeChips();
 renderCalendar();
+if (typeof renderWalkHistory === "function") renderWalkHistory();
+if (typeof renderRescueFeed === "function") renderRescueFeed();
 updateNotifButtons();
-// Fire due-today/3d notifications if permission already granted
+
+// 5. Fire due-today/3d notifications if permission already granted
 if ("Notification" in window && Notification.permission === "granted") {
   setTimeout(checkAndFireReminders, 1500);
 }
