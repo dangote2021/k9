@@ -215,6 +215,61 @@ body {
   letter-spacing: .5px;
 }
 
+/* Photo upload button around avatar */
+.avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+}
+.photo-upload {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 30px;
+  height: 30px;
+  background: var(--terra);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  cursor: pointer;
+  border: 2px solid white;
+  transition: transform .1s;
+}
+.photo-upload:active { transform: scale(.92); }
+.dog-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Accessibility — larger text + higher contrast */
+body.a11y-large { font-size: 17px; }
+body.a11y-large .greeting { font-size: 15px; }
+body.a11y-large .name { font-size: 20px; }
+body.a11y-large .dog-hero h2 { font-size: 24px; }
+body.a11y-large .section-title { font-size: 15px; }
+body.a11y-large .reminder-card .title,
+body.a11y-large .reminder-card .desc,
+body.a11y-large .reminder-card .date,
+body.a11y-large .ai-bar-title,
+body.a11y-large .card,
+body.a11y-large .menu-row .label,
+body.a11y-large .qa-item .label { font-size: 15px; }
+body.a11y-large .ai-home-bar .title { font-size: 16px; }
+body.a11y-large .ai-home-bar .sub,
+body.a11y-large .walk-card p,
+body.a11y-large .prog-card p,
+body.a11y-large .video-card p,
+body.a11y-large .feed-card .caption { font-size: 14px; line-height: 1.6; }
+body.a11y-large { --ink-2: #4a4a52; } /* renforce le contraste des textes secondaires */
+body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14px 20px; }
+
 /* ========== Bottom tab bar ========== */
 .tabbar {
   position: absolute;
@@ -1774,7 +1829,13 @@ body {
         <h1 data-i18n="profile_title">Profil</h1>
       </div>
       <div class="profile-hero">
-        <div class="avatar lg" id="dogAvatarBig">🐕</div>
+        <div class="avatar-wrap">
+          <div class="avatar lg" id="dogAvatarBig">🐕</div>
+          <label class="photo-upload" title="Ajouter une photo">
+            <input type="file" accept="image/*" onchange="handleDogPhoto(event)" style="display:none" />
+            <span>📸</span>
+          </label>
+        </div>
         <div class="name" id="dogNameProfile">Nala</div>
         <div class="meta" id="dogMetaProfile">Labrador Retriever · 2 ans · Paris</div>
       </div>
@@ -1806,6 +1867,22 @@ body {
         <div class="label" data-i18n="menu_lang">Langue</div>
         <div style="color: var(--ink-2); font-size: 13px; margin-right: 8px;" id="langCurrent">Français</div>
         <div class="arr">›</div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">🅰️</div>
+        <div class="label" data-i18n="menu_a11y">Grande police & haut contraste</div>
+        <div class="toggle" id="togA11y" onclick="toggleA11y(this)"></div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">📏</div>
+        <div class="label" data-i18n="menu_units">Unités</div>
+        <div style="color: var(--ink-2); font-size: 13px; margin-right: 8px;" id="unitsCurrent">km</div>
+        <div class="toggle on" id="togUnits" onclick="toggleUnits(this)"></div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">✨</div>
+        <div class="label" data-i18n="menu_ai_soft">IA discrète (moins de suggestions)</div>
+        <div class="toggle" id="togAIsoft" onclick="toggleAIsoft(this)"></div>
       </div>
       <div class="menu-row">
         <div class="ic">🔔</div>
@@ -2564,6 +2641,9 @@ const I18N = {
     badge_legend: "Légende", badge_bday: "Anniversaire",
     profile_settings: "Réglages",
     menu_lang: "Langue", menu_notif: "Notifications", menu_geo: "Géolocalisation",
+    menu_a11y: "Grande police & haut contraste",
+    menu_units: "Unités",
+    menu_ai_soft: "IA discrète (moins de suggestions)",
     menu_priv: "Confidentialité", menu_help: "Aide & support", menu_logout: "Se déconnecter",
     tab_home: "Accueil", tab_health: "Santé", tab_social: "Social", tab_profile: "Profil",
     sub_edu: "Éducation positive",
@@ -2827,6 +2907,9 @@ const I18N = {
     badge_legend: "Legend", badge_bday: "Birthday",
     profile_settings: "Settings",
     menu_lang: "Language", menu_notif: "Notifications", menu_geo: "Location",
+    menu_a11y: "Larger text & high contrast",
+    menu_units: "Units",
+    menu_ai_soft: "Minimal AI (fewer prompts)",
     menu_priv: "Privacy", menu_help: "Help & support", menu_logout: "Log out",
     tab_home: "Home", tab_health: "Health", tab_social: "Social", tab_profile: "Profile",
     sub_edu: "Positive training",
@@ -3186,6 +3269,112 @@ function mockStartWalk() {
     : "🗺️ Walk started!\n\nReal-time GPS is coming soon. For now, log your walk when you get back.");
 }
 
+// ---------- Accessibility toggle ----------
+function toggleA11y(el) {
+  el.classList.toggle("on");
+  document.body.classList.toggle("a11y-large", el.classList.contains("on"));
+}
+
+// ---------- AI soft mode ----------
+let aiSoftMode = false;
+function toggleAIsoft(el) {
+  el.classList.toggle("on");
+  aiSoftMode = el.classList.contains("on");
+  // masque les CTA "Demander à l'IA" quand actif
+  document.querySelectorAll(".ask-ai-cta").forEach(c => {
+    c.style.display = aiSoftMode ? "none" : "";
+  });
+  // masque la grosse barre IA sur home
+  const bar = document.querySelector(".ai-home-bar");
+  if (bar) bar.style.display = aiSoftMode ? "none" : "";
+}
+
+// ---------- Units (km/mi) ----------
+let useImperial = false;
+function toggleUnits(el) {
+  el.classList.toggle("on");
+  el.dataset.userTouched = "1";
+  useImperial = !el.classList.contains("on");
+  applyUnits();
+  const cur = document.getElementById("unitsCurrent");
+  if (cur) cur.textContent = useImperial ? "mi" : "km";
+}
+function kmToDisplay(kmValue) {
+  if (!useImperial) return { num: kmValue, unit: "km" };
+  return { num: +(kmValue * 0.621371).toFixed(2), unit: "mi" };
+}
+function applyUnits() {
+  // Walk card on home — generic empty state, no number to swap currently
+  // Weekly distance card
+  const wk = document.getElementById("weekKm");
+  if (wk) {
+    const val = useImperial ? "0" : "0";
+    wk.innerHTML = `${val} <span style="font-size: 16px; opacity: .8;">${useImperial ? "mi" : "km"}</span>`;
+  }
+  // Walk history labels — convert stored (km) → display
+  const historyDistances = [
+    { id: "walk_1_d", km: 3.2, t: (dist, u) => currentLang === "fr"
+        ? `${dist} ${u} · 48 min · +22 m de dénivelé`
+        : `${dist} ${u} · 48 min · +72 ft elevation` },
+    { id: "walk_2_d", km: 2.1, t: (dist, u) => currentLang === "fr"
+        ? `${dist} ${u} · 34 min`
+        : `${dist} ${u} · 34 min` },
+    { id: "walk_3_d", km: 3.1, t: (dist, u) => currentLang === "fr"
+        ? `${dist} ${u} · 50 min · jeux libres`
+        : `${dist} ${u} · 50 min · free play` },
+  ];
+  historyDistances.forEach(h => {
+    const el = document.querySelector(`[data-i18n="${h.id}"]`);
+    if (el) {
+      const { num, unit } = kmToDisplay(h.km);
+      // format avec virgule FR pour les décimales
+      const formatted = currentLang === "fr" ? String(num).replace(".", ",") : num;
+      el.textContent = h.t(formatted, unit);
+    }
+  });
+  // Spots distances
+  const spots = [
+    { sel: ".spot-row:nth-child(1) .dist", km: 1.2 },
+    { sel: ".spot-row:nth-child(2) .dist", km: 0.6 },
+    { sel: ".spot-row:nth-child(3) .dist", km: 198 },
+    { sel: ".spot-row:nth-child(4) .dist", km: 492 },
+  ];
+  spots.forEach(s => {
+    const el = document.querySelector(`#sub-spots ${s.sel}`);
+    if (el) {
+      if (s.km < 1 && !useImperial) el.textContent = `${Math.round(s.km * 1000)} m`;
+      else {
+        const { num, unit } = kmToDisplay(s.km);
+        const formatted = currentLang === "fr" ? String(num).replace(".", ",") : num;
+        el.textContent = `${formatted} ${unit}`;
+      }
+    }
+  });
+}
+
+// ---------- Dog photo upload ----------
+function handleDogPhoto(ev) {
+  const file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    // Profile big avatar
+    const big = document.getElementById("dogAvatarBig");
+    if (big) big.innerHTML = `<img class="dog-photo" src="${dataUrl}" alt="${escapeHtml(dogState.name || "")}">`;
+    // Home hero emoji
+    const hero = document.getElementById("dogEmojiMain");
+    if (hero) {
+      hero.innerHTML = `<img class="dog-photo" src="${dataUrl}" alt="" style="width: 58px; height: 58px;">`;
+      hero.style.fontSize = "0";
+    }
+    // Persiste sur le chien actif
+    dogState.photo = dataUrl;
+    if (DOGS[activeDogIdx]) DOGS[activeDogIdx].photo = dataUrl;
+  };
+  reader.readAsDataURL(file);
+}
+
 // ---------- Rescue journal ----------
 let rescueEntries = [];
 function saveRescueEntry() {
@@ -3290,6 +3479,17 @@ function setLang(lang) {
   if (typeof updateReminderDates === "function") updateReminderDates();
   // Re-rend le switcher multi-chiens (libellé "Ajouter")
   if (typeof renderDogSwitcher === "function") renderDogSwitcher();
+  // Unités : FR → km par défaut, EN → miles par défaut (sauf override utilisateur)
+  if (typeof applyUnits === "function") {
+    const togUnits = document.getElementById("togUnits");
+    if (togUnits && !togUnits.dataset.userTouched) {
+      useImperial = (lang === "en");
+      togUnits.classList.toggle("on", !useImperial);
+      const cur = document.getElementById("unitsCurrent");
+      if (cur) cur.textContent = useImperial ? "mi" : "km";
+    }
+    applyUnits();
+  }
 }
 function toggleLang() { setLang(currentLang === "fr" ? "en" : "fr"); }
 
