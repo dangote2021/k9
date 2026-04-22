@@ -479,20 +479,24 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
   z-index: 100;
   display: none;
   flex-direction: column;
-  padding: 44px 24px 30px;
+  padding: 28px 24px 22px;
+  overflow: hidden;
 }
 .onboarding.show { display: flex; }
-.ob-step { display: none; flex: 1; flex-direction: column; animation: fadeIn .3s ease; }
+.ob-step { display: none; flex: 1; flex-direction: column; min-height: 0; animation: fadeIn .3s ease; }
 .ob-step.active { display: flex; }
-.ob-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+.ob-progress { display: flex; gap: 6px; margin-bottom: 20px; flex-shrink: 0; }
 .ob-progress div { flex: 1; height: 4px; border-radius: 3px; background: var(--cream-2); }
 .ob-progress div.done { background: var(--brand); }
 .ob-title { font-size: 26px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 8px; }
 .ob-sub { color: var(--ink-2); font-size: 15px; margin-bottom: 24px; }
-.ob-content { flex: 1; overflow-y: auto; margin: 0 -24px 20px; padding: 0 24px; }
+.ob-content { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; margin: 0 -24px 16px; padding: 0 24px; }
 .ob-content::-webkit-scrollbar { width: 0; }
-.ob-actions { display: flex; gap: 10px; }
+.ob-actions { display: flex; gap: 10px; flex-shrink: 0; }
 .ob-actions .btn.ghost { flex: 0 0 auto; width: auto; padding: 14px 22px; }
+.ob-welcome-hero { text-align: center; padding: 8px 0 4px; }
+.ob-welcome-hero .emoji-big { font-size: 64px; line-height: 1; }
+.ob-welcome-features { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; text-align: left; }
 
 .input, .select {
   width: 100%;
@@ -1589,15 +1593,17 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
     <!-- Step 0: Welcome -->
     <div class="ob-step active" data-step="0">
       <div class="ob-progress"><div></div><div></div><div></div><div></div><div></div></div>
-      <div style="text-align: center; padding-top: 20px; flex: 1;">
-        <div style="font-size: 84px;">🐕</div>
-        <h1 class="ob-title" style="margin-top: 20px;" data-i18n="welcome_title">Bienvenue sur K9</h1>
-        <p class="ob-sub" data-i18n="welcome_sub">Ta porte d'entrée unique pour tout ce qui concerne ton chien. Santé, éducation, communauté, IA — tout en un.</p>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 28px; text-align: left;">
-          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">💊</div><span data-i18n="feat_health">Rappels santé, vaccins, vermifuge</span></div>
-          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">🎓</div><span data-i18n="feat_edu">Éducation positive & coaching IA</span></div>
-          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">🐾</div><span data-i18n="feat_social">Playdates & amis canins</span></div>
-          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">📖</div><span data-i18n="feat_books">Lectures & programmes dédiés</span></div>
+      <div class="ob-content">
+        <div class="ob-welcome-hero">
+          <div class="emoji-big">🐕</div>
+          <h1 class="ob-title" style="margin-top: 14px;" data-i18n="welcome_title">Bienvenue sur K9</h1>
+          <p class="ob-sub" data-i18n="welcome_sub">Ta porte d'entrée unique pour tout ce qui concerne ton chien. Santé, éducation, communauté, IA — tout en un.</p>
+        </div>
+        <div class="ob-welcome-features">
+          <div class="row-card" style="padding: 8px 6px;"><div class="avatar sm">💊</div><span data-i18n="feat_health">Rappels santé, vaccins, vermifuge</span></div>
+          <div class="row-card" style="padding: 8px 6px;"><div class="avatar sm green">🎓</div><span data-i18n="feat_edu">Éducation positive & coaching IA</span></div>
+          <div class="row-card" style="padding: 8px 6px;"><div class="avatar sm">🐾</div><span data-i18n="feat_social">Playdates & amis canins</span></div>
+          <div class="row-card" style="padding: 8px 6px;"><div class="avatar sm green">📖</div><span data-i18n="feat_books">Lectures & programmes dédiés</span></div>
         </div>
       </div>
       <div class="ob-actions">
