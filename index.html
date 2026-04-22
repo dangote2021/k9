@@ -1,0 +1,3258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>K9 — L'app des amoureux des chiens</title>
+<style>
+/* =========================================================
+   K9 — Design System
+   Palette : terracotta + forêt + crème + soft peach
+   ========================================================= */
+:root {
+  --brand: #E87A3B;
+  --brand-dark: #C85F21;
+  --brand-soft: #FBE5D3;
+  --forest: #2D5A3D;
+  --forest-soft: #D7E4D9;
+  --cream: #FAF7F2;
+  --cream-2: #F3EEE4;
+  --ink: #1F1B16;
+  --ink-2: #5A524A;
+  --gray: #9B9389;
+  --line: #E8E1D4;
+  --white: #FFFFFF;
+  --danger: #D14343;
+  --success: #4A8A5E;
+  --shadow: 0 6px 24px rgba(31,27,22,0.08);
+  --shadow-lg: 0 12px 40px rgba(31,27,22,0.14);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-lg: 28px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Nunito", system-ui, sans-serif;
+  background: linear-gradient(135deg, #F5EBDE 0%, #EDE5D5 100%);
+  color: var(--ink);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* ========== Phone frame (desktop preview) ========== */
+.phone {
+  width: 100%;
+  max-width: 420px;
+  height: min(900px, 95vh);
+  background: var(--cream);
+  border-radius: 44px;
+  box-shadow: var(--shadow-lg), 0 0 0 10px #1a1814, 0 0 0 12px #3a342c;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 480px) {
+  body { padding: 0; background: var(--cream); }
+  .phone { max-width: 100%; height: 100vh; border-radius: 0; box-shadow: none; }
+}
+
+/* Status bar */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  background: var(--cream);
+}
+.status-bar .right { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+
+/* Main scroll area */
+.screen-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 100px;
+  display: none;
+  animation: fadeIn .25s ease;
+}
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.screen::-webkit-scrollbar { width: 0; }
+
+/* ========== Shared components ========== */
+.hero {
+  padding: 12px 24px 20px;
+}
+.hero h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.hero .sub {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 6px;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--ink-2);
+  padding: 18px 24px 10px;
+}
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin: 0 16px 12px;
+}
+.row-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  background: var(--brand-soft);
+  flex-shrink: 0;
+}
+.avatar.lg { width: 96px; height: 96px; border-radius: 28px; font-size: 58px; }
+.avatar.sm { width: 36px; height: 36px; border-radius: 10px; font-size: 18px; }
+.avatar.green { background: var(--forest-soft); }
+.btn {
+  background: var(--brand);
+  color: white;
+  border: 0;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: transform .1s ease, background .2s ease;
+  font-family: inherit;
+}
+.btn:active { transform: scale(0.98); background: var(--brand-dark); }
+.btn.ghost {
+  background: transparent;
+  color: var(--brand);
+  border: 2px solid var(--brand-soft);
+}
+.btn.dark { background: var(--ink); }
+.btn.forest { background: var(--forest); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+.chip.green { background: var(--forest-soft); color: var(--forest); }
+.chip.gray { background: var(--cream-2); color: var(--ink-2); }
+
+/* ========== Bottom tab bar ========== */
+.tabbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 78px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 50;
+  padding-bottom: 14px;
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding-top: 10px;
+  cursor: pointer;
+  color: var(--gray);
+  transition: color .15s ease;
+}
+.tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tab span { font-size: 10px; font-weight: 600; }
+.tab.active { color: var(--brand); }
+
+/* ========== Onboarding overlay ========== */
+.onboarding {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  padding: 44px 24px 30px;
+}
+.onboarding.show { display: flex; }
+.ob-step { display: none; flex: 1; flex-direction: column; animation: fadeIn .3s ease; }
+.ob-step.active { display: flex; }
+.ob-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+.ob-progress div { flex: 1; height: 4px; border-radius: 3px; background: var(--cream-2); }
+.ob-progress div.done { background: var(--brand); }
+.ob-title { font-size: 26px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 8px; }
+.ob-sub { color: var(--ink-2); font-size: 15px; margin-bottom: 24px; }
+.ob-content { flex: 1; overflow-y: auto; margin: 0 -24px 20px; padding: 0 24px; }
+.ob-content::-webkit-scrollbar { width: 0; }
+.ob-actions { display: flex; gap: 10px; }
+.ob-actions .btn.ghost { flex: 0 0 auto; width: auto; padding: 14px 22px; }
+
+.input, .select {
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--white);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--ink);
+  transition: border .15s ease;
+}
+.input:focus, .select:focus { outline: none; border-color: var(--brand); }
+.field-label { font-size: 13px; font-weight: 700; color: var(--ink-2); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+.breed-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.breed-option {
+  background: var(--white);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  transition: all .15s ease;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+.breed-option .bem { font-size: 22px; }
+.breed-option.selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.emoji-option {
+  background: var(--white);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.emoji-option.selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  transform: scale(1.03);
+}
+
+.age-row {
+  display: flex;
+  gap: 10px;
+}
+.age-row .input { text-align: center; }
+
+/* ========== Home screen ========== */
+.home-header {
+  padding: 6px 24px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home-header .greeting { font-size: 14px; color: var(--ink-2); }
+.home-header .name { font-size: 20px; font-weight: 800; }
+.home-header .lang-toggle {
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--cream-2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink-2);
+  border: 0;
+  font-family: inherit;
+}
+
+.dog-hero {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, var(--brand) 0%, #D96220 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.dog-hero::before {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 160px; height: 160px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.dog-hero .top-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.dog-hero .dog-emoji {
+  width: 64px; height: 64px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  flex-shrink: 0;
+}
+.dog-hero h2 { font-size: 22px; font-weight: 800; }
+.dog-hero .meta { font-size: 13px; opacity: .92; }
+.dog-hero .stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.dog-hero .stat {
+  background: rgba(255,255,255,0.14);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.dog-hero .stat .num { font-size: 18px; font-weight: 800; }
+.dog-hero .stat .lbl { font-size: 10px; opacity: .85; text-transform: uppercase; letter-spacing: .8px; margin-top: 2px; }
+
+/* Quick actions grid */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 0 16px 8px;
+}
+.qa-item {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 12px 6px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .1s ease;
+}
+.qa-item:active { transform: scale(0.96); }
+.qa-item .ic { font-size: 24px; margin-bottom: 4px; }
+.qa-item .label { font-size: 11px; font-weight: 600; color: var(--ink-2); }
+
+/* Feed cards */
+.feed-card {
+  margin: 0 16px 14px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.feed-card .head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+.feed-card .head .name { font-size: 14px; font-weight: 700; }
+.feed-card .head .when { font-size: 12px; color: var(--gray); }
+.feed-card .img {
+  height: 220px;
+  background: linear-gradient(135deg, #F4C9B5, #E87A3B);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+}
+.feed-card .caption { padding: 12px 16px; font-size: 14px; }
+.feed-card .actions {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 14px;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+.feed-card .actions span { cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+/* Reminder card */
+.reminder-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-left: 4px solid var(--brand);
+}
+.reminder-card.soon { border-left-color: var(--danger); }
+.reminder-card.ok { border-left-color: var(--success); }
+.reminder-card .ic {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  background: var(--cream-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.reminder-card .title { font-size: 14px; font-weight: 700; }
+.reminder-card .desc { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.reminder-card .date { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+/* ========== Santé screen ========== */
+.life-stage {
+  margin: 0 16px 14px;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--forest-soft), #E8F0E5);
+  border-radius: var(--radius);
+  position: relative;
+}
+.life-stage h3 { font-size: 14px; color: var(--forest); margin-bottom: 4px; font-weight: 700; }
+.life-stage .stage-name { font-size: 22px; font-weight: 800; color: var(--ink); }
+.life-stage .stage-desc { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+.life-stage-bar {
+  margin-top: 14px;
+  height: 8px;
+  background: rgba(45,90,61,0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.life-stage-bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #4A8A5E, var(--forest));
+  border-radius: 6px;
+  transition: width .6s ease;
+}
+.life-stage-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-weight: 600;
+}
+
+.health-cat {
+  margin: 0 16px 10px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.health-cat .ic {
+  width: 46px; height: 46px;
+  background: var(--brand-soft);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.health-cat .ic.green { background: var(--forest-soft); }
+.health-cat .title { font-size: 15px; font-weight: 700; }
+.health-cat .desc { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.health-cat .arrow { margin-left: auto; color: var(--gray); font-size: 20px; }
+
+/* ========== IA Coach ========== */
+.chat-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 0;
+}
+.chat-header {
+  padding: 12px 20px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.chat-header .ic {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--brand), var(--forest));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  color: white;
+}
+.chat-header .name { font-size: 16px; font-weight: 800; }
+.chat-header .status { font-size: 11px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.chat-header .status::before { content: ""; width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
+
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.msg {
+  max-width: 82%;
+  padding: 12px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  animation: fadeIn .3s ease;
+}
+.msg.ai {
+  background: var(--white);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  box-shadow: var(--shadow);
+}
+.msg.user {
+  background: var(--brand);
+  color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.msg.ai .hint {
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 6px;
+  display: block;
+}
+.msg.ai.typing .dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.msg.ai.typing .dots span {
+  font-size: 22px;
+  line-height: 8px;
+  animation: blink 1.2s infinite;
+}
+.msg.ai.typing .dots span:nth-child(2) { animation-delay: .18s; }
+.msg.ai.typing .dots span:nth-child(3) { animation-delay: .36s; }
+@keyframes blink { 0%,60%,100% { opacity: .25 } 30% { opacity: 1 } }
+
+.suggestions {
+  padding: 0 16px 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.suggestions::-webkit-scrollbar { height: 0; }
+.sugg-chip {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.chat-input-wrap {
+  padding: 10px 14px 14px;
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chat-input-wrap input {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.chat-input-wrap input:focus { outline: none; border-color: var(--brand); }
+.chat-send {
+  width: 42px; height: 42px;
+  background: var(--brand);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 18px;
+  border: 0;
+  cursor: pointer;
+}
+
+/* ========== Social / Communauté ========== */
+.social-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px 14px;
+  overflow-x: auto;
+}
+.social-tabs::-webkit-scrollbar { height: 0; }
+.social-tab {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--cream-2);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  border: 0;
+  font-family: inherit;
+}
+.social-tab.active { background: var(--ink); color: white; }
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--white);
+  border-radius: var(--radius);
+  margin: 0 16px 10px;
+  box-shadow: var(--shadow);
+}
+.friend-card .info { flex: 1; }
+.friend-card .name { font-size: 15px; font-weight: 700; }
+.friend-card .meta { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.friend-card .action {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.friend-card .action.outline {
+  background: transparent;
+  border: 1.5px solid var(--line);
+  color: var(--ink-2);
+}
+
+.playdate-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.playdate-card .banner {
+  height: 90px;
+  background: linear-gradient(135deg, var(--forest-soft), var(--forest));
+  padding: 16px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.playdate-card .banner .when { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .95; }
+.playdate-card .banner .title { font-size: 17px; font-weight: 800; margin-top: 2px; }
+.playdate-card .body { padding: 14px 16px; }
+.playdate-card .loc { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+.playdate-card .attendees {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.playdate-card .attendees .avatars {
+  display: flex;
+}
+.playdate-card .attendees .avatars .avatar.sm {
+  margin-left: -8px;
+  border: 2px solid white;
+}
+.playdate-card .attendees .avatars .avatar.sm:first-child { margin-left: 0; }
+.playdate-card .attendees .count { font-size: 12px; color: var(--ink-2); font-weight: 600; }
+
+/* ========== Lectures ========== */
+.book-card {
+  display: flex;
+  gap: 14px;
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.book-cover {
+  width: 74px; height: 104px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: var(--shadow);
+}
+.book-cover.g { background: linear-gradient(135deg, var(--forest), #1C3D28); }
+.book-cover.b { background: linear-gradient(135deg, #5A6B8C, #2F3A52); }
+.book-cover.p { background: linear-gradient(135deg, #B05A8D, #6D2E4F); }
+.book-info { flex: 1; display: flex; flex-direction: column; }
+.book-info .title { font-size: 15px; font-weight: 800; line-height: 1.2; }
+.book-info .author { font-size: 12px; color: var(--ink-2); margin-top: 3px; }
+.book-info .desc { font-size: 12px; color: var(--ink-2); margin-top: 6px; flex: 1; }
+.book-info .rating { font-size: 11px; color: var(--brand); margin-top: 6px; font-weight: 600; }
+
+/* ========== Garde ========== */
+.sitter-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.sitter-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.sitter-head .info { flex: 1; }
+.sitter-head .name { font-size: 15px; font-weight: 800; }
+.sitter-head .loc { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.sitter-head .rate { text-align: right; }
+.sitter-head .rate .price { font-size: 18px; font-weight: 800; color: var(--brand-dark); }
+.sitter-head .rate .unit { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+.sitter-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.sitter-rating { font-size: 12px; color: var(--ink-2); margin-top: 10px; }
+
+/* ========== Profil ========== */
+.profile-hero {
+  padding: 20px 24px 10px;
+  text-align: center;
+}
+.profile-hero .avatar { margin: 0 auto 12px; }
+.profile-hero .name { font-size: 22px; font-weight: 800; }
+.profile-hero .meta { font-size: 13px; color: var(--ink-2); }
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 16px 16px 20px;
+}
+.pstat {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.pstat .num { font-size: 20px; font-weight: 800; color: var(--brand-dark); }
+.pstat .lbl { font-size: 11px; color: var(--ink-2); margin-top: 2px; }
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--white);
+  margin: 0 16px 8px;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.menu-row .ic { font-size: 20px; width: 26px; text-align: center; }
+.menu-row .label { flex: 1; font-size: 14px; font-weight: 600; }
+.menu-row .arr { color: var(--gray); font-size: 18px; }
+.menu-row.danger .label { color: var(--danger); }
+
+/* Badge grid (gamif) */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 0 16px;
+}
+.badge {
+  aspect-ratio: 1;
+  background: var(--white);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  text-align: center;
+}
+.badge.locked { background: var(--cream-2); color: var(--gray); opacity: .5; }
+.badge .emoji { font-size: 28px; }
+.badge .name { font-size: 9px; font-weight: 700; line-height: 1.1; }
+
+/* Sub-screen (modal-like full screen) */
+.sub-screen {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  z-index: 80;
+  display: none;
+  flex-direction: column;
+  animation: slideIn .25s ease;
+}
+.sub-screen.show { display: flex; }
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.sub-header .back {
+  background: var(--cream-2);
+  border: 0;
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+}
+.sub-header .sub-title { font-size: 17px; font-weight: 800; }
+.sub-body { flex: 1; overflow-y: auto; padding: 16px 0; }
+.sub-body::-webkit-scrollbar { width: 0; }
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 44px; height: 26px;
+  background: var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform .2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle.on { background: var(--brand); }
+.toggle.on::after { transform: translateX(18px); }
+
+/* ===== FAB (IA companion, toujours accessible) ===== */
+.fab {
+  position: absolute;
+  right: 18px;
+  bottom: 94px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand) 0%, #D96220 60%, var(--forest) 140%);
+  color: white;
+  border: 0;
+  cursor: pointer;
+  font-size: 28px;
+  box-shadow: 0 8px 24px rgba(232,122,59,0.45), 0 2px 8px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  font-family: inherit;
+  animation: fabPulse 3s ease-in-out infinite;
+}
+.fab:active { transform: scale(0.94); }
+.fab .sparkle {
+  position: absolute;
+  top: 4px; right: 6px;
+  width: 14px; height: 14px;
+  background: #FFD580;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #FFD580;
+  animation: fabSparkle 2s ease-in-out infinite;
+}
+@keyframes fabPulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(232,122,59,0.45), 0 2px 8px rgba(0,0,0,0.12); }
+  50% { box-shadow: 0 10px 30px rgba(232,122,59,0.65), 0 2px 8px rgba(0,0,0,0.12); }
+}
+@keyframes fabSparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ===== AI Overlay (full-screen chat modal) ===== */
+.ai-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  z-index: 70;
+  display: none;
+  flex-direction: column;
+  animation: slideUp .28s ease;
+}
+.ai-overlay.show { display: flex; }
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* ===== AI Home entry bar ===== */
+.ai-home-bar {
+  margin: 4px 16px 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF6EC 100%);
+  border: 1.5px solid var(--brand-soft);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform .1s ease;
+}
+.ai-home-bar:active { transform: scale(0.99); }
+.ai-home-bar .spark {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand), var(--forest));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  color: white;
+  flex-shrink: 0;
+}
+.ai-home-bar .txt { flex: 1; }
+.ai-home-bar .title { font-size: 13px; font-weight: 700; }
+.ai-home-bar .sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.ai-home-bar .arr { color: var(--brand); font-size: 20px; font-weight: 700; }
+
+/* ===== Disclaimer banner ===== */
+.disclaimer {
+  margin: 8px 16px 4px;
+  padding: 10px 14px;
+  background: #FFF6E0;
+  border: 1px solid #F0D68A;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #6B5420;
+  line-height: 1.4;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.disclaimer .ic { font-size: 14px; flex-shrink: 0; }
+
+/* ===== Dog switcher (multi-chiens) ===== */
+.dog-switcher {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dog-switcher::-webkit-scrollbar { display: none; }
+.dog-pill {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.dog-pill .ring {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  border: 3px solid transparent;
+  transition: all .15s ease;
+}
+.dog-pill.active .ring {
+  border-color: var(--terra);
+  box-shadow: 0 0 0 2px rgba(232,122,59,.18);
+}
+.dog-pill .lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dog-pill.add .ring {
+  border: 2px dashed var(--border);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 22px;
+}
+
+/* ===== Walk tracker ===== */
+.walk-card {
+  margin: 0 16px 14px;
+  background: linear-gradient(135deg, #2D5A3D, #3E7253);
+  color: white;
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 24px rgba(45,90,61,.25);
+}
+.walk-card .ic {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.walk-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.walk-card p { font-size: 12px; opacity: .85; }
+.walk-card .go {
+  margin-left: auto;
+  background: white;
+  color: var(--forest);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ===== Programme cards ===== */
+.prog-grid {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.prog-grid::-webkit-scrollbar { display: none; }
+.prog-card {
+  flex-shrink: 0;
+  width: 180px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform .1s ease;
+  position: relative;
+  overflow: hidden;
+}
+.prog-card:active { transform: scale(.98); }
+.prog-card .emo { font-size: 28px; margin-bottom: 6px; }
+.prog-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.prog-card p { font-size: 11px; color: var(--ink-2); line-height: 1.4; margin-bottom: 8px; }
+.prog-card .prog-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.prog-card .prog-bar > div { height: 100%; background: var(--terra); border-radius: 2px; }
+.prog-card.puppy { background: linear-gradient(135deg, #FFF4E3, #FDD9BC); border-color: #F4C9B5; }
+.prog-card.rescue { background: linear-gradient(135deg, #E8F0E5, #D7E4D9); border-color: #B5D3C4; }
+.prog-card.senior { background: linear-gradient(135deg, #F1EBE0, #E8E1D4); border-color: #D8CFC0; }
+
+/* ===== Video cards ===== */
+.video-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 16px 10px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+  cursor: pointer;
+}
+.video-thumb {
+  width: 70px; height: 70px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2D5A3D, #4A8A5E);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  color: white;
+  flex-shrink: 0;
+  position: relative;
+}
+.video-thumb::after {
+  content: "▶";
+  position: absolute;
+  bottom: 4px; right: 6px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  padding-left: 1px;
+}
+.video-card h5 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.video-card p { font-size: 11px; color: var(--ink-2); }
+.video-card .duration {
+  font-size: 10px;
+  color: var(--terra);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ===== Spots map mock ===== */
+.spots-map {
+  height: 220px;
+  margin: 0 16px 14px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 20% 30%, #D7E4D9 0 22px, transparent 23px),
+    radial-gradient(circle at 70% 50%, #F4C9B5 0 18px, transparent 19px),
+    radial-gradient(circle at 40% 70%, #B5D3C4 0 20px, transparent 21px),
+    linear-gradient(135deg, #E8F0E5, #FAF7F2);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.spots-map .pin {
+  position: absolute;
+  font-size: 26px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.2));
+  cursor: pointer;
+}
+.spot-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 0 16px 10px;
+}
+.spot-row .emo { font-size: 22px; }
+.spot-row h5 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.spot-row p { font-size: 11px; color: var(--ink-2); }
+.spot-row .dist { margin-left: auto; font-size: 11px; color: var(--terra); font-weight: 700; }
+
+/* ===== Timeline 3-3-3 ===== */
+.tl {
+  padding: 0 16px 14px;
+}
+.tl-step {
+  position: relative;
+  padding-left: 32px;
+  padding-bottom: 18px;
+  border-left: 2px solid var(--border);
+  margin-left: 10px;
+}
+.tl-step:last-child { border-left-color: transparent; padding-bottom: 4px; }
+.tl-step .dot {
+  position: absolute;
+  left: -11px; top: 0;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--terra);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+.tl-step.done .dot { background: var(--forest); }
+.tl-step.done .dot::before { content: "✓"; }
+.tl-step h5 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.tl-step p { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+
+/* ===== QR share modal ===== */
+.qr-box {
+  width: 180px; height: 180px;
+  margin: 20px auto;
+  background:
+    repeating-conic-gradient(#000 0 25%, #fff 0 50%) 0 0 / 14px 14px,
+    white;
+  border-radius: 14px;
+  border: 8px solid white;
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  position: relative;
+}
+.qr-box::before, .qr-box::after {
+  content: "";
+  position: absolute;
+  width: 34px; height: 34px;
+  border: 6px solid #000;
+  background: white;
+}
+.qr-box::before { top: 4px; left: 4px; }
+.qr-box::after { top: 4px; right: 4px; }
+
+/* Today task (puppy/rescue) */
+.today-task {
+  background: linear-gradient(135deg, var(--terra), var(--terra-dark));
+  color: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0 16px 14px;
+}
+.today-task .hd {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: .85;
+  margin-bottom: 4px;
+}
+.today-task h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.today-task p { font-size: 12px; opacity: .92; line-height: 1.5; }
+.today-task .mark {
+  margin-top: 10px;
+  background: white;
+  color: var(--terra);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===== Contextual "Ask AI" CTA ===== */
+.ask-ai-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, var(--brand-soft), #FDD9BC);
+  color: var(--brand-dark);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 0;
+  font-family: inherit;
+}
+.ask-ai-cta:active { transform: scale(0.97); }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--ink-2);
+}
+.empty-state .emoji { font-size: 50px; margin-bottom: 12px; }
+.empty-state .title { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+.empty-state .desc { font-size: 13px; }
+
+/* Skeleton typographic utility */
+.text-center { text-align: center; }
+.muted { color: var(--ink-2); }
+.mb-10 { margin-bottom: 10px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.px-24 { padding-left: 24px; padding-right: 24px; }
+.flex-gap { display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar">
+    <div>9:41</div>
+    <div class="right">●●● 5G ▓▓▓▓</div>
+  </div>
+
+  <!-- ================== ONBOARDING ================== -->
+  <div class="onboarding show" id="onboarding">
+
+    <!-- Step 0: Welcome -->
+    <div class="ob-step active" data-step="0">
+      <div class="ob-progress"><div></div><div></div><div></div><div></div><div></div></div>
+      <div style="text-align: center; padding-top: 20px; flex: 1;">
+        <div style="font-size: 84px;">🐕</div>
+        <h1 class="ob-title" style="margin-top: 20px;" data-i18n="welcome_title">Bienvenue sur K9</h1>
+        <p class="ob-sub" data-i18n="welcome_sub">Ta porte d'entrée unique pour tout ce qui concerne ton chien. Santé, éducation, communauté, IA — tout en un.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 28px; text-align: left;">
+          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">💊</div><span data-i18n="feat_health">Rappels santé, vaccins, vermifuge</span></div>
+          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">🎓</div><span data-i18n="feat_edu">Éducation positive & coaching IA</span></div>
+          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">🐾</div><span data-i18n="feat_social">Playdates & amis canins</span></div>
+          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">🏠</div><span data-i18n="feat_sit">Garde de confiance</span></div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn" onclick="obNext()" data-i18n="ob_start">Commencer</button>
+      </div>
+    </div>
+
+    <!-- Step 1: Name of dog -->
+    <div class="ob-step" data-step="1">
+      <div class="ob-progress"><div class="done"></div><div></div><div></div><div></div><div></div></div>
+      <div class="ob-content">
+        <h1 class="ob-title" data-i18n="ob_name_title">Comment s'appelle ton compagnon ?</h1>
+        <p class="ob-sub" data-i18n="ob_name_sub">On va personnaliser toute l'app autour de lui ou d'elle.</p>
+        <div class="field-label" data-i18n="ob_name_label">Nom du chien</div>
+        <input class="input" id="dogName" placeholder="Ex. Nala, Loki, Maya..." />
+      </div>
+      <div class="ob-actions">
+        <button class="btn ghost" onclick="obPrev()" data-i18n="back">Retour</button>
+        <button class="btn" onclick="obNext()" data-i18n="next">Suivant</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Breed -->
+    <div class="ob-step" data-step="2">
+      <div class="ob-progress"><div class="done"></div><div class="done"></div><div></div><div></div><div></div></div>
+      <div class="ob-content">
+        <h1 class="ob-title" data-i18n="ob_breed_title">Quelle est sa race ?</h1>
+        <p class="ob-sub" data-i18n="ob_breed_sub">Les conseils santé, nutrition et éducation seront adaptés.</p>
+        <input class="input" id="breedSearch" placeholder="Rechercher une race..." oninput="filterBreeds()" style="margin-bottom: 14px;" />
+        <div class="breed-list" id="breedList"></div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn ghost" onclick="obPrev()" data-i18n="back">Retour</button>
+        <button class="btn" onclick="obNext()" data-i18n="next">Suivant</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Age -->
+    <div class="ob-step" data-step="3">
+      <div class="ob-progress"><div class="done"></div><div class="done"></div><div class="done"></div><div></div><div></div></div>
+      <div class="ob-content">
+        <h1 class="ob-title" data-i18n="ob_age_title">Quel âge a-t-il ?</h1>
+        <p class="ob-sub" data-i18n="ob_age_sub">On identifiera son stade de vie (chiot, adulte, senior) pour ajuster les conseils.</p>
+        <div class="age-row">
+          <div style="flex: 2;">
+            <div class="field-label" data-i18n="ob_age_years">Années</div>
+            <input class="input" id="dogYears" type="number" min="0" max="25" value="2" />
+          </div>
+          <div style="flex: 1;">
+            <div class="field-label" data-i18n="ob_age_months">Mois</div>
+            <input class="input" id="dogMonths" type="number" min="0" max="11" value="0" />
+          </div>
+        </div>
+        <div class="field-label" data-i18n="ob_sex">Sexe</div>
+        <div style="display: flex; gap: 10px;">
+          <button class="breed-option" style="flex: 1; justify-content: center;" onclick="selectSex(this,'m')"><span class="bem">♂️</span><span data-i18n="sex_m">Mâle</span></button>
+          <button class="breed-option" style="flex: 1; justify-content: center;" onclick="selectSex(this,'f')"><span class="bem">♀️</span><span data-i18n="sex_f">Femelle</span></button>
+        </div>
+        <div class="field-label" data-i18n="ob_weight">Poids (kg)</div>
+        <input class="input" id="dogWeight" type="number" min="0" step="0.1" value="15" />
+      </div>
+      <div class="ob-actions">
+        <button class="btn ghost" onclick="obPrev()" data-i18n="back">Retour</button>
+        <button class="btn" onclick="obNext()" data-i18n="next">Suivant</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Emoji / avatar -->
+    <div class="ob-step" data-step="4">
+      <div class="ob-progress"><div class="done"></div><div class="done"></div><div class="done"></div><div class="done"></div><div></div></div>
+      <div class="ob-content">
+        <h1 class="ob-title" data-i18n="ob_emoji_title">Choisis l'émoji qui lui ressemble</h1>
+        <p class="ob-sub" data-i18n="ob_emoji_sub">Son identité sur K9. Tu pourras ajouter une vraie photo ensuite.</p>
+        <div class="emoji-grid" id="emojiGrid"></div>
+        <div class="field-label" data-i18n="ob_coat">Couleur dominante du pelage</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div class="coat" data-color="golden" style="width: 48px; height: 48px; border-radius: 14px; background: #D4A056; cursor: pointer; border: 3px solid transparent;"></div>
+          <div class="coat" data-color="brown" style="width: 48px; height: 48px; border-radius: 14px; background: #7B4F2E; cursor: pointer; border: 3px solid transparent;"></div>
+          <div class="coat" data-color="black" style="width: 48px; height: 48px; border-radius: 14px; background: #2B2620; cursor: pointer; border: 3px solid transparent;"></div>
+          <div class="coat" data-color="white" style="width: 48px; height: 48px; border-radius: 14px; background: #F1EBE0; cursor: pointer; border: 3px solid #E8E1D4;"></div>
+          <div class="coat" data-color="gray" style="width: 48px; height: 48px; border-radius: 14px; background: #9A958D; cursor: pointer; border: 3px solid transparent;"></div>
+          <div class="coat" data-color="mixed" style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #7B4F2E, #F1EBE0); cursor: pointer; border: 3px solid transparent;"></div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn ghost" onclick="obPrev()" data-i18n="back">Retour</button>
+        <button class="btn" onclick="obFinish()" data-i18n="ob_finish">Terminer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== SCREENS ================== -->
+  <div class="screen-wrap">
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="home-header">
+        <div>
+          <div class="greeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
+          <div class="name" id="ownerGreet">Guillaume & <span id="dogNameDisp">Nala</span></div>
+        </div>
+        <button class="lang-toggle" onclick="toggleLang()"><span id="langLabel">EN</span></button>
+      </div>
+
+      <div class="dog-switcher" id="dogSwitcher"></div>
+
+      <div class="dog-hero">
+        <div class="top-row">
+          <div class="dog-emoji" id="dogEmojiMain">🐕</div>
+          <div style="flex:1; min-width: 0;">
+            <h2 id="dogNameHero">Nala</h2>
+            <div class="meta" id="dogMetaHero">Labrador · 2 ans · 15 kg</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="num">12</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
+          <div class="stat"><div class="num">48</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
+          <div class="stat"><div class="num">7</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
+        </div>
+      </div>
+
+      <div class="ai-home-bar" onclick="openAI()">
+        <div class="spark">✨</div>
+        <div class="txt">
+          <div class="title" data-i18n="ai_bar_title">Pose ta question sur Nala</div>
+          <div class="sub" data-i18n="ai_bar_sub">Santé, éducation, comportement — une réponse en 10 secondes</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+
+      <div class="walk-card">
+        <div class="ic">🗺️</div>
+        <div style="flex:1; min-width: 0;">
+          <h4 data-i18n="walk_today_t">Sortie du jour</h4>
+          <p data-i18n="walk_today_d">42 min · 2,8 km · déjà 3 sorties cette semaine</p>
+        </div>
+        <button class="go" onclick="openSub('sub-walks')" data-i18n="walk_start">Démarrer</button>
+      </div>
+
+      <div class="quick-actions">
+        <div class="qa-item" onclick="openSub('sub-walks')">
+          <div class="ic">🗺️</div><div class="label" data-i18n="qa_walks">Balades</div>
+        </div>
+        <div class="qa-item" onclick="openSub('sub-education')">
+          <div class="ic">🎓</div><div class="label" data-i18n="qa_edu">Éducation</div>
+        </div>
+        <div class="qa-item" onclick="openSub('sub-nutrition')">
+          <div class="ic">🥘</div><div class="label" data-i18n="qa_nut">Nutrition</div>
+        </div>
+        <div class="qa-item" onclick="openSub('sub-spots')">
+          <div class="ic">📍</div><div class="label" data-i18n="qa_spots">Spots</div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="sec_programs">Programmes dédiés</div>
+      <div class="prog-grid">
+        <div class="prog-card puppy" onclick="openSub('sub-puppy')">
+          <div class="emo">🐶</div>
+          <h4 data-i18n="prog_puppy_t">100 premiers jours</h4>
+          <p data-i18n="prog_puppy_d">Socialisation, propreté, premiers apprentissages.</p>
+          <div class="prog-bar"><div style="width: 15%;"></div></div>
+        </div>
+        <div class="prog-card rescue" onclick="openSub('sub-rescue')">
+          <div class="emo">🤲</div>
+          <h4 data-i18n="prog_rescue_t">Adoption rescue 3-3-3</h4>
+          <p data-i18n="prog_rescue_d">Les trois étapes pour créer le lien de confiance.</p>
+          <div class="prog-bar"><div style="width: 0%;"></div></div>
+        </div>
+        <div class="prog-card senior" onclick="openSub('sub-seniors')">
+          <div class="emo">🐾</div>
+          <h4 data-i18n="prog_senior_t">Vieillir ensemble</h4>
+          <p data-i18n="prog_senior_d">Accompagner ton chien, avec tendresse et lucidité.</p>
+          <div class="prog-bar"><div style="width: 0%;"></div></div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="sec_reminders">Prochains rappels</div>
+      <div class="reminder-card soon">
+        <div class="ic">💉</div>
+        <div style="flex:1;">
+          <div class="title" data-i18n="rem_vac">Rappel vaccin CHPPL</div>
+          <div class="desc" data-i18n="rem_vac_desc">Chez le vétérinaire du quartier</div>
+          <div class="date" data-i18n="rem_vac_date">Dans 5 jours · 26 avril</div>
+        </div>
+      </div>
+      <div class="reminder-card">
+        <div class="ic">🪱</div>
+        <div style="flex:1;">
+          <div class="title" data-i18n="rem_verm">Vermifuge trimestriel</div>
+          <div class="desc" data-i18n="rem_verm_desc">Milbemax ou équivalent</div>
+          <div class="date" data-i18n="rem_verm_date">Dans 3 semaines · 12 mai</div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="sec_feed">Fil de la communauté</div>
+      <div class="feed-card">
+        <div class="head">
+          <div class="avatar sm">🐕‍🦺</div>
+          <div style="flex:1;"><div class="name">Loki</div><div class="when" data-i18n="feed_when1">Il y a 2h · Forêt de Fontainebleau</div></div>
+          <div>⋯</div>
+        </div>
+        <div class="img">🌲🐕‍🦺🌿</div>
+        <div class="caption" data-i18n="feed_cap1">Première rando de la saison ! On a rencontré plein de copains sur le chemin 🐾</div>
+        <div class="actions">
+          <span>❤️ 24</span><span>💬 6</span><span data-i18n="want_playdate">🎾 Proposer playdate</span>
+        </div>
+      </div>
+      <div class="feed-card">
+        <div class="head">
+          <div class="avatar sm green">🐩</div>
+          <div style="flex:1;"><div class="name">Charlie</div><div class="when" data-i18n="feed_when2">Hier · Parc Monceau</div></div>
+          <div>⋯</div>
+        </div>
+        <div class="img" style="background: linear-gradient(135deg, #D7E4D9, #2D5A3D);">🌳🐩🎾</div>
+        <div class="caption" data-i18n="feed_cap2">Qui vient au parc demain matin 10h ? Charlie cherche des copains !</div>
+        <div class="actions">
+          <span>❤️ 18</span><span>💬 12</span><span data-i18n="join">✋ Rejoindre</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SANTÉ -->
+    <div class="screen" id="screen-health">
+      <div class="hero" style="display:flex; align-items:flex-start; gap: 10px;">
+        <div style="flex:1;">
+          <h1 data-i18n="health_title">Santé & Nutrition</h1>
+          <div class="sub" data-i18n="health_sub">Carnet complet et conseils adaptés au stade de vie.</div>
+        </div>
+        <button onclick="openSub('sub-qr')" style="background: var(--terra); color: white; border: none; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Partager"><span>🔗</span><span data-i18n="health_share">Partager</span></button>
+      </div>
+
+      <div class="life-stage">
+        <h3 data-i18n="stage_current">STADE DE VIE ACTUEL</h3>
+        <div class="stage-name" data-i18n="stage_adult">Jeune adulte</div>
+        <div class="stage-desc" data-i18n="stage_adult_desc">Nala entre dans sa meilleure forme. Focus sur l'activité, la socialisation continue et une alimentation équilibrée.</div>
+        <div class="life-stage-bar"><div style="width: 25%;"></div></div>
+        <div class="life-stage-labels">
+          <span data-i18n="stage_puppy">Chiot</span>
+          <span data-i18n="stage_young">Jeune</span>
+          <span data-i18n="stage_adult_short">Adulte</span>
+          <span data-i18n="stage_senior">Senior</span>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="health_cats">Catégories</div>
+      <div class="health-cat" onclick="openSub('sub-vaccines')">
+        <div class="ic">💉</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_vac">Vaccins</div><div class="desc" data-i18n="cat_vac_desc">Carnet à jour · Prochain rappel : 26 avril</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat" onclick="openSub('sub-verm')">
+        <div class="ic">🪱</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_verm">Vermifuge & antiparasitaires</div><div class="desc" data-i18n="cat_verm_desc">Traitement trimestriel</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat" onclick="openSub('sub-nutrition')">
+        <div class="ic green">🥘</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_nut">Nutrition</div><div class="desc" data-i18n="cat_nut_desc">Recommandations selon race et âge</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">⚖️</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_weight">Poids & activité</div><div class="desc" data-i18n="cat_weight_desc">15 kg · Idéal pour sa morphologie</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">🦷</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_teeth">Dents & hygiène</div><div class="desc" data-i18n="cat_teeth_desc">Dernier détartrage : il y a 8 mois</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic green">🩺</div>
+        <div style="flex:1;"><div class="title" data-i18n="cat_vet">Mon vétérinaire</div><div class="desc" data-i18n="cat_vet_desc">Dr. Martin · Cabinet des Lilas</div></div>
+        <div class="arrow">›</div>
+      </div>
+
+      <div class="section-title" data-i18n="health_tips">Conseils du moment</div>
+      <div class="card">
+        <div class="chip green mb-10" data-i18n="tip_spring">🌸 Printemps</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_title1">Attention aux tiques à partir d'avril</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_desc1">La saison des tiques démarre. Pense à vérifier Nala après chaque balade et à renouveler son antiparasitaire si besoin.</div>
+        <button class="ask-ai-cta" onclick="openAIWith('Comment retirer une tique en sécurité ?')"><span>✨</span> <span data-i18n="ask_ai_tick">Demander à l'IA : comment retirer une tique ?</span></button>
+      </div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="screen" id="screen-social">
+      <div class="hero">
+        <h1 data-i18n="social_title">Communauté</h1>
+        <div class="sub" data-i18n="social_sub">Les amis de Nala, les playdates et les rencontres.</div>
+      </div>
+
+      <div class="social-tabs">
+        <button class="social-tab active" onclick="switchSocialTab(this,'friends')" data-i18n="tab_friends">Amis</button>
+        <button class="social-tab" onclick="switchSocialTab(this,'playdates')" data-i18n="tab_playdates">Playdates</button>
+        <button class="social-tab" onclick="switchSocialTab(this,'discover')" data-i18n="tab_discover">Découvrir</button>
+        <button class="social-tab" onclick="switchSocialTab(this,'messages')" data-i18n="tab_msg">Messages</button>
+      </div>
+
+      <div id="social-friends">
+        <div class="friend-card">
+          <div class="avatar">🐕‍🦺</div>
+          <div class="info"><div class="name">Loki</div><div class="meta" data-i18n="friend_loki">Berger Australien · 3 ans · Paris 11e</div></div>
+          <button class="action" data-i18n="propose_play">Playdate</button>
+        </div>
+        <div class="friend-card">
+          <div class="avatar green">🐩</div>
+          <div class="info"><div class="name">Charlie</div><div class="meta" data-i18n="friend_charlie">Caniche · 4 ans · Paris 17e</div></div>
+          <button class="action" data-i18n="propose_play">Playdate</button>
+        </div>
+        <div class="friend-card">
+          <div class="avatar">🦮</div>
+          <div class="info"><div class="name">Biscotte</div><div class="meta" data-i18n="friend_biscotte">Golden Retriever · 1 an · Vincennes</div></div>
+          <button class="action" data-i18n="propose_play">Playdate</button>
+        </div>
+        <div class="friend-card">
+          <div class="avatar green">🐶</div>
+          <div class="info"><div class="name">Maya</div><div class="meta" data-i18n="friend_maya">Border Collie · 6 mois · Paris 20e</div></div>
+          <button class="action outline" data-i18n="add_friend">Devenir amis</button>
+        </div>
+        <div class="friend-card">
+          <div class="avatar">🐕</div>
+          <div class="info"><div class="name">Gustave</div><div class="meta" data-i18n="friend_gustave">Beagle · 5 ans · Montreuil</div></div>
+          <button class="action outline" data-i18n="add_friend">Devenir amis</button>
+        </div>
+      </div>
+
+      <div id="social-playdates" style="display:none;">
+        <div class="playdate-card">
+          <div class="banner">
+            <div class="when" data-i18n="pd_sat">Samedi 25 avril · 10h</div>
+            <div class="title" data-i18n="pd_title1">Rando au Bois de Vincennes</div>
+          </div>
+          <div class="body">
+            <div class="loc">📍 Porte Dorée · 3,5 km de toi</div>
+            <div class="attendees">
+              <div class="avatars">
+                <div class="avatar sm">🐕‍🦺</div>
+                <div class="avatar sm green">🐩</div>
+                <div class="avatar sm">🦮</div>
+              </div>
+              <div class="count" data-i18n="attending1">+ 5 chiens inscrits</div>
+            </div>
+          </div>
+        </div>
+        <div class="playdate-card">
+          <div class="banner" style="background: linear-gradient(135deg, var(--brand-soft), var(--brand));">
+            <div class="when" data-i18n="pd_sun">Dimanche 26 avril · 16h</div>
+            <div class="title" data-i18n="pd_title2">Goûter au parc des Buttes-Chaumont</div>
+          </div>
+          <div class="body">
+            <div class="loc">📍 Buttes-Chaumont · 4,2 km de toi</div>
+            <div class="attendees">
+              <div class="avatars">
+                <div class="avatar sm green">🐶</div>
+                <div class="avatar sm">🐕</div>
+              </div>
+              <div class="count" data-i18n="attending2">+ 2 chiens inscrits</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 10px 16px;">
+          <button class="btn forest" data-i18n="create_pd">+ Créer un playdate</button>
+        </div>
+      </div>
+
+      <div id="social-discover" style="display:none;">
+        <div class="empty-state">
+          <div class="emoji">🗺️</div>
+          <div class="title" data-i18n="disc_title">Chiens près de toi</div>
+          <div class="desc" data-i18n="disc_desc">Active la géolocalisation pour découvrir les copains dans ton quartier.</div>
+          <div style="margin-top: 16px;"><button class="btn" style="width: auto; padding: 12px 24px;" data-i18n="enable_geo">Activer la géoloc</button></div>
+        </div>
+      </div>
+
+      <div id="social-messages" style="display:none;">
+        <div class="friend-card">
+          <div class="avatar">🐕‍🦺</div>
+          <div class="info">
+            <div class="name">Loki & Marie</div>
+            <div class="meta" data-i18n="msg_loki">« On se retrouve samedi alors ! 🐾 »</div>
+          </div>
+          <span style="background: var(--brand); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">2</span>
+        </div>
+        <div class="friend-card">
+          <div class="avatar green">🐩</div>
+          <div class="info">
+            <div class="name">Charlie & Thomas</div>
+            <div class="meta" data-i18n="msg_charlie">« Merci pour les croquettes conseillées ! »</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="screen" id="screen-profile">
+      <div class="hero" style="padding-bottom: 0;">
+        <h1 data-i18n="profile_title">Profil</h1>
+      </div>
+      <div class="profile-hero">
+        <div class="avatar lg" id="dogAvatarBig">🐕</div>
+        <div class="name" id="dogNameProfile">Nala</div>
+        <div class="meta" id="dogMetaProfile">Labrador Retriever · 2 ans · Paris</div>
+      </div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="num">12</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
+        <div class="pstat"><div class="num">48</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
+        <div class="pstat"><div class="num">7/24</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
+      </div>
+
+      <div class="section-title" data-i18n="profile_badges">Mes badges</div>
+      <div class="badges-grid">
+        <div class="badge"><div class="emoji">🏆</div><div class="name" data-i18n="badge_first">Premier pas</div></div>
+        <div class="badge"><div class="emoji">🌿</div><div class="name" data-i18n="badge_walker">Randonneur</div></div>
+        <div class="badge"><div class="emoji">🎓</div><div class="name" data-i18n="badge_learner">Élève appliqué</div></div>
+        <div class="badge"><div class="emoji">🤝</div><div class="name" data-i18n="badge_social">Sociable</div></div>
+        <div class="badge"><div class="emoji">💉</div><div class="name" data-i18n="badge_health">Santé de fer</div></div>
+        <div class="badge"><div class="emoji">📸</div><div class="name" data-i18n="badge_photo">Photographe</div></div>
+        <div class="badge"><div class="emoji">🎾</div><div class="name" data-i18n="badge_playful">Joueur</div></div>
+        <div class="badge locked"><div class="emoji">🏃</div><div class="name" data-i18n="badge_runner">Marathonien</div></div>
+        <div class="badge locked"><div class="emoji">🧘</div><div class="name" data-i18n="badge_calm">Zen</div></div>
+        <div class="badge locked"><div class="emoji">🌟</div><div class="name" data-i18n="badge_legend">Légende</div></div>
+        <div class="badge locked"><div class="emoji">🎂</div><div class="name" data-i18n="badge_bday">Anniversaire</div></div>
+        <div class="badge locked"><div class="emoji">❓</div><div class="name">?</div></div>
+      </div>
+
+      <div class="section-title" data-i18n="profile_settings">Réglages</div>
+      <div class="menu-row" onclick="openSub('sub-langs')">
+        <div class="ic">🌐</div>
+        <div class="label" data-i18n="menu_lang">Langue</div>
+        <div style="color: var(--ink-2); font-size: 13px; margin-right: 8px;" id="langCurrent">Français</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">🔔</div>
+        <div class="label" data-i18n="menu_notif">Notifications</div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">📍</div>
+        <div class="label" data-i18n="menu_geo">Géolocalisation</div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">🔒</div>
+        <div class="label" data-i18n="menu_priv">Confidentialité</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row">
+        <div class="ic">💌</div>
+        <div class="label" data-i18n="menu_help">Aide & support</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row danger">
+        <div class="ic">🚪</div>
+        <div class="label" data-i18n="menu_logout">Se déconnecter</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================== SUB-SCREENS ================== -->
+
+  <!-- Éducation positive -->
+  <div class="sub-screen" id="sub-education">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-education')">‹</button>
+      <div class="sub-title" data-i18n="sub_edu">Éducation positive</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin: 0;">
+          <div class="chip mb-10" data-i18n="edu_approach">Approche renforcement positif</div>
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="edu_intro_title">L'éducation bienveillante, c'est quoi ?</div>
+          <div style="font-size: 13px; color: var(--ink-2);" data-i18n="edu_intro_desc">Pas de punition, pas de dominance. On récompense les bons comportements pour les renforcer. Science-based, efficace, respectueuse du lien.</div>
+        </div>
+      </div>
+      <div class="section-title" data-i18n="edu_paths">Parcours d'apprentissage</div>
+      <div class="health-cat">
+        <div class="ic">👋</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_basic">Les 5 ordres de base</div><div class="desc" data-i18n="path_basic_desc">Assis, couché, viens, reste, pas bouger · 10 exercices</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic green">🎯</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_recall">Le rappel parfait</div><div class="desc" data-i18n="path_recall_desc">Progression sur 6 semaines · Tous milieux</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">🚶</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_leash">Marche en laisse détendue</div><div class="desc" data-i18n="path_leash_desc">Fini les tirages, 8 sessions progressives</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic green">🧠</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_mental">Stimulation mentale</div><div class="desc" data-i18n="path_mental_desc">Jeux de flair, cache-cache, puzzles</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">🏠</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_alone">Gérer la solitude</div><div class="desc" data-i18n="path_alone_desc">Éviter l'anxiété de séparation</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic green">🐾</div>
+        <div style="flex:1;"><div class="title" data-i18n="path_social">Socialisation</div><div class="desc" data-i18n="path_social_desc">Humains, chiens, environnements</div></div>
+        <div class="arrow">›</div>
+      </div>
+
+      <div class="section-title" data-i18n="edu_videos">Vidéos flash · &lt; 60s</div>
+      <div class="video-card" onclick="openAIWith('Explique-moi en 3 étapes comment apprendre le “assis” avec renforcement positif.')">
+        <div class="video-thumb" style="background: linear-gradient(135deg, #E87A3B, #C85F21);">🐕</div>
+        <div style="flex:1; min-width: 0;">
+          <h5 data-i18n="vid_1_t">Apprendre le "assis" en 3 étapes</h5>
+          <p data-i18n="vid_1_d">Renforcement positif · aucun matériel</p>
+          <div class="duration">0:42</div>
+        </div>
+      </div>
+      <div class="video-card" onclick="openAIWith('Détaille le protocole Premack pour travailler le rappel.')">
+        <div class="video-thumb" style="background: linear-gradient(135deg, #2D5A3D, #4A8A5E);">🎯</div>
+        <div style="flex:1; min-width: 0;">
+          <h5 data-i18n="vid_2_t">Rappel fiable : protocole Premack</h5>
+          <p data-i18n="vid_2_d">Comment rendre revenir VERS toi plus fun que partir</p>
+          <div class="duration">0:58</div>
+        </div>
+      </div>
+      <div class="video-card" onclick="openAIWith('Comment faire marcher un chien en laisse détendue avec la méthode lentes récompenses ?')">
+        <div class="video-thumb" style="background: linear-gradient(135deg, #D4A056, #9B7D57);">🦴</div>
+        <div style="flex:1; min-width: 0;">
+          <h5 data-i18n="vid_3_t">Laisse détendue : arrêter de tirer</h5>
+          <p data-i18n="vid_3_d">2 exercices, 10 min / jour</p>
+          <div class="duration">0:51</div>
+        </div>
+      </div>
+      <div class="video-card" onclick="openAIWith('Donne-moi 5 jeux de reniflage rapides à faire à la maison.')">
+        <div class="video-thumb" style="background: linear-gradient(135deg, #B05A8D, #8A3E6D);">👃</div>
+        <div style="flex:1; min-width: 0;">
+          <h5 data-i18n="vid_4_t">5 jeux de reniflage maison</h5>
+          <p data-i18n="vid_4_d">Défoule autant qu'une heure de balade</p>
+          <div class="duration">0:47</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lectures -->
+  <div class="sub-screen" id="sub-books">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-books')">‹</button>
+      <div class="sub-title" data-i18n="sub_books">Lectures</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="chip green">📖 <span data-i18n="curated">Sélection K9 · Validée par nos éducateurs</span></div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover g">🐕</div>
+        <div class="book-info">
+          <div class="title">Notre odeur après la pluie</div>
+          <div class="author" data-i18n="book1_auth">Cédric Sapin-Defour</div>
+          <div class="desc" data-i18n="book1_desc">Un hymne bouleversant au lien qui unit un homme à son Ubac. Pour comprendre ce que la présence d'un chien change dans une vie.</div>
+          <div class="rating">★★★★★ 4,9</div>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover">🦮</div>
+        <div class="book-info">
+          <div class="title" data-i18n="book2_title">L'éducation bienveillante du chien</div>
+          <div class="author" data-i18n="book2_auth">Catherine Collignon</div>
+          <div class="desc" data-i18n="book2_desc">La bible du renforcement positif : science, exercices, exemples. Indispensable pour éduquer sans rapport de force.</div>
+          <div class="rating">★★★★★ 4,8</div>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover b">🧠</div>
+        <div class="book-info">
+          <div class="title" data-i18n="book3_title">L'intelligence émotionnelle des chiens</div>
+          <div class="author" data-i18n="book3_auth">Marc Bekoff</div>
+          <div class="desc" data-i18n="book3_desc">Ce que la science nous apprend sur les émotions canines. Changera ta façon de voir ton chien.</div>
+          <div class="rating">★★★★☆ 4,6</div>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover p">🍖</div>
+        <div class="book-info">
+          <div class="title" data-i18n="book4_title">Bien nourrir son chien</div>
+          <div class="author" data-i18n="book4_auth">Dr. Géraldine Blanchard</div>
+          <div class="desc" data-i18n="book4_desc">Vétérinaire nutritionniste : tout sur croquettes, ration ménagère, BARF. Enfin clair.</div>
+          <div class="rating">★★★★★ 4,7</div>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover g">🌿</div>
+        <div class="book-info">
+          <div class="title" data-i18n="book5_title">Le Pouvoir des chiens</div>
+          <div class="author" data-i18n="book5_auth">Jeffrey Masson</div>
+          <div class="desc" data-i18n="book5_desc">Une exploration du rôle des chiens dans nos vies et des leçons qu'ils nous donnent.</div>
+          <div class="rating">★★★★☆ 4,5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nutrition detail -->
+  <div class="sub-screen" id="sub-nutrition">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-nutrition')">‹</button>
+      <div class="sub-title" data-i18n="sub_nut">Nutrition</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px;">
+        <div class="card" style="margin: 0 0 14px;">
+          <div class="chip green mb-10" data-i18n="nut_perso">Personnalisé pour Nala</div>
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 10px;" data-i18n="nut_reco">Ration recommandée</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="background: var(--cream-2); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 22px; font-weight: 800; color: var(--brand-dark);">320 g</div>
+              <div style="font-size: 11px; color: var(--ink-2); text-transform: uppercase; margin-top: 2px;" data-i18n="nut_perday">Par jour</div>
+            </div>
+            <div style="background: var(--cream-2); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 22px; font-weight: 800; color: var(--brand-dark);">2</div>
+              <div style="font-size: 11px; color: var(--ink-2); text-transform: uppercase; margin-top: 2px;" data-i18n="nut_meals">Repas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section-title" data-i18n="nut_principles">Principes par stade de vie</div>
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:6px;" data-i18n="nut_puppy_t">Chiot (0-12 mois)</div>
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="nut_puppy_d">3-4 repas/jour, croquettes puppy riches en protéines et DHA pour le développement cérébral.</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:6px;" data-i18n="nut_young_t">Jeune adulte (1-3 ans) · Actuel</div>
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="nut_young_d">2 repas/jour, alimentation équilibrée protéines/lipides. Adaptée au niveau d'activité.</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:6px;" data-i18n="nut_adult_t">Adulte (3-7 ans)</div>
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="nut_adult_d">2 repas/jour, surveiller le poids. Moduler selon stérilisation.</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:6px;" data-i18n="nut_senior_t">Senior (7+ ans)</div>
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="nut_senior_d">2-3 petits repas, moins de calories, plus de fibres, glucosamine pour les articulations.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vaccines -->
+  <div class="sub-screen" id="sub-vaccines">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-vaccines')">‹</button>
+      <div class="sub-title" data-i18n="sub_vac">Vaccins</div>
+    </div>
+    <div class="sub-body">
+      <div class="section-title" data-i18n="vac_history">Historique</div>
+      <div class="reminder-card ok">
+        <div class="ic">✓</div>
+        <div style="flex:1;"><div class="title">CHPPI + Leptospirose</div><div class="desc" data-i18n="vac_d1">Fait le 26 avril 2025 · Dr. Martin</div><div class="date" data-i18n="vac_next">Prochain rappel : 26 avril 2026</div></div>
+      </div>
+      <div class="reminder-card ok">
+        <div class="ic">✓</div>
+        <div style="flex:1;"><div class="title" data-i18n="vac_rage">Rage</div><div class="desc" data-i18n="vac_d2">Fait le 12 mars 2025</div><div class="date" data-i18n="vac_next2">Prochain rappel : 12 mars 2027</div></div>
+      </div>
+      <div class="reminder-card">
+        <div class="ic">⏳</div>
+        <div style="flex:1;"><div class="title" data-i18n="vac_kc">Toux du chenil</div><div class="desc" data-i18n="vac_d3">À prévoir si pension/garderie</div></div>
+      </div>
+      <div class="section-title" data-i18n="vac_why">Pourquoi c'est important</div>
+      <div class="card">
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="vac_why_desc">Les vaccins protègent ton chien contre des maladies graves (maladie de Carré, hépatite, parvovirose, leptospirose, rage). Un carnet à jour est aussi obligatoire pour les pensions, voyages et garderies.</div>
+      </div>
+      <div style="padding: 0 16px;">
+        <button class="btn" data-i18n="vac_add">+ Ajouter un vaccin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vermifuge -->
+  <div class="sub-screen" id="sub-verm">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-verm')">‹</button>
+      <div class="sub-title" data-i18n="sub_verm">Vermifuge & antiparasitaires</div>
+    </div>
+    <div class="sub-body">
+      <div class="section-title" data-i18n="verm_history">Traitements en cours</div>
+      <div class="reminder-card">
+        <div class="ic">🪱</div>
+        <div style="flex:1;"><div class="title" data-i18n="verm_t1">Vermifuge (vers intestinaux)</div><div class="desc" data-i18n="verm_d1">Tous les 3 mois · Milbemax</div><div class="date" data-i18n="verm_next1">Prochain : 12 mai 2026</div></div>
+      </div>
+      <div class="reminder-card">
+        <div class="ic">🦟</div>
+        <div style="flex:1;"><div class="title" data-i18n="verm_t2">Antipuces & anti-tiques</div><div class="desc" data-i18n="verm_d2">Tous les mois en saison · Bravecto</div><div class="date" data-i18n="verm_next2">Prochain : 1er mai 2026</div></div>
+      </div>
+      <div class="section-title" data-i18n="verm_tips">Conseils</div>
+      <div class="card">
+        <div style="font-size:13px; color:var(--ink-2);" data-i18n="verm_tips_desc">Le vermifuge est recommandé tous les 3 mois pour un adulte (tous les mois pour un chiot). Les antiparasitaires externes sont à adapter selon la saison et l'exposition (forêt, herbes hautes).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Walks -->
+  <div class="sub-screen" id="sub-walks">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-walks')">‹</button>
+      <div class="sub-title" data-i18n="walks_title">Balades</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, var(--forest), #3E7253); color: white; text-align: center; padding: 22px 16px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .85; margin-bottom: 6px;" data-i18n="walks_this_week">Cette semaine</div>
+          <div style="font-size: 30px; font-weight: 800;">8,4 <span style="font-size: 16px; opacity: .8;">km</span></div>
+          <div style="font-size: 12px; opacity: .9; margin-top: 4px;" data-i18n="walks_3_walks">3 sorties · 2h12 au total</div>
+          <button style="margin-top: 14px; background: white; color: var(--forest); padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 13px; border: none; cursor: pointer;" onclick="mockStartWalk()" data-i18n="walk_start_now">▶ Démarrer une sortie</button>
+        </div>
+      </div>
+      <div class="section-title" data-i18n="walks_history">Historique</div>
+      <div class="reminder-card">
+        <div class="ic">🗺️</div>
+        <div style="flex:1;">
+          <div class="title" data-i18n="walk_1_t">Forêt de Vincennes</div>
+          <div class="desc" data-i18n="walk_1_d">3,2 km · 48 min · +22 m de dénivelé</div>
+          <div class="date" data-i18n="walk_1_when">Aujourd'hui · 8h12</div>
+        </div>
+      </div>
+      <div class="reminder-card">
+        <div class="ic">🏞️</div>
+        <div style="flex:1;">
+          <div class="title" data-i18n="walk_2_t">Tour du bassin</div>
+          <div class="desc" data-i18n="walk_2_d">2,1 km · 34 min</div>
+          <div class="date" data-i18n="walk_2_when">Hier · 19h40</div>
+        </div>
+      </div>
+      <div class="reminder-card">
+        <div class="ic">🌳</div>
+        <div style="flex:1;">
+          <div class="title" data-i18n="walk_3_t">Parc Monceau</div>
+          <div class="desc" data-i18n="walk_3_d">3,1 km · 50 min · jeux libres</div>
+          <div class="date" data-i18n="walk_3_when">Dimanche · 10h00</div>
+        </div>
+      </div>
+      <div class="section-title" data-i18n="walks_advice">Conseil santé</div>
+      <div class="card">
+        <div style="font-weight: 700; margin-bottom: 6px;" data-i18n="walks_advice_t">Un jeune adulte comme Nala a besoin de ≈ 60 min d'activité par jour.</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="walks_advice_d">Mixe marche libre, explorations olfactives et jeux de rappel. Évite les grosses chaleurs après 10h.</div>
+      </div>
+      <button class="ask-ai-cta" onclick="openAIWith('Comment adapter la durée des balades à l\'âge et la race ?')"><span>✨</span> <span data-i18n="walks_ask_ai">Demander à l'IA : quelle durée idéale ?</span></button>
+    </div>
+  </div>
+
+  <!-- Spots -->
+  <div class="sub-screen" id="sub-spots">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-spots')">‹</button>
+      <div class="sub-title" data-i18n="spots_title">Spots dog-friendly</div>
+    </div>
+    <div class="sub-body">
+      <div class="spots-map">
+        <div class="pin" style="top: 30px; left: 40px;">📍</div>
+        <div class="pin" style="top: 90px; left: 140px;">📍</div>
+        <div class="pin" style="top: 150px; left: 70px;">📍</div>
+        <div class="pin" style="top: 60px; right: 40px;">📍</div>
+      </div>
+      <div style="padding: 0 16px 10px; display: flex; gap: 8px; overflow-x: auto;">
+        <span class="chip" style="background: var(--terra); color: white;">🌳 Parcs</span>
+        <span class="chip gray">🏖️ Plages</span>
+        <span class="chip gray">🍽️ Restos</span>
+        <span class="chip gray">🏨 Hôtels</span>
+        <span class="chip gray">🏔️ Refuges</span>
+      </div>
+      <div class="section-title" data-i18n="spots_near">Près de toi</div>
+      <div class="spot-row">
+        <div class="emo">🌳</div>
+        <div style="flex:1;"><h5 data-i18n="spot_1_t">Bois de Vincennes · espace libre</h5><p data-i18n="spot_1_d">Chiens autorisés sans laisse · 9h-10h</p></div>
+        <div class="dist">1,2 km</div>
+      </div>
+      <div class="spot-row">
+        <div class="emo">☕</div>
+        <div style="flex:1;"><h5 data-i18n="spot_2_t">Café des Copains</h5><p data-i18n="spot_2_d">Eau fraîche offerte · terrasse large</p></div>
+        <div class="dist">600 m</div>
+      </div>
+      <div class="spot-row">
+        <div class="emo">🏖️</div>
+        <div style="flex:1;"><h5 data-i18n="spot_3_t">Plage de Deauville</h5><p data-i18n="spot_3_d">Autorisée toute la journée hors saison</p></div>
+        <div class="dist">198 km</div>
+      </div>
+      <div class="spot-row">
+        <div class="emo">🏔️</div>
+        <div style="flex:1;"><h5 data-i18n="spot_4_t">Refuge de la Pra</h5><p data-i18n="spot_4_d">Gamelle + couchage chien · sur réservation</p></div>
+        <div class="dist">492 km</div>
+      </div>
+      <button class="ask-ai-cta" onclick="openAIWith('Quels spots dog-friendly près de Paris pour débuter la rando ?')"><span>✨</span> <span data-i18n="spots_ask_ai">Demander à l'IA des recommandations de spots</span></button>
+    </div>
+  </div>
+
+  <!-- Puppy 100 days -->
+  <div class="sub-screen" id="sub-puppy">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-puppy')">‹</button>
+      <div class="sub-title" data-i18n="puppy_title">100 premiers jours</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, var(--terra), var(--terra-dark)); color: white;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .9;" data-i18n="puppy_day">Jour 15 / 100</div>
+          <div style="font-size: 18px; font-weight: 700; margin-top: 4px;" data-i18n="puppy_phase">Phase : exploration calme</div>
+          <div style="height: 6px; background: rgba(255,255,255,.25); border-radius: 3px; margin-top: 10px; overflow: hidden;"><div style="width: 15%; height: 100%; background: white; border-radius: 3px;"></div></div>
+          <div style="font-size: 12px; opacity: .92; margin-top: 8px; line-height: 1.5;" data-i18n="puppy_intro">Les 3 premiers mois sont la plus belle fenêtre de socialisation. Chaque bonne expérience aujourd'hui vaut 10 séances plus tard.</div>
+        </div>
+      </div>
+
+      <div class="today-task">
+        <div class="hd" data-i18n="puppy_today">Tâche du jour</div>
+        <h4 data-i18n="puppy_today_t">Socialisation : bruits du quotidien</h4>
+        <p data-i18n="puppy_today_d">Joue 3× 2 minutes avec la sonnette, l'aspirateur éteint puis allumé, un sac plastique. À chaque son : friandise. On crée des émotions positives.</p>
+        <button class="mark" onclick="markDone(this)" data-i18n="mark_done">✓ Marquer comme fait</button>
+      </div>
+
+      <div class="section-title" data-i18n="puppy_checklist">Checklist socialisation</div>
+      <div class="card">
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" checked /> <span data-i18n="puppy_ck_1">Rencontre 5 adultes différents</span></label>
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" checked /> <span data-i18n="puppy_ck_2">Rencontre 3 enfants calmes</span></label>
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_3">Balade en centre-ville</span></label>
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_4">Contact avec un chat sociable</span></label>
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_5">Trajet voiture positif</span></label>
+        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_6">Manipulation pattes et oreilles</span></label>
+      </div>
+
+      <button class="ask-ai-cta" onclick="openAIWith('Comment aider un chiot de 4 mois qui pleure la nuit ?')"><span>✨</span> <span data-i18n="puppy_ask_ai">Demander à l'IA : SOS chiot la nuit</span></button>
+    </div>
+  </div>
+
+  <!-- Rescue 3-3-3 -->
+  <div class="sub-screen" id="sub-rescue">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-rescue')">‹</button>
+      <div class="sub-title" data-i18n="rescue_title">Adoption rescue 3-3-3</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, #E8F0E5, #D7E4D9); border: 1px solid #B5D3C4;">
+          <div style="font-weight: 700; margin-bottom: 6px;" data-i18n="rescue_intro_t">Bienvenue dans une nouvelle histoire</div>
+          <div style="font-size: 13px; color: var(--ink-2); line-height: 1.5;" data-i18n="rescue_intro_d">Un chien adopté a besoin de temps pour se sentir en sécurité. La règle des 3-3-3 te donne la carte, tu avances à son rythme — pas à l'inverse.</div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="rescue_steps">Les trois étapes</div>
+      <div class="tl">
+        <div class="tl-step done">
+          <div class="dot"></div>
+          <h5 data-i18n="rescue_s1_t">3 jours · Décompression</h5>
+          <p data-i18n="rescue_s1_d">Il observe, dort beaucoup, peut refuser de manger. Ne le sollicite pas, ne l'emmène pas partout. Crée une zone refuge silencieuse.</p>
+        </div>
+        <div class="tl-step">
+          <div class="dot">2</div>
+          <h5 data-i18n="rescue_s2_t">3 semaines · Confiance</h5>
+          <p data-i18n="rescue_s2_d">Il teste les limites, peut montrer des peurs nouvelles ou d'anciens comportements. Reste constant, bienveillant, ritualise les routines.</p>
+        </div>
+        <div class="tl-step">
+          <div class="dot">3</div>
+          <h5 data-i18n="rescue_s3_t">3 mois · Intégration</h5>
+          <p data-i18n="rescue_s3_d">Il est devenu "lui-même". Tu connais ses signaux. C'est le bon moment pour une éducation positive structurée et des objectifs communs.</p>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="rescue_journal">Journal d'évolution</div>
+      <div class="card">
+        <textarea placeholder="Aujourd'hui, Oscar a..." style="width:100%; min-height: 90px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 13px; resize: vertical;"></textarea>
+        <button class="btn" style="margin-top: 8px;" data-i18n="rescue_save">Enregistrer</button>
+      </div>
+
+      <button class="ask-ai-cta" onclick="openAIWith('Mon chien adopté se cache et ne mange plus, que faire ?')"><span>✨</span> <span data-i18n="rescue_ask_ai">Demander à l'IA conseil rescue</span></button>
+    </div>
+  </div>
+
+  <!-- Seniors / Vieillir ensemble -->
+  <div class="sub-screen" id="sub-seniors">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-seniors')">‹</button>
+      <div class="sub-title" data-i18n="senior_title">Vieillir ensemble</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, #F1EBE0, #E8E1D4);">
+          <div style="font-weight: 700; margin-bottom: 6px;" data-i18n="senior_intro_t">Les années qui comptent double</div>
+          <div style="font-size: 13px; color: var(--ink-2); line-height: 1.6;" data-i18n="senior_intro_d">Vieillir, ce n'est pas une maladie. C'est une saison. Ton rôle : reconnaître ses nouveaux besoins, ajuster, et offrir du confort. K9 est là à chaque étape, sans faux-semblant.</div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="senior_cats">Sujets-clés</div>
+      <div class="health-cat">
+        <div class="ic">🦴</div>
+        <div style="flex:1;"><div class="title" data-i18n="senior_mob_t">Mobilité & articulations</div><div class="desc" data-i18n="senior_mob_d">Tapis antidérapants, rampes, massages</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">🧠</div>
+        <div style="flex:1;"><div class="title" data-i18n="senior_cog_t">Cognition & sommeil</div><div class="desc" data-i18n="senior_cog_d">Enrichissement olfactif, routines stables</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic green">🥘</div>
+        <div style="flex:1;"><div class="title" data-i18n="senior_nut_t">Nutrition adaptée</div><div class="desc" data-i18n="senior_nut_d">Moins calorique, plus de fibres et oméga-3</div></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="health-cat">
+        <div class="ic">🫂</div>
+        <div style="flex:1;"><div class="title" data-i18n="senior_end_t">Confort de fin de vie</div><div class="desc" data-i18n="senior_end_d">Accompagner, décider, pleurer — avec douceur</div></div>
+        <div class="arrow">›</div>
+      </div>
+
+      <div class="section-title" data-i18n="senior_reads">Lectures dédiées</div>
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+          <div style="width: 46px; height: 62px; border-radius: 6px; background: linear-gradient(135deg, #9B7D57, #7B4F2E); display:flex; align-items: center; justify-content: center; font-size: 22px; color: white; flex-shrink: 0;">📖</div>
+          <div style="flex:1;">
+            <div style="font-weight: 700; font-size: 13px;" data-i18n="senior_book_1_t">Notre odeur après la pluie</div>
+            <div style="font-size: 11px; color: var(--ink-2); margin-top: 2px;" data-i18n="senior_book_1_a">Laure Maïna · 2024</div>
+            <div style="font-size: 12px; color: var(--ink-2); margin-top: 6px; line-height: 1.5;" data-i18n="senior_book_1_d">Un récit lumineux sur l'accompagnement d'un chien âgé jusqu'au bout.</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="ask-ai-cta" onclick="openAIWith('Mon chien de 13 ans dort beaucoup et a du mal à se lever, est-ce normal ?')"><span>✨</span> <span data-i18n="senior_ask_ai">Demander à l'IA avec tendresse</span></button>
+    </div>
+  </div>
+
+  <!-- QR Share Modal -->
+  <div class="sub-screen" id="sub-qr">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-qr')">‹</button>
+      <div class="sub-title" data-i18n="qr_title">Partager le carnet santé</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 20px 16px; text-align: center;">
+        <div class="qr-box"></div>
+        <div style="font-weight: 700; font-size: 14px; margin-top: 8px;" data-i18n="qr_scan">Scanner pour ouvrir le carnet</div>
+        <div style="font-size: 12px; color: var(--ink-2); margin-top: 6px; line-height: 1.5;" data-i18n="qr_desc">Montre ce QR à ton vétérinaire, ta pension ou un proche. Lien temporaire, valable 24h.</div>
+        <div style="display: flex; gap: 10px; margin-top: 18px;">
+          <button class="btn ghost" style="flex:1;" data-i18n="qr_copy">Copier le lien</button>
+          <button class="btn" style="flex:1;" data-i18n="qr_send">Envoyer</button>
+        </div>
+        <div class="card" style="margin-top: 18px; text-align: left;">
+          <div style="font-weight: 700; margin-bottom: 6px;" data-i18n="qr_access">Ce qu'on partage</div>
+          <div style="font-size: 12px; color: var(--ink-2); line-height: 1.6;" data-i18n="qr_list">Vaccins · vermifuges · poids · allergies · coordonnées véto. Pas de données perso du propriétaire.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Languages -->
+  <div class="sub-screen" id="sub-langs">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-langs')">‹</button>
+      <div class="sub-title" data-i18n="menu_lang">Langue</div>
+    </div>
+    <div class="sub-body">
+      <div class="menu-row" onclick="setLang('fr')">
+        <div class="ic">🇫🇷</div><div class="label">Français</div><div class="arr" id="check-fr">✓</div>
+      </div>
+      <div class="menu-row" onclick="setLang('en')">
+        <div class="ic">🇬🇧</div><div class="label">English</div><div class="arr" id="check-en"></div>
+      </div>
+      <div style="padding: 16px;">
+        <div class="card" style="margin:0;">
+          <div style="font-size: 13px; color: var(--ink-2);" data-i18n="lang_info">K9 est bilingue. Toutes les interfaces, conseils santé et contenus IA sont disponibles dans les deux langues.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== AI Overlay (floating companion) ================== -->
+  <div class="ai-overlay" id="aiOverlay">
+    <div class="chat-wrap" style="height: 100%;">
+      <div class="chat-header">
+        <div class="ic">✨</div>
+        <div style="flex:1;">
+          <div class="name">K9 Coach</div>
+          <div class="status" data-i18n="ai_status">Compagnon IA · Santé, éducation, comportement</div>
+        </div>
+        <button class="back" onclick="closeAI()" style="background: var(--cream-2); border: 0; width: 36px; height: 36px; border-radius: 12px; font-size: 20px; cursor: pointer; font-family: inherit;">×</button>
+      </div>
+      <div class="disclaimer">
+        <span class="ic">⚠️</span>
+        <span data-i18n="ai_disclaimer">Les conseils sont générés par IA. En cas de symptôme inquiétant ou d'urgence, contacte ton vétérinaire. Ne remplace jamais un diagnostic médical.</span>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg ai">
+          <span data-i18n="ai_hello">Bonjour Guillaume 🐾 Je suis le compagnon IA de K9. Je peux t'aider avec la santé, la nutrition, l'éducation positive ou tout comportement de Nala. Pose-moi ta question !</span>
+        </div>
+      </div>
+      <div class="suggestions" id="suggestions">
+        <button class="sugg-chip" onclick="askAI(this)" data-i18n="sugg_1">Nala tire en laisse, que faire ?</button>
+        <button class="sugg-chip" onclick="askAI(this)" data-i18n="sugg_2">Meilleure alimentation pour jeune adulte ?</button>
+        <button class="sugg-chip" onclick="askAI(this)" data-i18n="sugg_3">Pourquoi aboie-t-elle seule ?</button>
+        <button class="sugg-chip" onclick="askAI(this)" data-i18n="sugg_4">Rappel : comment bien apprendre ?</button>
+      </div>
+      <div class="chat-input-wrap">
+        <input id="chatInput" placeholder="Pose ta question..." onkeypress="if(event.key==='Enter') sendAI()" />
+        <button class="chat-send" onclick="sendAI()">→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== Floating AI Button ================== -->
+  <button class="fab" onclick="openAI()" aria-label="Demander à l'IA">
+    <span>✨</span>
+    <span class="sparkle"></span>
+  </button>
+
+  <!-- ================== Bottom Tab Bar (4 tabs) ================== -->
+  <div class="tabbar" id="tabbar">
+    <div class="tab active" data-tab="home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 12 12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span data-i18n="tab_home">Accueil</span>
+    </div>
+    <div class="tab" data-tab="health" onclick="switchTab('health')">
+      <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      <span data-i18n="tab_health">Santé</span>
+    </div>
+    <div class="tab" data-tab="social" onclick="switchTab('social')">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="17" cy="5" r="3"/><path d="M21 21v-2a3 3 0 0 0-3-3h-1"/></svg>
+      <span data-i18n="tab_social">Social</span>
+    </div>
+    <div class="tab" data-tab="profile" data-style="shift-left" onclick="switchTab('profile')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
+      <span data-i18n="tab_profile">Profil</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   K9 — Application logic
+   ========================================================= */
+
+// ---------- Breed list (FR/EN) ----------
+const BREEDS = [
+  { emoji: "🦮", fr: "Labrador Retriever", en: "Labrador Retriever" },
+  { emoji: "🐕", fr: "Golden Retriever", en: "Golden Retriever" },
+  { emoji: "🐕‍🦺", fr: "Berger Australien", en: "Australian Shepherd" },
+  { emoji: "🐕‍🦺", fr: "Berger Allemand", en: "German Shepherd" },
+  { emoji: "🐕", fr: "Border Collie", en: "Border Collie" },
+  { emoji: "🐩", fr: "Caniche", en: "Poodle" },
+  { emoji: "🐶", fr: "Beagle", en: "Beagle" },
+  { emoji: "🐕", fr: "Bouledogue Français", en: "French Bulldog" },
+  { emoji: "🐶", fr: "Cavalier King Charles", en: "Cavalier King Charles" },
+  { emoji: "🐕", fr: "Jack Russell", en: "Jack Russell" },
+  { emoji: "🐶", fr: "Chihuahua", en: "Chihuahua" },
+  { emoji: "🐕", fr: "Shih Tzu", en: "Shih Tzu" },
+  { emoji: "🐕", fr: "Yorkshire Terrier", en: "Yorkshire Terrier" },
+  { emoji: "🐩", fr: "Bichon Frisé", en: "Bichon Frisé" },
+  { emoji: "🦮", fr: "Husky Sibérien", en: "Siberian Husky" },
+  { emoji: "🐕‍🦺", fr: "Malinois", en: "Malinois" },
+  { emoji: "🐕", fr: "Rottweiler", en: "Rottweiler" },
+  { emoji: "🐕", fr: "Boxer", en: "Boxer" },
+  { emoji: "🐕", fr: "Dalmatien", en: "Dalmatian" },
+  { emoji: "🐕", fr: "Setter Irlandais", en: "Irish Setter" },
+  { emoji: "🐕", fr: "Shiba Inu", en: "Shiba Inu" },
+  { emoji: "🐕", fr: "Akita Inu", en: "Akita Inu" },
+  { emoji: "🦮", fr: "Saint-Bernard", en: "Saint Bernard" },
+  { emoji: "🦮", fr: "Terre-Neuve", en: "Newfoundland" },
+  { emoji: "🐕", fr: "Épagneul Breton", en: "Brittany Spaniel" },
+  { emoji: "🐕", fr: "Cocker Spaniel", en: "Cocker Spaniel" },
+  { emoji: "🐕", fr: "Teckel", en: "Dachshund" },
+  { emoji: "🐕", fr: "Bulldog Anglais", en: "English Bulldog" },
+  { emoji: "🐩", fr: "Schnauzer", en: "Schnauzer" },
+  { emoji: "🦮", fr: "Grand Danois", en: "Great Dane" },
+  { emoji: "🐕", fr: "Bouvier Bernois", en: "Bernese Mountain Dog" },
+  { emoji: "🐕‍🦺", fr: "Berger Belge", en: "Belgian Shepherd" },
+  { emoji: "🐕", fr: "Corgi", en: "Corgi" },
+  { emoji: "🐕", fr: "Pomeranian", en: "Pomeranian" },
+  { emoji: "🐕", fr: "Carlin", en: "Pug" },
+  { emoji: "🐶", fr: "Croisé / Bâtard", en: "Mixed breed" },
+  { emoji: "❓", fr: "Je ne sais pas", en: "I don't know" },
+];
+
+// Emoji options
+const DOG_EMOJIS = ["🐕", "🐩", "🐕‍🦺", "🦮", "🐶", "🦊", "🐺", "🐾"];
+
+// ---------- i18n ----------
+const I18N = {
+  fr: {
+    welcome_title: "Bienvenue sur K9",
+    welcome_sub: "Ta porte d'entrée unique pour tout ce qui concerne ton chien. Santé, éducation, communauté, IA — tout en un.",
+    feat_health: "Rappels santé, vaccins, vermifuge",
+    feat_edu: "Éducation positive & coaching IA",
+    feat_social: "Playdates & amis canins",
+    feat_sit: "Garde de confiance",
+    ob_start: "Commencer",
+    ob_name_title: "Comment s'appelle ton compagnon ?",
+    ob_name_sub: "On va personnaliser toute l'app autour de lui ou d'elle.",
+    ob_name_label: "Nom du chien",
+    back: "Retour",
+    next: "Suivant",
+    ob_breed_title: "Quelle est sa race ?",
+    ob_breed_sub: "Les conseils santé, nutrition et éducation seront adaptés.",
+    ob_age_title: "Quel âge a-t-il ?",
+    ob_age_sub: "On identifiera son stade de vie (chiot, adulte, senior) pour ajuster les conseils.",
+    ob_age_years: "Années",
+    ob_age_months: "Mois",
+    ob_sex: "Sexe",
+    sex_m: "Mâle",
+    sex_f: "Femelle",
+    ob_weight: "Poids (kg)",
+    ob_emoji_title: "Choisis l'émoji qui lui ressemble",
+    ob_emoji_sub: "Son identité sur K9. Tu pourras ajouter une vraie photo ensuite.",
+    ob_coat: "Couleur dominante du pelage",
+    ob_finish: "Terminer",
+    greeting: "Bonjour",
+    stat_friends: "Amis", stat_walks: "Sorties", stat_badges: "Badges",
+    qa_edu: "Éducation", qa_vac: "Vaccins", qa_books: "Lectures", qa_nut: "Nutrition",
+    ai_bar_title: "Pose ta question sur Nala",
+    ai_bar_sub: "Santé, éducation, comportement — une réponse en 10 secondes",
+    ai_disclaimer: "Les conseils sont générés par IA. En cas de symptôme inquiétant ou d'urgence, contacte ton vétérinaire. Ne remplace jamais un diagnostic médical.",
+    ask_ai_tick: "Demander à l'IA : comment retirer une tique ?",
+    sec_reminders: "Prochains rappels",
+    rem_vac: "Rappel vaccin CHPPL",
+    rem_vac_desc: "Chez le vétérinaire du quartier",
+    rem_vac_date: "Dans 5 jours · 26 avril",
+    rem_verm: "Vermifuge trimestriel",
+    rem_verm_desc: "Milbemax ou équivalent",
+    rem_verm_date: "Dans 3 semaines · 12 mai",
+    sec_feed: "Fil de la communauté",
+    feed_when1: "Il y a 2h · Forêt de Fontainebleau",
+    feed_cap1: "Première rando de la saison ! On a rencontré plein de copains sur le chemin 🐾",
+    want_playdate: "🎾 Proposer playdate",
+    feed_when2: "Hier · Parc Monceau",
+    feed_cap2: "Qui vient au parc demain matin 10h ? Charlie cherche des copains !",
+    join: "✋ Rejoindre",
+    health_title: "Santé & Nutrition",
+    health_sub: "Carnet complet et conseils adaptés au stade de vie.",
+    stage_current: "STADE DE VIE ACTUEL",
+    stage_adult: "Jeune adulte",
+    stage_adult_desc: "Nala entre dans sa meilleure forme. Focus sur l'activité, la socialisation continue et une alimentation équilibrée.",
+    stage_puppy: "Chiot", stage_young: "Jeune", stage_adult_short: "Adulte", stage_senior: "Senior",
+    health_cats: "Catégories",
+    cat_vac: "Vaccins", cat_vac_desc: "Carnet à jour · Prochain rappel : 26 avril",
+    cat_verm: "Vermifuge & antiparasitaires", cat_verm_desc: "Traitement trimestriel",
+    cat_nut: "Nutrition", cat_nut_desc: "Recommandations selon race et âge",
+    cat_weight: "Poids & activité", cat_weight_desc: "15 kg · Idéal pour sa morphologie",
+    cat_teeth: "Dents & hygiène", cat_teeth_desc: "Dernier détartrage : il y a 8 mois",
+    cat_vet: "Mon vétérinaire", cat_vet_desc: "Dr. Martin · Cabinet des Lilas",
+    health_tips: "Conseils du moment",
+    tip_spring: "🌸 Printemps",
+    tip_title1: "Attention aux tiques à partir d'avril",
+    tip_desc1: "La saison des tiques démarre. Pense à vérifier Nala après chaque balade et à renouveler son antiparasitaire si besoin.",
+    social_title: "Communauté",
+    social_sub: "Les amis de Nala, les playdates et les rencontres.",
+    tab_friends: "Amis", tab_playdates: "Playdates", tab_discover: "Découvrir", tab_msg: "Messages",
+    friend_loki: "Berger Australien · 3 ans · Paris 11e",
+    friend_charlie: "Caniche · 4 ans · Paris 17e",
+    friend_biscotte: "Golden Retriever · 1 an · Vincennes",
+    friend_maya: "Border Collie · 6 mois · Paris 20e",
+    friend_gustave: "Beagle · 5 ans · Montreuil",
+    propose_play: "Playdate",
+    add_friend: "Devenir amis",
+    pd_sat: "Samedi 25 avril · 10h",
+    pd_title1: "Rando au Bois de Vincennes",
+    attending1: "+ 5 chiens inscrits",
+    pd_sun: "Dimanche 26 avril · 16h",
+    pd_title2: "Goûter au parc des Buttes-Chaumont",
+    attending2: "+ 2 chiens inscrits",
+    create_pd: "+ Créer un playdate",
+    disc_title: "Chiens près de toi",
+    disc_desc: "Active la géolocalisation pour découvrir les copains dans ton quartier.",
+    enable_geo: "Activer la géoloc",
+    msg_loki: "« On se retrouve samedi alors ! 🐾 »",
+    msg_charlie: "« Merci pour les croquettes conseillées ! »",
+    ai_status: "Compagnon IA · Santé, éducation, comportement",
+    ai_hello: "Bonjour Guillaume 🐾 Je suis le compagnon IA de K9. Je peux t'aider avec la santé, la nutrition, l'éducation positive ou tout comportement de Nala. Pose-moi ta question !",
+    ai_hint: "Les conseils ne remplacent pas un vétérinaire en cas d'urgence.",
+    sugg_1: "Nala tire en laisse, que faire ?",
+    sugg_2: "Meilleure alimentation pour jeune adulte ?",
+    sugg_3: "Pourquoi aboie-t-elle seule ?",
+    sugg_4: "Rappel : comment bien apprendre ?",
+    profile_title: "Profil",
+    profile_badges: "Mes badges",
+    badge_first: "Premier pas", badge_walker: "Randonneur", badge_learner: "Élève appliqué",
+    badge_social: "Sociable", badge_health: "Santé de fer", badge_photo: "Photographe",
+    badge_playful: "Joueur", badge_runner: "Marathonien", badge_calm: "Zen",
+    badge_legend: "Légende", badge_bday: "Anniversaire",
+    profile_settings: "Réglages",
+    menu_lang: "Langue", menu_notif: "Notifications", menu_geo: "Géolocalisation",
+    menu_priv: "Confidentialité", menu_help: "Aide & support", menu_logout: "Se déconnecter",
+    tab_home: "Accueil", tab_health: "Santé", tab_social: "Social", tab_profile: "Profil",
+    sub_edu: "Éducation positive",
+    edu_approach: "Approche renforcement positif",
+    edu_intro_title: "L'éducation bienveillante, c'est quoi ?",
+    edu_intro_desc: "Pas de punition, pas de dominance. On récompense les bons comportements pour les renforcer. Science-based, efficace, respectueuse du lien.",
+    edu_paths: "Parcours d'apprentissage",
+    path_basic: "Les 5 ordres de base", path_basic_desc: "Assis, couché, viens, reste, pas bouger · 10 exercices",
+    path_recall: "Le rappel parfait", path_recall_desc: "Progression sur 6 semaines · Tous milieux",
+    path_leash: "Marche en laisse détendue", path_leash_desc: "Fini les tirages, 8 sessions progressives",
+    path_mental: "Stimulation mentale", path_mental_desc: "Jeux de flair, cache-cache, puzzles",
+    path_alone: "Gérer la solitude", path_alone_desc: "Éviter l'anxiété de séparation",
+    path_social: "Socialisation", path_social_desc: "Humains, chiens, environnements",
+    sub_sitter: "Garde de chiens",
+    sitter_around: "Autour de toi",
+    sitter_n1: "Camille · Paris 11e", sitter_l1: "0,8 km · ⭐ 4,9 (47 avis)",
+    sitter_n2: "Adrien · Montreuil", sitter_l2: "1,4 km · ⭐ 5,0 (23 avis)",
+    sitter_n3: "Martine · Vincennes", sitter_l3: "3,1 km · ⭐ 4,8 (112 avis)",
+    per_night: "/ nuit",
+    tag_garden: "🌳 Jardin", tag_dogsitter: "Éducatrice canine", tag_2dogs: "Max 2 chiens",
+    tag_house: "🏡 Maison", tag_active: "Balades 2h/j",
+    tag_retired: "Retraitée, dispo", tag_senior_ok: "Senior friendly",
+    become_sitter: "Proposer mes services de garde",
+    sub_books: "Lectures",
+    curated: "Sélection K9 · Validée par nos éducateurs",
+    book1_auth: "Cédric Sapin-Defour",
+    book2_title: "L'éducation bienveillante du chien", book2_auth: "Catherine Collignon",
+    book2_desc: "La bible du renforcement positif : science, exercices, exemples. Indispensable pour éduquer sans rapport de force.",
+    book3_title: "L'intelligence émotionnelle des chiens", book3_auth: "Marc Bekoff",
+    book3_desc: "Ce que la science nous apprend sur les émotions canines. Changera ta façon de voir ton chien.",
+    book4_title: "Bien nourrir son chien", book4_auth: "Dr. Géraldine Blanchard",
+    book4_desc: "Vétérinaire nutritionniste : tout sur croquettes, ration ménagère, BARF. Enfin clair.",
+    book5_title: "Le Pouvoir des chiens", book5_auth: "Jeffrey Masson",
+    book5_desc: "Une exploration du rôle des chiens dans nos vies et des leçons qu'ils nous donnent.",
+    book1_desc: "Un hymne bouleversant au lien qui unit un homme à son Ubac. Pour comprendre ce que la présence d'un chien change dans une vie.",
+    sub_nut: "Nutrition",
+    nut_perso: "Personnalisé pour Nala",
+    nut_reco: "Ration recommandée",
+    nut_perday: "Par jour", nut_meals: "Repas",
+    nut_principles: "Principes par stade de vie",
+    nut_puppy_t: "Chiot (0-12 mois)",
+    nut_puppy_d: "3-4 repas/jour, croquettes puppy riches en protéines et DHA pour le développement cérébral.",
+    nut_young_t: "Jeune adulte (1-3 ans) · Actuel",
+    nut_young_d: "2 repas/jour, alimentation équilibrée protéines/lipides. Adaptée au niveau d'activité.",
+    nut_adult_t: "Adulte (3-7 ans)",
+    nut_adult_d: "2 repas/jour, surveiller le poids. Moduler selon stérilisation.",
+    nut_senior_t: "Senior (7+ ans)",
+    nut_senior_d: "2-3 petits repas, moins de calories, plus de fibres, glucosamine pour les articulations.",
+    sub_vac: "Vaccins",
+    vac_history: "Historique",
+    vac_d1: "Fait le 26 avril 2025 · Dr. Martin",
+    vac_next: "Prochain rappel : 26 avril 2026",
+    vac_rage: "Rage",
+    vac_d2: "Fait le 12 mars 2025", vac_next2: "Prochain rappel : 12 mars 2027",
+    vac_kc: "Toux du chenil", vac_d3: "À prévoir si pension/garderie",
+    vac_why: "Pourquoi c'est important",
+    vac_why_desc: "Les vaccins protègent ton chien contre des maladies graves (maladie de Carré, hépatite, parvovirose, leptospirose, rage). Un carnet à jour est aussi obligatoire pour les pensions, voyages et garderies.",
+    vac_add: "+ Ajouter un vaccin",
+    sub_verm: "Vermifuge & antiparasitaires",
+    verm_history: "Traitements en cours",
+    verm_t1: "Vermifuge (vers intestinaux)", verm_d1: "Tous les 3 mois · Milbemax",
+    verm_next1: "Prochain : 12 mai 2026",
+    verm_t2: "Antipuces & anti-tiques", verm_d2: "Tous les mois en saison · Bravecto",
+    verm_next2: "Prochain : 1er mai 2026",
+    verm_tips: "Conseils",
+    verm_tips_desc: "Le vermifuge est recommandé tous les 3 mois pour un adulte (tous les mois pour un chiot). Les antiparasitaires externes sont à adapter selon la saison et l'exposition (forêt, herbes hautes).",
+    lang_info: "K9 est bilingue. Toutes les interfaces, conseils santé et contenus IA sont disponibles dans les deux langues.",
+    ai_reply_generic: "Excellente question ! Voici une réponse adaptée à Nala...",
+    ai_reply_leash: "Pour la traction en laisse : utilise la méthode « arbre ». Dès que Nala tire, tu t'arrêtes et attends qu'elle relâche. Quand la laisse est détendue, tu félicites et redémarres. Au début c'est lent (10 min pour 20m), mais au bout de 2-3 semaines le résultat est spectaculaire.",
+    ai_reply_food: "Pour un Labrador jeune adulte de 15 kg, vise ~320 g/jour de croquettes premium (protéines ≥ 25%, lipides 12-15%), en 2 repas. Surveille le poids car la race est prédisposée au surpoids. Pense à ajouter de l'eau tiède pour la digestion.",
+    ai_reply_bark: "Les aboiements en solitude signalent souvent l'anxiété de séparation. Démarre par des absences très courtes (1 min), sans rituel de départ dramatique. Augmente progressivement. Un Kong congelé au départ aide beaucoup. Si ça persiste, on peut voir un parcours dédié.",
+    ai_reply_recall: "Le rappel se construit : (1) commence en environnement calme, (2) un mot court (« Nala viens ! »), (3) récompense ULTRA-gourmande à chaque retour, (4) jamais rappeler pour une chose désagréable (bain, fin de balade). Augmente la difficulté progressivement. Parcours 6 semaines dispo dans Éducation.",
+    ai_error: "Connexion à l'IA impossible. Vérifie ta connexion et réessaye dans un instant.",
+    // Walks
+    walk_today_t: "Sortie du jour",
+    walk_today_d: "42 min · 2,8 km · déjà 3 sorties cette semaine",
+    walk_start: "Démarrer",
+    walk_start_now: "▶ Démarrer une sortie",
+    walks_title: "Balades",
+    walks_this_week: "Cette semaine",
+    walks_3_walks: "3 sorties · 2h12 au total",
+    walks_history: "Historique",
+    walks_advice: "Conseil santé",
+    walks_advice_t: "Un jeune adulte comme Nala a besoin de ≈ 60 min d'activité par jour.",
+    walks_advice_d: "Mixe marche libre, explorations olfactives et jeux de rappel. Évite les grosses chaleurs après 10h.",
+    walks_ask_ai: "Demander à l'IA : quelle durée idéale ?",
+    walk_1_t: "Forêt de Vincennes", walk_1_d: "3,2 km · 48 min · +22 m de dénivelé", walk_1_when: "Aujourd'hui · 8h12",
+    walk_2_t: "Tour du bassin", walk_2_d: "2,1 km · 34 min", walk_2_when: "Hier · 19h40",
+    walk_3_t: "Parc Monceau", walk_3_d: "3,1 km · 50 min · jeux libres", walk_3_when: "Dimanche · 10h00",
+    // Spots
+    qa_walks: "Balades", qa_spots: "Spots",
+    spots_title: "Spots dog-friendly",
+    spots_near: "Près de toi",
+    spots_ask_ai: "Demander à l'IA des recommandations de spots",
+    spot_1_t: "Bois de Vincennes · espace libre", spot_1_d: "Chiens autorisés sans laisse · 9h-10h",
+    spot_2_t: "Café des Copains", spot_2_d: "Eau fraîche offerte · terrasse large",
+    spot_3_t: "Plage de Deauville", spot_3_d: "Autorisée toute la journée hors saison",
+    spot_4_t: "Refuge de la Pra", spot_4_d: "Gamelle + couchage chien · sur réservation",
+    // Programmes
+    sec_programs: "Programmes dédiés",
+    prog_puppy_t: "100 premiers jours", prog_puppy_d: "Socialisation, propreté, premiers apprentissages.",
+    prog_rescue_t: "Adoption rescue 3-3-3", prog_rescue_d: "Les trois étapes pour créer le lien de confiance.",
+    prog_senior_t: "Vieillir ensemble", prog_senior_d: "Accompagner ton chien, avec tendresse et lucidité.",
+    // Puppy
+    puppy_title: "100 premiers jours",
+    puppy_day: "Jour 15 / 100",
+    puppy_phase: "Phase : exploration calme",
+    puppy_intro: "Les 3 premiers mois sont la plus belle fenêtre de socialisation. Chaque bonne expérience aujourd'hui vaut 10 séances plus tard.",
+    puppy_today: "Tâche du jour",
+    puppy_today_t: "Socialisation : bruits du quotidien",
+    puppy_today_d: "Joue 3× 2 minutes avec la sonnette, l'aspirateur éteint puis allumé, un sac plastique. À chaque son : friandise. On crée des émotions positives.",
+    mark_done: "✓ Marquer comme fait",
+    puppy_checklist: "Checklist socialisation",
+    puppy_ck_1: "Rencontre 5 adultes différents", puppy_ck_2: "Rencontre 3 enfants calmes",
+    puppy_ck_3: "Balade en centre-ville", puppy_ck_4: "Contact avec un chat sociable",
+    puppy_ck_5: "Trajet voiture positif", puppy_ck_6: "Manipulation pattes et oreilles",
+    puppy_ask_ai: "Demander à l'IA : SOS chiot la nuit",
+    // Rescue
+    rescue_title: "Adoption rescue 3-3-3",
+    rescue_intro_t: "Bienvenue dans une nouvelle histoire",
+    rescue_intro_d: "Un chien adopté a besoin de temps pour se sentir en sécurité. La règle des 3-3-3 te donne la carte, tu avances à son rythme — pas à l'inverse.",
+    rescue_steps: "Les trois étapes",
+    rescue_s1_t: "3 jours · Décompression", rescue_s1_d: "Il observe, dort beaucoup, peut refuser de manger. Ne le sollicite pas, ne l'emmène pas partout. Crée une zone refuge silencieuse.",
+    rescue_s2_t: "3 semaines · Confiance", rescue_s2_d: "Il teste les limites, peut montrer des peurs nouvelles ou d'anciens comportements. Reste constant, bienveillant, ritualise les routines.",
+    rescue_s3_t: "3 mois · Intégration", rescue_s3_d: "Il est devenu \"lui-même\". Tu connais ses signaux. C'est le bon moment pour une éducation positive structurée et des objectifs communs.",
+    rescue_journal: "Journal d'évolution",
+    rescue_save: "Enregistrer",
+    rescue_ask_ai: "Demander à l'IA conseil rescue",
+    // Seniors
+    senior_title: "Vieillir ensemble",
+    senior_intro_t: "Les années qui comptent double",
+    senior_intro_d: "Vieillir, ce n'est pas une maladie. C'est une saison. Ton rôle : reconnaître ses nouveaux besoins, ajuster, et offrir du confort. K9 est là à chaque étape, sans faux-semblant.",
+    senior_cats: "Sujets-clés",
+    senior_mob_t: "Mobilité & articulations", senior_mob_d: "Tapis antidérapants, rampes, massages",
+    senior_cog_t: "Cognition & sommeil", senior_cog_d: "Enrichissement olfactif, routines stables",
+    senior_nut_t: "Nutrition adaptée", senior_nut_d: "Moins calorique, plus de fibres et oméga-3",
+    senior_end_t: "Confort de fin de vie", senior_end_d: "Accompagner, décider, pleurer — avec douceur",
+    senior_reads: "Lectures dédiées",
+    senior_book_1_t: "Notre odeur après la pluie", senior_book_1_a: "Cédric Sapin-Defour · 2024", senior_book_1_d: "Un récit lumineux sur l'accompagnement d'un chien âgé jusqu'au bout.",
+    senior_ask_ai: "Demander à l'IA avec tendresse",
+    // QR
+    health_share: "Partager",
+    qr_title: "Partager le carnet santé",
+    qr_scan: "Scanner pour ouvrir le carnet",
+    qr_desc: "Montre ce QR à ton vétérinaire, ta pension ou un proche. Lien temporaire, valable 24h.",
+    qr_copy: "Copier le lien", qr_send: "Envoyer",
+    qr_access: "Ce qu'on partage",
+    qr_list: "Vaccins · vermifuges · poids · allergies · coordonnées véto. Pas de données perso du propriétaire.",
+    // Videos
+    edu_videos: "Vidéos flash · < 60s",
+    vid_1_t: "Apprendre le \"assis\" en 3 étapes", vid_1_d: "Renforcement positif · aucun matériel",
+    vid_2_t: "Rappel fiable : protocole Premack", vid_2_d: "Comment rendre revenir VERS toi plus fun que partir",
+    vid_3_t: "Laisse détendue : arrêter de tirer", vid_3_d: "2 exercices, 10 min / jour",
+    vid_4_t: "5 jeux de reniflage maison", vid_4_d: "Défoule autant qu'une heure de balade",
+  },
+  en: {
+    welcome_title: "Welcome to K9",
+    welcome_sub: "Your single entry point for everything about your dog. Health, training, community, AI — all in one.",
+    feat_health: "Health reminders, vaccines, deworming",
+    feat_edu: "Positive training & AI coaching",
+    feat_social: "Playdates & canine friends",
+    feat_sit: "Trusted dog sitting",
+    ob_start: "Get started",
+    ob_name_title: "What's your companion's name?",
+    ob_name_sub: "We'll personalize the whole app around them.",
+    ob_name_label: "Dog's name",
+    back: "Back",
+    next: "Next",
+    ob_breed_title: "What's their breed?",
+    ob_breed_sub: "Health, nutrition and training tips will be tailored.",
+    ob_age_title: "How old are they?",
+    ob_age_sub: "We'll identify their life stage (puppy, adult, senior) to adjust advice.",
+    ob_age_years: "Years",
+    ob_age_months: "Months",
+    ob_sex: "Sex",
+    sex_m: "Male",
+    sex_f: "Female",
+    ob_weight: "Weight (kg)",
+    ob_emoji_title: "Pick an emoji that looks like them",
+    ob_emoji_sub: "Their K9 identity. You can add a real photo later.",
+    ob_coat: "Dominant coat color",
+    ob_finish: "Finish",
+    greeting: "Hello",
+    stat_friends: "Friends", stat_walks: "Walks", stat_badges: "Badges",
+    qa_edu: "Training", qa_vac: "Vaccines", qa_books: "Reads", qa_nut: "Nutrition",
+    ai_bar_title: "Ask anything about Nala",
+    ai_bar_sub: "Health, training, behavior — an answer in 10 seconds",
+    ai_disclaimer: "Advice is AI-generated. For worrying symptoms or emergencies, contact your vet. Never a substitute for medical diagnosis.",
+    ask_ai_tick: "Ask the AI: how to safely remove a tick?",
+    sec_reminders: "Upcoming reminders",
+    rem_vac: "DHPPL booster",
+    rem_vac_desc: "At the local vet",
+    rem_vac_date: "In 5 days · April 26",
+    rem_verm: "Quarterly dewormer",
+    rem_verm_desc: "Milbemax or equivalent",
+    rem_verm_date: "In 3 weeks · May 12",
+    sec_feed: "Community feed",
+    feed_when1: "2h ago · Fontainebleau Forest",
+    feed_cap1: "First hike of the season! We met lots of friends on the way 🐾",
+    want_playdate: "🎾 Propose playdate",
+    feed_when2: "Yesterday · Parc Monceau",
+    feed_cap2: "Anyone up for the park tomorrow 10am? Charlie is looking for friends!",
+    join: "✋ Join",
+    health_title: "Health & Nutrition",
+    health_sub: "Complete record and life-stage-adapted advice.",
+    stage_current: "CURRENT LIFE STAGE",
+    stage_adult: "Young adult",
+    stage_adult_desc: "Nala is entering her peak form. Focus on activity, ongoing socialization and balanced nutrition.",
+    stage_puppy: "Puppy", stage_young: "Young", stage_adult_short: "Adult", stage_senior: "Senior",
+    health_cats: "Categories",
+    cat_vac: "Vaccines", cat_vac_desc: "Up to date · Next booster: April 26",
+    cat_verm: "Deworming & antiparasitics", cat_verm_desc: "Quarterly treatment",
+    cat_nut: "Nutrition", cat_nut_desc: "Recommendations by breed and age",
+    cat_weight: "Weight & activity", cat_weight_desc: "15 kg · Ideal for their build",
+    cat_teeth: "Teeth & hygiene", cat_teeth_desc: "Last cleaning: 8 months ago",
+    cat_vet: "My vet", cat_vet_desc: "Dr. Martin · Les Lilas clinic",
+    health_tips: "Timely tips",
+    tip_spring: "🌸 Spring",
+    tip_title1: "Watch for ticks from April",
+    tip_desc1: "Tick season is starting. Check Nala after each walk and renew their antiparasitic if needed.",
+    social_title: "Community",
+    social_sub: "Nala's friends, playdates, and encounters.",
+    tab_friends: "Friends", tab_playdates: "Playdates", tab_discover: "Discover", tab_msg: "Messages",
+    friend_loki: "Australian Shepherd · 3 yrs · Paris 11",
+    friend_charlie: "Poodle · 4 yrs · Paris 17",
+    friend_biscotte: "Golden Retriever · 1 yr · Vincennes",
+    friend_maya: "Border Collie · 6 months · Paris 20",
+    friend_gustave: "Beagle · 5 yrs · Montreuil",
+    propose_play: "Playdate",
+    add_friend: "Add friend",
+    pd_sat: "Saturday April 25 · 10am",
+    pd_title1: "Hike in Bois de Vincennes",
+    attending1: "+ 5 dogs signed up",
+    pd_sun: "Sunday April 26 · 4pm",
+    pd_title2: "Afternoon at Buttes-Chaumont",
+    attending2: "+ 2 dogs signed up",
+    create_pd: "+ Create a playdate",
+    disc_title: "Dogs near you",
+    disc_desc: "Enable location to discover friends in your neighborhood.",
+    enable_geo: "Enable location",
+    msg_loki: "« See you Saturday then! 🐾 »",
+    msg_charlie: "« Thanks for the kibble recommendation! »",
+    ai_status: "AI companion · Health, training, behavior",
+    ai_hello: "Hi Guillaume 🐾 I'm K9's AI companion. I can help with health, nutrition, positive training or any of Nala's behaviors. Ask me anything!",
+    ai_hint: "Advice does not replace a vet in an emergency.",
+    sugg_1: "Nala pulls on leash, what to do?",
+    sugg_2: "Best food for young adult dog?",
+    sugg_3: "Why does she bark when alone?",
+    sugg_4: "Recall training: how to do it well?",
+    profile_title: "Profile",
+    profile_badges: "My badges",
+    badge_first: "First step", badge_walker: "Hiker", badge_learner: "Dedicated student",
+    badge_social: "Social", badge_health: "Iron health", badge_photo: "Photographer",
+    badge_playful: "Playful", badge_runner: "Marathoner", badge_calm: "Zen",
+    badge_legend: "Legend", badge_bday: "Birthday",
+    profile_settings: "Settings",
+    menu_lang: "Language", menu_notif: "Notifications", menu_geo: "Location",
+    menu_priv: "Privacy", menu_help: "Help & support", menu_logout: "Log out",
+    tab_home: "Home", tab_health: "Health", tab_social: "Social", tab_profile: "Profile",
+    sub_edu: "Positive training",
+    edu_approach: "Positive reinforcement approach",
+    edu_intro_title: "What is kind training?",
+    edu_intro_desc: "No punishment, no dominance. We reward good behaviors to reinforce them. Science-based, effective, bond-friendly.",
+    edu_paths: "Learning paths",
+    path_basic: "The 5 basic cues", path_basic_desc: "Sit, down, come, stay, wait · 10 exercises",
+    path_recall: "The perfect recall", path_recall_desc: "6-week progression · All environments",
+    path_leash: "Loose leash walking", path_leash_desc: "No more pulling · 8 progressive sessions",
+    path_mental: "Mental stimulation", path_mental_desc: "Scent games, hide & seek, puzzles",
+    path_alone: "Being alone", path_alone_desc: "Preventing separation anxiety",
+    path_social: "Socialization", path_social_desc: "Humans, dogs, environments",
+    sub_sitter: "Dog sitting",
+    sitter_around: "Near you",
+    sitter_n1: "Camille · Paris 11", sitter_l1: "0.8 km · ⭐ 4.9 (47 reviews)",
+    sitter_n2: "Adrien · Montreuil", sitter_l2: "1.4 km · ⭐ 5.0 (23 reviews)",
+    sitter_n3: "Martine · Vincennes", sitter_l3: "3.1 km · ⭐ 4.8 (112 reviews)",
+    per_night: "/ night",
+    tag_garden: "🌳 Garden", tag_dogsitter: "Dog trainer", tag_2dogs: "Max 2 dogs",
+    tag_house: "🏡 House", tag_active: "2h walks/day",
+    tag_retired: "Retired, flexible", tag_senior_ok: "Senior friendly",
+    become_sitter: "Offer sitting services",
+    sub_books: "Reads",
+    curated: "K9 selection · Validated by our trainers",
+    book1_auth: "Cédric Sapin-Defour",
+    book1_desc: "A moving tribute to the bond between a man and his dog Ubac. To understand what a dog truly changes in a life.",
+    book2_title: "Kind Training for Dogs", book2_auth: "Catherine Collignon",
+    book2_desc: "The positive reinforcement bible: science, exercises, examples. Essential for force-free training.",
+    book3_title: "The Emotional Lives of Dogs", book3_auth: "Marc Bekoff",
+    book3_desc: "What science teaches us about canine emotions. Will change how you see your dog.",
+    book4_title: "Feeding Your Dog Well", book4_auth: "Dr. Géraldine Blanchard",
+    book4_desc: "Vet nutritionist: all about kibble, home cooking, BARF. Finally clear.",
+    book5_title: "Dogs Make Us Human", book5_auth: "Jeffrey Masson",
+    book5_desc: "An exploration of the role of dogs in our lives and the lessons they give us.",
+    sub_nut: "Nutrition",
+    nut_perso: "Personalized for Nala",
+    nut_reco: "Recommended portion",
+    nut_perday: "Per day", nut_meals: "Meals",
+    nut_principles: "Principles by life stage",
+    nut_puppy_t: "Puppy (0-12 months)",
+    nut_puppy_d: "3-4 meals/day, puppy kibble rich in protein and DHA for brain development.",
+    nut_young_t: "Young adult (1-3 years) · Current",
+    nut_young_d: "2 meals/day, balanced protein/fat ratio. Adapted to activity level.",
+    nut_adult_t: "Adult (3-7 years)",
+    nut_adult_d: "2 meals/day, watch weight. Adjust for neutering.",
+    nut_senior_t: "Senior (7+ years)",
+    nut_senior_d: "2-3 small meals, fewer calories, more fiber, glucosamine for joints.",
+    sub_vac: "Vaccines",
+    vac_history: "History",
+    vac_d1: "Done April 26, 2025 · Dr. Martin",
+    vac_next: "Next booster: April 26, 2026",
+    vac_rage: "Rabies",
+    vac_d2: "Done March 12, 2025", vac_next2: "Next booster: March 12, 2027",
+    vac_kc: "Kennel cough", vac_d3: "Needed if boarding/daycare",
+    vac_why: "Why it matters",
+    vac_why_desc: "Vaccines protect your dog against serious diseases (distemper, hepatitis, parvo, leptospirosis, rabies). An up-to-date record is also required for boarding, travel and daycare.",
+    vac_add: "+ Add a vaccine",
+    sub_verm: "Deworming & antiparasitics",
+    verm_history: "Ongoing treatments",
+    verm_t1: "Dewormer (intestinal worms)", verm_d1: "Every 3 months · Milbemax",
+    verm_next1: "Next: May 12, 2026",
+    verm_t2: "Flea & tick prevention", verm_d2: "Monthly in season · Bravecto",
+    verm_next2: "Next: May 1, 2026",
+    verm_tips: "Tips",
+    verm_tips_desc: "Deworming is recommended every 3 months for adults (monthly for puppies). External antiparasitics should be adjusted for season and exposure (forest, tall grass).",
+    lang_info: "K9 is bilingual. All interfaces, health advice and AI content are available in both languages.",
+    ai_reply_generic: "Great question! Here's an answer tailored to Nala...",
+    ai_reply_leash: "For leash pulling: use the « tree » method. As soon as Nala pulls, you stop and wait for her to release tension. When the leash is loose, you praise and restart. Slow at first (10 min for 20m), but after 2-3 weeks the results are dramatic.",
+    ai_reply_food: "For a 15 kg young adult Labrador, aim for ~320 g/day of premium kibble (protein ≥ 25%, fat 12-15%), split in 2 meals. Watch the weight since the breed is prone to overweight. Add warm water for digestion.",
+    ai_reply_bark: "Barking when alone often signals separation anxiety. Start with very short absences (1 min), with no dramatic departure ritual. Increase gradually. A frozen Kong at departure helps a lot. If it persists, check our dedicated path.",
+    ai_reply_recall: "Recall is built: (1) start in a calm environment, (2) use a short word (« Nala come! »), (3) ULTRA-tasty reward every time, (4) never recall for something unpleasant (bath, end of walk). Gradually increase difficulty. 6-week path available in Training.",
+    ai_error: "Can't reach the AI. Check your connection and try again in a moment.",
+    // Walks
+    walk_today_t: "Today's walk",
+    walk_today_d: "42 min · 1.7 mi · 3 walks this week",
+    walk_start: "Start",
+    walk_start_now: "▶ Start a walk",
+    walks_title: "Walks",
+    walks_this_week: "This week",
+    walks_3_walks: "3 walks · 2h12 total",
+    walks_history: "History",
+    walks_advice: "Health tip",
+    walks_advice_t: "A young adult like Nala needs ≈ 60 min of activity per day.",
+    walks_advice_d: "Mix free walking, sniffing exploration and recall games. Avoid heavy heat after 10am.",
+    walks_ask_ai: "Ask the AI: what's the ideal duration?",
+    walk_1_t: "Vincennes forest", walk_1_d: "2 mi · 48 min · +72 ft elevation", walk_1_when: "Today · 8:12am",
+    walk_2_t: "Around the pond", walk_2_d: "1.3 mi · 34 min", walk_2_when: "Yesterday · 7:40pm",
+    walk_3_t: "Monceau park", walk_3_d: "1.9 mi · 50 min · free play", walk_3_when: "Sunday · 10:00am",
+    // Spots
+    qa_walks: "Walks", qa_spots: "Spots",
+    spots_title: "Dog-friendly spots",
+    spots_near: "Near you",
+    spots_ask_ai: "Ask the AI for spot recommendations",
+    spot_1_t: "Vincennes woods · off-leash area", spot_1_d: "Dogs allowed off-leash · 9–10am",
+    spot_2_t: "Café des Copains", spot_2_d: "Free fresh water · large terrace",
+    spot_3_t: "Deauville beach", spot_3_d: "Allowed all day off-season",
+    spot_4_t: "La Pra mountain refuge", spot_4_d: "Dog bowl + bedding · on reservation",
+    // Programmes
+    sec_programs: "Dedicated programs",
+    prog_puppy_t: "First 100 days", prog_puppy_d: "Socialization, potty training, early learning.",
+    prog_rescue_t: "Rescue 3-3-3", prog_rescue_d: "The three steps to build real trust.",
+    prog_senior_t: "Growing old together", prog_senior_d: "Walk with your dog, with tenderness and clarity.",
+    // Puppy
+    puppy_title: "First 100 days",
+    puppy_day: "Day 15 / 100",
+    puppy_phase: "Phase: calm exploration",
+    puppy_intro: "The first 3 months are the best socialization window. One good experience now equals 10 sessions later.",
+    puppy_today: "Today's task",
+    puppy_today_t: "Socialization: everyday sounds",
+    puppy_today_d: "Play 3× 2 minutes with the doorbell, a vacuum off then on, a plastic bag. Every sound: treat. We build positive emotions.",
+    mark_done: "✓ Mark as done",
+    puppy_checklist: "Socialization checklist",
+    puppy_ck_1: "Meet 5 different adults", puppy_ck_2: "Meet 3 calm kids",
+    puppy_ck_3: "Walk in city center", puppy_ck_4: "Contact with a friendly cat",
+    puppy_ck_5: "Positive car ride", puppy_ck_6: "Paws & ears handling",
+    puppy_ask_ai: "Ask the AI: SOS puppy at night",
+    // Rescue
+    rescue_title: "Rescue adoption 3-3-3",
+    rescue_intro_t: "Welcome to a new story",
+    rescue_intro_d: "An adopted dog needs time to feel safe. The 3-3-3 rule gives you the map — you move at their pace, not yours.",
+    rescue_steps: "The three steps",
+    rescue_s1_t: "3 days · Decompression", rescue_s1_d: "They observe, sleep a lot, may refuse food. Don't push, don't take them everywhere. Create a silent safe zone.",
+    rescue_s2_t: "3 weeks · Trust", rescue_s2_d: "They test boundaries, may show new fears or old behaviors. Stay consistent, kind, ritualize routines.",
+    rescue_s3_t: "3 months · Integration", rescue_s3_d: "They've become \"themselves\". You know their signals. Perfect time for structured positive training and shared goals.",
+    rescue_journal: "Progress journal",
+    rescue_save: "Save",
+    rescue_ask_ai: "Ask the AI for rescue advice",
+    // Seniors
+    senior_title: "Growing old together",
+    senior_intro_t: "The years that count double",
+    senior_intro_d: "Aging isn't a disease. It's a season. Your role: recognize their new needs, adapt, offer comfort. K9 is here at every step, honestly.",
+    senior_cats: "Key topics",
+    senior_mob_t: "Mobility & joints", senior_mob_d: "Non-slip mats, ramps, massages",
+    senior_cog_t: "Cognition & sleep", senior_cog_d: "Scent enrichment, stable routines",
+    senior_nut_t: "Adapted nutrition", senior_nut_d: "Less caloric, more fiber and omega-3",
+    senior_end_t: "End-of-life comfort", senior_end_d: "Walk alongside, decide, grieve — gently",
+    senior_reads: "Dedicated readings",
+    senior_book_1_t: "Our Scent After the Rain", senior_book_1_a: "Cédric Sapin-Defour · 2024", senior_book_1_d: "A luminous account of walking an aging dog to the very end.",
+    senior_ask_ai: "Ask the AI, with tenderness",
+    // QR
+    health_share: "Share",
+    qr_title: "Share the health record",
+    qr_scan: "Scan to open the record",
+    qr_desc: "Show this QR to your vet, boarding kennel or a friend. Temporary link, valid 24h.",
+    qr_copy: "Copy link", qr_send: "Send",
+    qr_access: "What we share",
+    qr_list: "Vaccines · dewormings · weight · allergies · vet contact. No personal owner data.",
+    // Videos
+    edu_videos: "Flash videos · < 60s",
+    vid_1_t: "Learn \"sit\" in 3 steps", vid_1_d: "Positive reinforcement · no gear",
+    vid_2_t: "Reliable recall: Premack protocol", vid_2_d: "Make coming TO you more fun than leaving",
+    vid_3_t: "Loose leash: stop the pull", vid_3_d: "2 exercises, 10 min / day",
+    vid_4_t: "5 indoor sniffing games", vid_4_d: "Tires them out like an hour of walking",
+  }
+};
+
+// ---------- Onboarding state ----------
+let obStepIdx = 0;
+const TOTAL_STEPS = 5;
+const dogState = {
+  name: "",
+  breed: null,
+  years: 2,
+  months: 0,
+  sex: null,
+  weight: 15,
+  emoji: "🐕",
+  coat: "golden",
+};
+
+// Multi-chiens : dogState = chien actif, DOGS = meute
+let DOGS = [];
+let activeDogIdx = 0;
+function getActiveDog() { return DOGS[activeDogIdx] || dogState; }
+
+let currentLang = "fr";
+
+// ---------- Render breed list ----------
+function renderBreeds(filter = "") {
+  const list = document.getElementById("breedList");
+  list.innerHTML = "";
+  const f = filter.toLowerCase();
+  BREEDS.filter(b => (b[currentLang] || b.fr).toLowerCase().includes(f)).forEach((b, i) => {
+    const div = document.createElement("button");
+    div.className = "breed-option" + (dogState.breed === i ? " selected" : "");
+    div.innerHTML = `<span class="bem">${b.emoji}</span><span>${b[currentLang] || b.fr}</span>`;
+    div.onclick = () => {
+      dogState.breed = i;
+      renderBreeds(filter);
+    };
+    list.appendChild(div);
+  });
+}
+function filterBreeds() {
+  renderBreeds(document.getElementById("breedSearch").value);
+}
+
+// ---------- Render emoji grid ----------
+function renderEmojis() {
+  const grid = document.getElementById("emojiGrid");
+  grid.innerHTML = "";
+  DOG_EMOJIS.forEach(e => {
+    const div = document.createElement("div");
+    div.className = "emoji-option" + (dogState.emoji === e ? " selected" : "");
+    div.textContent = e;
+    div.onclick = () => {
+      dogState.emoji = e;
+      renderEmojis();
+    };
+    grid.appendChild(div);
+  });
+}
+
+// ---------- Coat color ----------
+document.querySelectorAll(".coat").forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll(".coat").forEach(x => x.style.borderColor = x.dataset.color === "white" ? "#E8E1D4" : "transparent");
+    c.style.borderColor = "#E87A3B";
+    dogState.coat = c.dataset.color;
+  };
+});
+
+function selectSex(el, sex) {
+  el.parentNode.querySelectorAll(".breed-option").forEach(x => x.classList.remove("selected"));
+  el.classList.add("selected");
+  dogState.sex = sex;
+}
+
+// ---------- Onboarding navigation ----------
+function showStep(n) {
+  document.querySelectorAll(".ob-step").forEach(s => s.classList.remove("active"));
+  document.querySelector(`.ob-step[data-step="${n}"]`).classList.add("active");
+  obStepIdx = n;
+}
+function obNext() {
+  if (obStepIdx === 1) {
+    const v = document.getElementById("dogName").value.trim();
+    if (!v) { alert(currentLang === "fr" ? "Dis-nous son nom !" : "Tell us their name!"); return; }
+    dogState.name = v;
+  }
+  if (obStepIdx === 2 && dogState.breed === null) {
+    alert(currentLang === "fr" ? "Choisis une race (ou « Je ne sais pas »)" : "Pick a breed (or « I don't know »)"); return;
+  }
+  if (obStepIdx === 3) {
+    dogState.years = +document.getElementById("dogYears").value || 0;
+    dogState.months = +document.getElementById("dogMonths").value || 0;
+    dogState.weight = +document.getElementById("dogWeight").value || 0;
+  }
+  if (obStepIdx < TOTAL_STEPS - 1) showStep(obStepIdx + 1);
+}
+function obPrev() { if (obStepIdx > 0) showStep(obStepIdx - 1); }
+
+function obFinish() {
+  // Persist basic display
+  const breed = BREEDS[dogState.breed] || BREEDS[BREEDS.length - 1];
+  document.getElementById("dogNameDisp").textContent = dogState.name;
+  document.getElementById("dogNameHero").textContent = dogState.name;
+  document.getElementById("dogNameProfile").textContent = dogState.name;
+  const ageTxt = dogState.years > 0
+    ? `${dogState.years} ${currentLang === "fr" ? (dogState.years > 1 ? "ans" : "an") : (dogState.years > 1 ? "yrs" : "yr")}`
+    : `${dogState.months} ${currentLang === "fr" ? "mois" : "months"}`;
+  const meta = `${breed[currentLang] || breed.fr} · ${ageTxt} · ${dogState.weight} kg`;
+  document.getElementById("dogMetaHero").textContent = meta;
+  document.getElementById("dogMetaProfile").textContent = meta;
+  document.getElementById("dogEmojiMain").textContent = dogState.emoji;
+  document.getElementById("dogAvatarBig").textContent = dogState.emoji;
+  document.getElementById("onboarding").classList.remove("show");
+  // Life stage detection
+  const totalMonths = dogState.years * 12 + dogState.months;
+  let stagePct = 25;
+  if (totalMonths < 12) stagePct = 10;
+  else if (totalMonths < 36) stagePct = 30;
+  else if (totalMonths < 84) stagePct = 60;
+  else stagePct = 90;
+  document.querySelector(".life-stage-bar > div").style.width = stagePct + "%";
+
+  // Multi-dog: snapshot ce chien dans la meute
+  const snap = JSON.parse(JSON.stringify(dogState));
+  if (DOGS.length === 0) {
+    DOGS.push(snap);
+    activeDogIdx = 0;
+  } else {
+    DOGS[activeDogIdx] = snap;
+  }
+  renderDogSwitcher();
+}
+
+// ---------- Multi-chien switcher ----------
+function renderDogSwitcher() {
+  const el = document.getElementById("dogSwitcher");
+  if (!el) return;
+  el.innerHTML = "";
+  DOGS.forEach((d, i) => {
+    const pill = document.createElement("div");
+    pill.className = "dog-pill" + (i === activeDogIdx ? " active" : "");
+    pill.innerHTML = `<div class="ring">${d.emoji || "🐕"}</div><div class="lbl">${d.name || "—"}</div>`;
+    pill.onclick = () => selectDog(i);
+    el.appendChild(pill);
+  });
+  const add = document.createElement("div");
+  add.className = "dog-pill add";
+  add.innerHTML = `<div class="ring">+</div><div class="lbl">${currentLang === "fr" ? "Ajouter" : "Add"}</div>`;
+  add.onclick = addNewDog;
+  el.appendChild(add);
+}
+function selectDog(i) {
+  activeDogIdx = i;
+  const d = DOGS[i];
+  Object.assign(dogState, d);
+  const breed = BREEDS[d.breed] || BREEDS[BREEDS.length - 1];
+  document.getElementById("dogNameDisp").textContent = d.name;
+  document.getElementById("dogNameHero").textContent = d.name;
+  document.getElementById("dogNameProfile").textContent = d.name;
+  document.getElementById("dogEmojiMain").textContent = d.emoji;
+  document.getElementById("dogAvatarBig").textContent = d.emoji;
+  const ageTxt = d.years > 0
+    ? `${d.years} ${currentLang === "fr" ? (d.years > 1 ? "ans" : "an") : (d.years > 1 ? "yrs" : "yr")}`
+    : `${d.months} ${currentLang === "fr" ? "mois" : "months"}`;
+  const meta = `${breed[currentLang] || breed.fr} · ${ageTxt} · ${d.weight} kg`;
+  document.getElementById("dogMetaHero").textContent = meta;
+  document.getElementById("dogMetaProfile").textContent = meta;
+  aiHistory = []; // reset historique conversation pour nouveau chien
+  renderDogSwitcher();
+}
+function addNewDog() {
+  // Réinitialise dogState et ouvre l'onboarding
+  Object.assign(dogState, { name: "", breed: null, years: 2, months: 0, sex: null, weight: 15, emoji: "🐕", coat: "golden" });
+  activeDogIdx = DOGS.length;
+  obStepIdx = 0;
+  document.getElementById("onboarding").classList.add("show");
+  showStep(0);
+  renderBreeds();
+  renderEmojis();
+}
+function mockStartWalk() {
+  alert(currentLang === "fr" ? "🗺️ Sortie démarrée ! (GPS mock)" : "🗺️ Walk started! (mock GPS)");
+}
+function markDone(btn) {
+  btn.textContent = currentLang === "fr" ? "✓ Fait !" : "✓ Done!";
+  btn.disabled = true;
+  btn.style.opacity = ".7";
+}
+
+// ---------- Tabs ----------
+function switchTab(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-" + name).classList.add("active");
+}
+
+// ---------- AI Overlay ----------
+function openAI() {
+  document.getElementById("aiOverlay").classList.add("show");
+}
+function closeAI() {
+  document.getElementById("aiOverlay").classList.remove("show");
+}
+function openAIWith(prompt) {
+  openAI();
+  const input = document.getElementById("chatInput");
+  input.value = prompt;
+  sendAI();
+}
+
+// ---------- Social tabs ----------
+function switchSocialTab(btn, id) {
+  btn.parentNode.querySelectorAll(".social-tab").forEach(t => t.classList.remove("active"));
+  btn.classList.add("active");
+  ["friends", "playdates", "discover", "messages"].forEach(x => {
+    document.getElementById("social-" + x).style.display = x === id ? "" : "none";
+  });
+}
+
+// ---------- Sub-screens ----------
+function openSub(id) { document.getElementById(id).classList.add("show"); }
+function closeSub(id) { document.getElementById(id).classList.remove("show"); }
+
+// ---------- Language ----------
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[lang][key]) el.textContent = I18N[lang][key];
+  });
+  // Update placeholders & specific elements
+  const searchInput = document.getElementById("breedSearch");
+  if (searchInput) searchInput.placeholder = lang === "fr" ? "Rechercher une race..." : "Search a breed...";
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) chatInput.placeholder = lang === "fr" ? "Pose ta question..." : "Ask your question...";
+  const nameInput = document.getElementById("dogName");
+  if (nameInput) nameInput.placeholder = lang === "fr" ? "Ex. Nala, Loki, Maya..." : "Ex. Nala, Loki, Maya...";
+  // Lang label
+  document.getElementById("langLabel").textContent = lang === "fr" ? "EN" : "FR";
+  document.getElementById("langCurrent").textContent = lang === "fr" ? "Français" : "English";
+  document.getElementById("check-fr").textContent = lang === "fr" ? "✓" : "";
+  document.getElementById("check-en").textContent = lang === "en" ? "✓" : "";
+  renderBreeds(document.getElementById("breedSearch")?.value || "");
+}
+function toggleLang() { setLang(currentLang === "fr" ? "en" : "fr"); }
+
+// ---------- AI Chat ----------
+function askAI(btn) {
+  const q = btn.textContent;
+  document.getElementById("chatInput").value = q;
+  sendAI();
+}
+let aiHistory = [];
+async function sendAI() {
+  const input = document.getElementById("chatInput");
+  const q = input.value.trim();
+  if (!q) return;
+  const body = document.getElementById("chatBody");
+  // User message
+  const um = document.createElement("div");
+  um.className = "msg user";
+  um.textContent = q;
+  body.appendChild(um);
+  input.value = "";
+  body.scrollTop = body.scrollHeight;
+
+  // Typing indicator
+  const typing = document.createElement("div");
+  typing.className = "msg ai typing";
+  typing.innerHTML = `<span class="dots"><span>·</span><span>·</span><span>·</span></span>`;
+  body.appendChild(typing);
+  body.scrollTop = body.scrollHeight;
+
+  const currentDog = getActiveDog();
+  const breedObj = BREEDS[currentDog.breed] || {};
+  const payload = {
+    message: q,
+    history: aiHistory.slice(-10),
+    dog: {
+      name: currentDog.name,
+      breed: breedObj[currentLang] || breedObj.fr || "",
+      age: currentDog.years > 0
+        ? `${currentDog.years} ${currentLang === "fr" ? (currentDog.years > 1 ? "ans" : "an") : (currentDog.years > 1 ? "yrs" : "yr")}`
+        : `${currentDog.months} ${currentLang === "fr" ? "mois" : "months"}`,
+      weight: currentDog.weight,
+      sex: currentDog.sex || "",
+    },
+    lang: currentLang,
+  };
+
+  let replyText;
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    replyText = data.reply || (I18N[currentLang].ai_reply_generic);
+  } catch (e) {
+    console.error("chat fetch error", e);
+    replyText = I18N[currentLang].ai_error || "Connexion impossible. Réessaye.";
+  }
+
+  typing.remove();
+  aiHistory.push({ role: "user", content: q });
+  aiHistory.push({ role: "assistant", content: replyText });
+
+  const am = document.createElement("div");
+  am.className = "msg ai";
+  am.innerHTML = `<span>${escapeHtml(replyText).replace(/\n/g, "<br/>")}</span><span class="hint">${I18N[currentLang].ai_hint}</span>`;
+  body.appendChild(am);
+  body.scrollTop = body.scrollHeight;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
+}
+
+// ---------- Init ----------
+renderBreeds();
+renderEmojis();
+showStep(0);
+setLang("fr");
+</script>
+</body>
+</html>
