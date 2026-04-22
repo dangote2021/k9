@@ -3017,7 +3017,10 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
           <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Choisir Pro</button>
         </div>
       </div>
-      <div style="padding: 0 16px 20px; font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.55;" data-i18n="plan_disclaimer">Le paiement n'est pas encore activé sur cette version beta. Choisis ton plan pour l'aperçu, il sera facturé quand Stripe sera branché.</div>
+      <div style="padding: 0 16px 10px; font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.55;" data-i18n="plan_disclaimer">Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.</div>
+      <div style="padding: 0 16px 24px; text-align: center;">
+        <button onclick="openBillingPortal()" style="background: transparent; border: 1px solid var(--border); color: var(--ink-2); padding: 10px 16px; border-radius: 12px; font-size: 12.5px; font-weight: 700; cursor: pointer;" data-i18n="plan_manage">💼 Gérer mon abonnement</button>
+      </div>
     </div>
   </div>
 
@@ -3410,7 +3413,8 @@ const I18N = {
     share_send: "📲 Partager",
     plan_title: "Choisis ton plan K9",
     plan_intro: "Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.",
-    plan_disclaimer: "Le paiement n'est pas encore activé sur cette version beta. Choisis ton plan pour l'aperçu, il sera facturé quand Stripe sera branché.",
+    plan_disclaimer: "Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.",
+    plan_manage: "💼 Gérer mon abonnement",
     tier_free_t: "Gratuit", tier_free_b: "Free",
     tier_always: "pour toujours",
     tier_free_1: "1 chien",
@@ -3771,7 +3775,8 @@ const I18N = {
     share_send: "📲 Share",
     plan_title: "Choose your K9 plan",
     plan_intro: "Free covers the basics. Upgrade to Plus for unlimited AI and multiple dogs.",
-    plan_disclaimer: "Payment isn't live in beta yet. Pick your plan for preview — Stripe billing will kick in soon.",
+    plan_disclaimer: "Secure payment via Stripe. Cancel anytime from the billing portal.",
+    plan_manage: "💼 Manage subscription",
     tier_free_t: "Free", tier_free_b: "Free",
     tier_always: "forever",
     tier_free_1: "1 dog",
@@ -5342,15 +5347,105 @@ function renderPlanBadge() {
     }
   });
 }
-function setPlan(p) {
-  userPlan = p;
-  try { localStorage.setItem("k9_plan", p); } catch {}
-  renderPlanBadge();
-  // Feedback
-  const msg = currentLang === "fr"
-    ? (p === "free" ? "Plan gratuit activé." : `${planLabel(p)} activé (beta, pas de facturation).`)
-    : (p === "free" ? "Free plan activated." : `${planLabel(p)} activated (beta, no billing yet).`);
-  alert(msg);
+async function setPlan(p) {
+  // Free downgrade: direct
+  if (p === "free") {
+    userPlan = "free";
+    try { localStorage.setItem("k9_plan", "free"); } catch {}
+    renderPlanBadge();
+    const msg = currentLang === "fr"
+      ? "Tu es revenu au plan gratuit. Pour annuler ton abonnement payant, ouvre l'Espace facturation."
+      : "You're back on free. To cancel a paid subscription, open the billing portal.";
+    alert(msg);
+    return;
+  }
+  // Paid plan : redirect to Stripe Checkout
+  const btn = document.getElementById("tier" + p[0].toUpperCase() + p.slice(1) + "Btn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = currentLang === "fr" ? "Redirection…" : "Redirecting…";
+  }
+  try {
+    const resp = await fetch("/api/stripe-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plan: p, lang: currentLang, email: (ownerState?.email || "") }),
+    });
+    const data = await resp.json();
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+    if (data.mock) {
+      alert(data.message || (currentLang === "fr"
+        ? "Stripe n'est pas encore branché sur ce déploiement."
+        : "Stripe isn't wired up on this deployment yet."));
+    } else {
+      alert(currentLang === "fr" ? "Problème de paiement, réessaye." : "Payment error, try again.");
+    }
+  } catch (e) {
+    alert(currentLang === "fr" ? "Connexion au paiement impossible." : "Couldn't reach billing.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      renderPlanBadge();
+    }
+  }
+}
+
+// After Stripe success redirect, unlock the plan locally
+async function handleCheckoutReturn() {
+  const params = new URLSearchParams(location.search);
+  const c = params.get("checkout");
+  if (!c) return;
+  if (c === "success") {
+    const plan = params.get("plan") || "plus";
+    const sid = params.get("sid");
+    try {
+      if (sid) {
+        const resp = await fetch(`/api/plan-status?sid=${encodeURIComponent(sid)}`);
+        const data = await resp.json();
+        if (data.ok) {
+          userPlan = data.plan || plan;
+          try {
+            localStorage.setItem("k9_plan", userPlan);
+            if (data.subscriptionId) localStorage.setItem("k9_stripe_sub", data.subscriptionId);
+          } catch {}
+          renderPlanBadge();
+          alert(currentLang === "fr"
+            ? `🎉 Bienvenue dans ${planLabel(userPlan)} ! Ton accès est activé.`
+            : `🎉 Welcome to ${planLabel(userPlan)}! Your access is active.`);
+        }
+      }
+    } catch {}
+    // Clean URL
+    history.replaceState({}, "", location.pathname);
+  } else if (c === "cancel") {
+    history.replaceState({}, "", location.pathname);
+    alert(currentLang === "fr" ? "Paiement annulé — tu peux réessayer quand tu veux." : "Payment canceled — retry anytime.");
+  }
+}
+
+async function openBillingPortal() {
+  const customerId = localStorage.getItem("k9_stripe_customer") || "";
+  if (!customerId) {
+    alert(currentLang === "fr"
+      ? "Aucun abonnement actif détecté sur cet appareil."
+      : "No active subscription on this device.");
+    return;
+  }
+  try {
+    const resp = await fetch("/api/stripe-portal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customerId }),
+    });
+    const data = await resp.json();
+    if (data.url) window.location.href = data.url;
+    else alert(currentLang === "fr" ? "Portail indisponible." : "Portal unavailable.");
+  } catch {
+    alert(currentLang === "fr" ? "Connexion au portail impossible." : "Couldn't reach billing portal.");
+  }
 }
 function loadPlan() {
   try {
@@ -5414,6 +5509,8 @@ if (!_k9Saved || !_k9Saved.settings?.lang) {
 // 2b. Charge le plan freemium + quota IA
 loadPlan();
 renderPlanBadge();
+// 2c. Traite un retour Stripe Checkout
+handleCheckoutReturn();
 
 // 3. Si l'utilisateur a déjà onboardé (chien existant), on saute directement à l'app
 if (onboardingDone && DOGS.length > 0) {

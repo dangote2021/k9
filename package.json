@@ -5,5 +5,8 @@
   "description": "K9 — porte d'entrée unique pour propriétaires de chiens",
   "engines": {
     "node": "20.x"
+  },
+  "dependencies": {
+    "stripe": "^17.5.0"
   }
 }
