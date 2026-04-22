@@ -177,6 +177,43 @@ body {
 }
 .chip.green { background: var(--forest-soft); color: var(--forest); }
 .chip.gray { background: var(--cream-2); color: var(--ink-2); }
+.soon-tag {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--forest);
+  background: var(--forest-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.mini-tag {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  vertical-align: middle;
+}
+.ai-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--brand);
+  background: rgba(232, 122, 59, 0.1);
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
 
 /* ========== Bottom tab bar ========== */
 .tabbar {
@@ -1333,7 +1370,7 @@ body {
           <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">💊</div><span data-i18n="feat_health">Rappels santé, vaccins, vermifuge</span></div>
           <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">🎓</div><span data-i18n="feat_edu">Éducation positive & coaching IA</span></div>
           <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm">🐾</div><span data-i18n="feat_social">Playdates & amis canins</span></div>
-          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">🏠</div><span data-i18n="feat_sit">Garde de confiance</span></div>
+          <div class="row-card" style="padding: 6px 4px;"><div class="avatar sm green">📖</div><span data-i18n="feat_books">Lectures & programmes dédiés</span></div>
         </div>
       </div>
       <div class="ob-actions">
@@ -1341,12 +1378,14 @@ body {
       </div>
     </div>
 
-    <!-- Step 1: Name of dog -->
+    <!-- Step 1: Names -->
     <div class="ob-step" data-step="1">
       <div class="ob-progress"><div class="done"></div><div></div><div></div><div></div><div></div></div>
       <div class="ob-content">
-        <h1 class="ob-title" data-i18n="ob_name_title">Comment s'appelle ton compagnon ?</h1>
-        <p class="ob-sub" data-i18n="ob_name_sub">On va personnaliser toute l'app autour de lui ou d'elle.</p>
+        <h1 class="ob-title" data-i18n="ob_name_title">Faites connaissance</h1>
+        <p class="ob-sub" data-i18n="ob_name_sub">On personnalise toute l'app autour de vous deux.</p>
+        <div class="field-label" data-i18n="ob_owner_label">Ton prénom</div>
+        <input class="input" id="ownerName" placeholder="Ex. Guillaume, Chloé, Amine..." style="margin-bottom: 14px;" />
         <div class="field-label" data-i18n="ob_name_label">Nom du chien</div>
         <input class="input" id="dogName" placeholder="Ex. Nala, Loki, Maya..." />
       </div>
@@ -1433,7 +1472,7 @@ body {
       <div class="home-header">
         <div>
           <div class="greeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
-          <div class="name" id="ownerGreet">Guillaume & <span id="dogNameDisp">Nala</span></div>
+          <div class="name"><span id="ownerNameDisp">Toi</span> & <span id="dogNameDisp">Nala</span></div>
         </div>
         <button class="lang-toggle" onclick="toggleLang()"><span id="langLabel">EN</span></button>
       </div>
@@ -1449,9 +1488,9 @@ body {
           </div>
         </div>
         <div class="stats">
-          <div class="stat"><div class="num">12</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
-          <div class="stat"><div class="num">48</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
-          <div class="stat"><div class="num">7</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
+          <div class="stat"><div class="num" id="homeStatFriends">0</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
+          <div class="stat"><div class="num" id="homeStatWalks">0</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
+          <div class="stat"><div class="num" id="homeStatBadges">0</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
         </div>
       </div>
 
@@ -1468,7 +1507,8 @@ body {
         <div class="ic">🗺️</div>
         <div style="flex:1; min-width: 0;">
           <h4 data-i18n="walk_today_t">Sortie du jour</h4>
-          <p data-i18n="walk_today_d">42 min · 2,8 km · déjà 3 sorties cette semaine</p>
+          <p data-i18n="walk_today_d">Lance ta première balade · l'historique s'affichera ici</p>
+          <span class="soon-tag" data-i18n="walk_soon_gps">🔜 Bientôt : GPS temps réel</span>
         </div>
         <button class="go" onclick="openSub('sub-walks')" data-i18n="walk_start">Démarrer</button>
       </div>
@@ -1516,7 +1556,7 @@ body {
         <div style="flex:1;">
           <div class="title" data-i18n="rem_vac">Rappel vaccin CHPPL</div>
           <div class="desc" data-i18n="rem_vac_desc">Chez le vétérinaire du quartier</div>
-          <div class="date" data-i18n="rem_vac_date">Dans 5 jours · 26 avril</div>
+          <div class="date" id="remVacDate" data-i18n="rem_vac_date">Dans 5 jours</div>
         </div>
       </div>
       <div class="reminder-card">
@@ -1524,15 +1564,15 @@ body {
         <div style="flex:1;">
           <div class="title" data-i18n="rem_verm">Vermifuge trimestriel</div>
           <div class="desc" data-i18n="rem_verm_desc">Milbemax ou équivalent</div>
-          <div class="date" data-i18n="rem_verm_date">Dans 3 semaines · 12 mai</div>
+          <div class="date" id="remVermDate" data-i18n="rem_verm_date">Dans 3 semaines</div>
         </div>
       </div>
 
-      <div class="section-title" data-i18n="sec_feed">Fil de la communauté</div>
+      <div class="section-title" data-i18n="sec_feed">Fil de la communauté <span class="mini-tag" data-i18n="mini_example">Exemple</span></div>
       <div class="feed-card">
         <div class="head">
           <div class="avatar sm">🐕‍🦺</div>
-          <div style="flex:1;"><div class="name">Loki</div><div class="when" data-i18n="feed_when1">Il y a 2h · Forêt de Fontainebleau</div></div>
+          <div style="flex:1;"><div class="name">Loki <span class="mini-tag" data-i18n="mini_example">Exemple</span></div><div class="when" data-i18n="feed_when1">Il y a 2h · Forêt de Fontainebleau</div></div>
           <div>⋯</div>
         </div>
         <div class="img">🌲🐕‍🦺🌿</div>
@@ -1544,7 +1584,7 @@ body {
       <div class="feed-card">
         <div class="head">
           <div class="avatar sm green">🐩</div>
-          <div style="flex:1;"><div class="name">Charlie</div><div class="when" data-i18n="feed_when2">Hier · Parc Monceau</div></div>
+          <div style="flex:1;"><div class="name">Charlie <span class="mini-tag" data-i18n="mini_example">Exemple</span></div><div class="when" data-i18n="feed_when2">Hier · Parc Monceau</div></div>
           <div>⋯</div>
         </div>
         <div class="img" style="background: linear-gradient(135deg, #D7E4D9, #2D5A3D);">🌳🐩🎾</div>
@@ -1562,7 +1602,7 @@ body {
           <h1 data-i18n="health_title">Santé & Nutrition</h1>
           <div class="sub" data-i18n="health_sub">Carnet complet et conseils adaptés au stade de vie.</div>
         </div>
-        <button onclick="openSub('sub-qr')" style="background: var(--terra); color: white; border: none; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Partager"><span>🔗</span><span data-i18n="health_share">Partager</span></button>
+        <button onclick="openSub('sub-qr')" style="background: var(--terra); color: white; border: none; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Partager le carnet"><span>🔗</span><span data-i18n="health_share">Partager le carnet</span></button>
       </div>
 
       <div class="life-stage">
@@ -1739,9 +1779,9 @@ body {
         <div class="meta" id="dogMetaProfile">Labrador Retriever · 2 ans · Paris</div>
       </div>
       <div class="profile-stats">
-        <div class="pstat"><div class="num">12</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
-        <div class="pstat"><div class="num">48</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
-        <div class="pstat"><div class="num">7/24</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
+        <div class="pstat"><div class="num" id="profStatFriends">0</div><div class="lbl" data-i18n="stat_friends">Amis</div></div>
+        <div class="pstat"><div class="num" id="profStatWalks">0</div><div class="lbl" data-i18n="stat_walks">Sorties</div></div>
+        <div class="pstat"><div class="num" id="profStatBadges">0/24</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
       </div>
 
       <div class="section-title" data-i18n="profile_badges">Mes badges</div>
@@ -1850,6 +1890,7 @@ body {
           <h5 data-i18n="vid_1_t">Apprendre le "assis" en 3 étapes</h5>
           <p data-i18n="vid_1_d">Renforcement positif · aucun matériel</p>
           <div class="duration">0:42</div>
+          <span class="ai-tag" data-i18n="vid_ai_tag">✨ Réponse IA détaillée</span>
         </div>
       </div>
       <div class="video-card" onclick="openAIWith('Détaille le protocole Premack pour travailler le rappel.')">
@@ -1858,6 +1899,7 @@ body {
           <h5 data-i18n="vid_2_t">Rappel fiable : protocole Premack</h5>
           <p data-i18n="vid_2_d">Comment rendre revenir VERS toi plus fun que partir</p>
           <div class="duration">0:58</div>
+          <span class="ai-tag" data-i18n="vid_ai_tag">✨ Réponse IA détaillée</span>
         </div>
       </div>
       <div class="video-card" onclick="openAIWith('Comment faire marcher un chien en laisse détendue avec la méthode lentes récompenses ?')">
@@ -1866,6 +1908,7 @@ body {
           <h5 data-i18n="vid_3_t">Laisse détendue : arrêter de tirer</h5>
           <p data-i18n="vid_3_d">2 exercices, 10 min / jour</p>
           <div class="duration">0:51</div>
+          <span class="ai-tag" data-i18n="vid_ai_tag">✨ Réponse IA détaillée</span>
         </div>
       </div>
       <div class="video-card" onclick="openAIWith('Donne-moi 5 jeux de reniflage rapides à faire à la maison.')">
@@ -1874,6 +1917,7 @@ body {
           <h5 data-i18n="vid_4_t">5 jeux de reniflage maison</h5>
           <p data-i18n="vid_4_d">Défoule autant qu'une heure de balade</p>
           <div class="duration">0:47</div>
+          <span class="ai-tag" data-i18n="vid_ai_tag">✨ Réponse IA détaillée</span>
         </div>
       </div>
     </div>
@@ -2043,12 +2087,13 @@ body {
       <div style="padding: 0 16px 14px;">
         <div class="card" style="margin:0; background: linear-gradient(135deg, var(--forest), #3E7253); color: white; text-align: center; padding: 22px 16px;">
           <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .85; margin-bottom: 6px;" data-i18n="walks_this_week">Cette semaine</div>
-          <div style="font-size: 30px; font-weight: 800;">8,4 <span style="font-size: 16px; opacity: .8;">km</span></div>
-          <div style="font-size: 12px; opacity: .9; margin-top: 4px;" data-i18n="walks_3_walks">3 sorties · 2h12 au total</div>
+          <div style="font-size: 30px; font-weight: 800;" id="weekKm">0 <span style="font-size: 16px; opacity: .8;">km</span></div>
+          <div style="font-size: 12px; opacity: .9; margin-top: 4px;" id="weekDetail" data-i18n="walks_this_week_empty">Aucune sortie enregistrée cette semaine</div>
           <button style="margin-top: 14px; background: white; color: var(--forest); padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 13px; border: none; cursor: pointer;" onclick="mockStartWalk()" data-i18n="walk_start_now">▶ Démarrer une sortie</button>
+          <div style="font-size: 11px; opacity: .85; margin-top: 8px;" data-i18n="walk_soon_gps_2">🔜 GPS temps réel arrive bientôt</div>
         </div>
       </div>
-      <div class="section-title" data-i18n="walks_history">Historique</div>
+      <div class="section-title" data-i18n="walks_history">Historique <span class="mini-tag" data-i18n="mini_example">Exemple</span></div>
       <div class="reminder-card">
         <div class="ic">🗺️</div>
         <div style="flex:1;">
@@ -2199,8 +2244,9 @@ body {
 
       <div class="section-title" data-i18n="rescue_journal">Journal d'évolution</div>
       <div class="card">
-        <textarea placeholder="Aujourd'hui, Oscar a..." style="width:100%; min-height: 90px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 13px; resize: vertical;"></textarea>
-        <button class="btn" style="margin-top: 8px;" data-i18n="rescue_save">Enregistrer</button>
+        <textarea id="rescueEntryInput" placeholder="Aujourd'hui, Oscar a..." style="width:100%; min-height: 90px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 13px; resize: vertical;"></textarea>
+        <button class="btn" style="margin-top: 8px;" onclick="saveRescueEntry()" data-i18n="rescue_save">Enregistrer</button>
+        <div id="rescueFeed" style="margin-top: 14px;"></div>
       </div>
 
       <button class="ask-ai-cta" onclick="openAIWith('Mon chien adopté se cache et ne mange plus, que faire ?')"><span>✨</span> <span data-i18n="rescue_ask_ai">Demander à l'IA conseil rescue</span></button>
@@ -2421,10 +2467,11 @@ const I18N = {
     feat_health: "Rappels santé, vaccins, vermifuge",
     feat_edu: "Éducation positive & coaching IA",
     feat_social: "Playdates & amis canins",
-    feat_sit: "Garde de confiance",
+    feat_books: "Lectures & programmes dédiés",
     ob_start: "Commencer",
-    ob_name_title: "Comment s'appelle ton compagnon ?",
-    ob_name_sub: "On va personnaliser toute l'app autour de lui ou d'elle.",
+    ob_name_title: "Faites connaissance",
+    ob_name_sub: "On personnalise toute l'app autour de vous deux.",
+    ob_owner_label: "Ton prénom",
     ob_name_label: "Nom du chien",
     back: "Retour",
     next: "Suivant",
@@ -2592,13 +2639,18 @@ const I18N = {
     ai_error: "Connexion à l'IA impossible. Vérifie ta connexion et réessaye dans un instant.",
     // Walks
     walk_today_t: "Sortie du jour",
-    walk_today_d: "42 min · 2,8 km · déjà 3 sorties cette semaine",
+    walk_today_d: "Lance ta première balade · l'historique s'affichera ici",
+    walk_soon_gps: "🔜 Bientôt : GPS temps réel",
+    walk_soon_gps_2: "🔜 GPS temps réel arrive bientôt",
     walk_start: "Démarrer",
     walk_start_now: "▶ Démarrer une sortie",
     walks_title: "Balades",
     walks_this_week: "Cette semaine",
+    walks_this_week_empty: "Aucune sortie enregistrée cette semaine",
     walks_3_walks: "3 sorties · 2h12 au total",
     walks_history: "Historique",
+    mini_example: "Exemple",
+    vid_ai_tag: "✨ Réponse IA détaillée",
     walks_advice: "Conseil santé",
     walks_advice_t: "Un jeune adulte comme Nala a besoin de ≈ 60 min d'activité par jour.",
     walks_advice_d: "Mixe marche libre, explorations olfactives et jeux de rappel. Évite les grosses chaleurs après 10h.",
@@ -2658,7 +2710,7 @@ const I18N = {
     senior_book_1_t: "Notre odeur après la pluie", senior_book_1_a: "Cédric Sapin-Defour · 2024", senior_book_1_d: "Un récit lumineux sur l'accompagnement d'un chien âgé jusqu'au bout.",
     senior_ask_ai: "Demander à l'IA avec tendresse",
     // QR
-    health_share: "Partager",
+    health_share: "Partager le carnet",
     qr_title: "Partager le carnet santé",
     qr_scan: "Scanner pour ouvrir le carnet",
     qr_desc: "Montre ce QR à ton vétérinaire, ta pension ou un proche. Lien temporaire, valable 24h.",
@@ -2678,10 +2730,11 @@ const I18N = {
     feat_health: "Health reminders, vaccines, deworming",
     feat_edu: "Positive training & AI coaching",
     feat_social: "Playdates & canine friends",
-    feat_sit: "Trusted dog sitting",
+    feat_books: "Books & dedicated programs",
     ob_start: "Get started",
-    ob_name_title: "What's your companion's name?",
-    ob_name_sub: "We'll personalize the whole app around them.",
+    ob_name_title: "Let's meet",
+    ob_name_sub: "We'll personalize the whole app around the two of you.",
+    ob_owner_label: "Your first name",
     ob_name_label: "Dog's name",
     back: "Back",
     next: "Next",
@@ -2709,10 +2762,10 @@ const I18N = {
     sec_reminders: "Upcoming reminders",
     rem_vac: "DHPPL booster",
     rem_vac_desc: "At the local vet",
-    rem_vac_date: "In 5 days · April 26",
+    rem_vac_date: "In 5 days",
     rem_verm: "Quarterly dewormer",
     rem_verm_desc: "Milbemax or equivalent",
-    rem_verm_date: "In 3 weeks · May 12",
+    rem_verm_date: "In 3 weeks",
     sec_feed: "Community feed",
     feed_when1: "2h ago · Fontainebleau Forest",
     feed_cap1: "First hike of the season! We met lots of friends on the way 🐾",
@@ -2849,7 +2902,12 @@ const I18N = {
     ai_error: "Can't reach the AI. Check your connection and try again in a moment.",
     // Walks
     walk_today_t: "Today's walk",
-    walk_today_d: "42 min · 1.7 mi · 3 walks this week",
+    walk_today_d: "Start your first walk · history will show up here",
+    walk_soon_gps: "🔜 Soon: real-time GPS",
+    walk_soon_gps_2: "🔜 Real-time GPS coming soon",
+    walks_this_week_empty: "No walk logged this week",
+    mini_example: "Example",
+    vid_ai_tag: "✨ Full AI reply",
     walk_start: "Start",
     walk_start_now: "▶ Start a walk",
     walks_title: "Walks",
@@ -2915,7 +2973,7 @@ const I18N = {
     senior_book_1_t: "Our Scent After the Rain", senior_book_1_a: "Cédric Sapin-Defour · 2024", senior_book_1_d: "A luminous account of walking an aging dog to the very end.",
     senior_ask_ai: "Ask the AI, with tenderness",
     // QR
-    health_share: "Share",
+    health_share: "Share record",
     qr_title: "Share the health record",
     qr_scan: "Scan to open the record",
     qr_desc: "Show this QR to your vet, boarding kennel or a friend. Temporary link, valid 24h.",
@@ -2934,6 +2992,7 @@ const I18N = {
 // ---------- Onboarding state ----------
 let obStepIdx = 0;
 const TOTAL_STEPS = 5;
+let ownerState = { name: "" };
 const dogState = {
   name: "",
   breed: null,
@@ -3011,9 +3070,15 @@ function showStep(n) {
 }
 function obNext() {
   if (obStepIdx === 1) {
+    const own = document.getElementById("ownerName").value.trim();
     const v = document.getElementById("dogName").value.trim();
     if (!v) { alert(currentLang === "fr" ? "Dis-nous son nom !" : "Tell us their name!"); return; }
     dogState.name = v;
+    if (own) {
+      ownerState.name = own;
+      const disp = document.getElementById("ownerNameDisp");
+      if (disp) disp.textContent = own;
+    }
   }
   if (obStepIdx === 2 && dogState.breed === null) {
     alert(currentLang === "fr" ? "Choisis une race (ou « Je ne sais pas »)" : "Pick a breed (or « I don't know »)"); return;
@@ -3100,17 +3165,65 @@ function selectDog(i) {
   renderDogSwitcher();
 }
 function addNewDog() {
-  // Réinitialise dogState et ouvre l'onboarding
+  // Réinitialise dogState et ouvre l'onboarding en sautant la page de bienvenue
   Object.assign(dogState, { name: "", breed: null, years: 2, months: 0, sex: null, weight: 15, emoji: "🐕", coat: "golden" });
   activeDogIdx = DOGS.length;
-  obStepIdx = 0;
   document.getElementById("onboarding").classList.add("show");
-  showStep(0);
   renderBreeds();
   renderEmojis();
+  // Si on a déjà un chien : on saute l'écran d'accueil et on pré-remplit le prénom propriétaire
+  if (DOGS.length > 0) {
+    showStep(1);
+    const own = document.getElementById("ownerName");
+    if (own && ownerState.name) own.value = ownerState.name;
+  } else {
+    showStep(0);
+  }
 }
 function mockStartWalk() {
-  alert(currentLang === "fr" ? "🗺️ Sortie démarrée ! (GPS mock)" : "🗺️ Walk started! (mock GPS)");
+  alert(currentLang === "fr"
+    ? "🗺️ Sortie démarrée !\n\nLe GPS temps réel arrive bientôt. En attendant, enregistre ta sortie quand tu rentres."
+    : "🗺️ Walk started!\n\nReal-time GPS is coming soon. For now, log your walk when you get back.");
+}
+
+// ---------- Rescue journal ----------
+let rescueEntries = [];
+function saveRescueEntry() {
+  const inp = document.getElementById("rescueEntryInput");
+  const txt = (inp.value || "").trim();
+  if (!txt) {
+    inp.focus();
+    inp.style.borderColor = "var(--terra)";
+    setTimeout(() => { inp.style.borderColor = "var(--border)"; }, 1400);
+    return;
+  }
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US",
+    { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+  rescueEntries.unshift({ text: txt, date: dateStr });
+  renderRescueFeed();
+  inp.value = "";
+  // micro-confirmation visuelle
+  const btn = inp.parentNode.querySelector(".btn");
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = currentLang === "fr" ? "✓ Enregistré" : "✓ Saved";
+    btn.style.background = "var(--forest)";
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = "";
+    }, 1600);
+  }
+}
+function renderRescueFeed() {
+  const feed = document.getElementById("rescueFeed");
+  if (!feed) return;
+  feed.innerHTML = rescueEntries.map(e => `
+    <div style="border-top: 1px solid var(--border); padding: 10px 0 6px; font-size: 13px;">
+      <div style="color: var(--ink-2); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px;">${escapeHtml(e.date)}</div>
+      <div style="line-height: 1.5;">${escapeHtml(e.text).replace(/\n/g, "<br/>")}</div>
+    </div>
+  `).join("");
 }
 function markDone(btn) {
   btn.textContent = currentLang === "fr" ? "✓ Fait !" : "✓ Done!";
@@ -3173,6 +3286,10 @@ function setLang(lang) {
   document.getElementById("check-fr").textContent = lang === "fr" ? "✓" : "";
   document.getElementById("check-en").textContent = lang === "en" ? "✓" : "";
   renderBreeds(document.getElementById("breedSearch")?.value || "");
+  // Re-rend les dates de rappel dans la bonne langue
+  if (typeof updateReminderDates === "function") updateReminderDates();
+  // Re-rend le switcher multi-chiens (libellé "Ajouter")
+  if (typeof renderDogSwitcher === "function") renderDogSwitcher();
 }
 function toggleLang() { setLang(currentLang === "fr" ? "en" : "fr"); }
 
@@ -3248,11 +3365,40 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
 }
 
+// ---------- Dynamic reminder dates ----------
+function updateReminderDates() {
+  const today = new Date();
+  const monthsFR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  const monthsEN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const fmt = (d) => {
+    const months = currentLang === "fr" ? monthsFR : monthsEN;
+    return currentLang === "fr" ? `${d.getDate()} ${months[d.getMonth()]}` : `${months[d.getMonth()]} ${d.getDate()}`;
+  };
+  const addDays = (n) => { const d = new Date(today); d.setDate(d.getDate() + n); return d; };
+
+  // Vaccin CHPPL : dans 5 jours
+  const vac = addDays(5);
+  const vacEl = document.getElementById("remVacDate");
+  if (vacEl) vacEl.textContent = currentLang === "fr"
+    ? `Dans 5 jours · ${fmt(vac)}`
+    : `In 5 days · ${fmt(vac)}`;
+
+  // Vermifuge : dans 3 semaines
+  const vrm = addDays(21);
+  const vrmEl = document.getElementById("remVermDate");
+  if (vrmEl) vrmEl.textContent = currentLang === "fr"
+    ? `Dans 3 semaines · ${fmt(vrm)}`
+    : `In 3 weeks · ${fmt(vrm)}`;
+}
+
 // ---------- Init ----------
 renderBreeds();
 renderEmojis();
 showStep(0);
-setLang("fr");
+// Détection auto de la langue du navigateur
+const navLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
+setLang(navLang.startsWith("en") ? "en" : "fr");
+updateReminderDates();
 </script>
 </body>
 </html>
