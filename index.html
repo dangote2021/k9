@@ -1069,6 +1069,182 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .pstat .num { font-size: 20px; font-weight: 800; color: var(--brand-dark); }
 .pstat .lbl { font-size: 11px; color: var(--ink-2); margin-top: 2px; }
 
+/* ID card (profile) */
+.id-card {
+  background: var(--white);
+  margin: 0 16px 14px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.id-card h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.id-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+.id-row:last-child { border-bottom: none; }
+.id-row .ic { font-size: 18px; width: 22px; text-align: center; }
+.id-row .k { flex: 0 0 120px; color: var(--ink-2); font-weight: 600; }
+.id-row .v { flex: 1; color: var(--ink); font-weight: 700; }
+.id-row .v .empty { color: var(--ink-2); font-weight: 500; font-style: italic; }
+.id-row input, .id-row select {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+}
+.id-row .tel-link {
+  color: var(--brand-dark);
+  text-decoration: none;
+  background: rgba(0,0,0,.04);
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+.id-card-actions {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.id-card-actions button {
+  flex: 1;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 11px 10px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.id-card-actions button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+
+/* Plan badge + upgrade card */
+.plan-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg); color: var(--ink);
+}
+.plan-badge.free { background: #EEE; color: #555; }
+.plan-badge.plus { background: linear-gradient(135deg,#E4D7FB,#BBA0F2); color: #3C2A6E; }
+.plan-badge.pro  { background: linear-gradient(135deg,#FFE8B8,#F5C451); color: #5A4206; }
+.upgrade-card {
+  margin: 0 16px 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg,#6C4BD4 0%, #8E6CFF 100%);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+.upgrade-card .t { font-size: 14px; font-weight: 800; }
+.upgrade-card .d { font-size: 12.5px; opacity: .92; margin-top: 4px; line-height: 1.4; }
+.upgrade-card button {
+  margin-top: 10px;
+  background: #fff; color: #4B2CB8;
+  border: none; padding: 10px 14px;
+  border-radius: 12px; font-weight: 800; font-size: 13px;
+  cursor: pointer;
+}
+.tier-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+.tier-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+}
+.tier-card.current { border-color: var(--brand); }
+.tier-card.featured { border-color: #8E6CFF; }
+.tier-card h5 { margin: 0 0 4px; font-size: 16px; font-weight: 800; }
+.tier-card .price { font-size: 22px; font-weight: 800; color: var(--ink); }
+.tier-card .price small { font-size: 11px; font-weight: 600; color: var(--ink-2); }
+.tier-card ul { margin: 10px 0 0; padding: 0; list-style: none; }
+.tier-card li { font-size: 12.5px; color: var(--ink); padding: 5px 0; display: flex; gap: 8px; align-items: flex-start; }
+.tier-card li::before { content: "✓"; color: var(--brand); font-weight: 800; }
+.tier-card li.no { color: var(--ink-2); }
+.tier-card li.no::before { content: "–"; color: var(--gray); }
+.tier-card button {
+  margin-top: 12px;
+  width: 100%;
+  border: none;
+  padding: 11px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tier-card .cta-primary { background: var(--brand); color: #fff; }
+.tier-card .cta-ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--border); }
+.tier-card .cta-current { background: #E8E8EC; color: var(--ink-2); cursor: default; }
+
+/* Senior badge */
+.senior-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #FDE4C6; color: #7A4A0C;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* Birthday banner */
+.bday-banner {
+  margin: 0 16px 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg,#FFE0AE, #FFC87A);
+  color: #5A3D02;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow);
+}
+.bday-banner .emoji { font-size: 30px; line-height: 1; }
+.bday-banner .t { font-weight: 800; font-size: 14px; }
+.bday-banner .d { font-size: 12px; opacity: .88; margin-top: 2px; }
+.bday-banner .close {
+  background: rgba(0,0,0,.08); border: none; padding: 4px 8px;
+  border-radius: 999px; font-size: 14px; cursor: pointer; color: #5A3D02;
+}
+
+/* Share card canvas preview */
+.share-preview {
+  width: 100%; max-width: 340px;
+  margin: 10px auto 14px;
+  display: block;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Empty state */
+.empty-state {
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--ink-2);
+}
+.empty-state .emo { font-size: 36px; }
+.empty-state .t { font-size: 14px; font-weight: 700; color: var(--ink); margin: 8px 0 4px; }
+.empty-state .d { font-size: 12.5px; }
+
 .menu-row {
   display: flex;
   align-items: center;
@@ -2015,6 +2191,28 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         <div class="pstat"><div class="num" id="profStatBadges">0/24</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
       </div>
 
+      <!-- Carte d'identité -->
+      <div class="section-title" data-i18n="profile_idcard">Carte d'identité</div>
+      <div class="id-card" id="idCard">
+        <div class="id-row"><div class="ic">🎂</div><div class="k" data-i18n="idc_bday">Anniversaire</div><div class="v" id="idcBdayView"><span class="empty" data-i18n="idc_bday_empty">À renseigner</span></div></div>
+        <div class="id-row"><div class="ic">🩺</div><div class="k" data-i18n="idc_vet">Vétérinaire</div><div class="v" id="idcVetView"><span class="empty" data-i18n="idc_vet_empty">À renseigner</span></div></div>
+        <div class="id-row" id="idcVetPhoneRow" style="display:none;"><div class="ic">📞</div><div class="k" data-i18n="idc_phone">Téléphone</div><div class="v" id="idcVetPhoneView"></div></div>
+        <div class="id-row"><div class="ic">💉</div><div class="k" data-i18n="idc_chip">Puce / tatouage</div><div class="v" id="idcChipView"><span class="empty" data-i18n="idc_chip_empty">À renseigner</span></div></div>
+        <div class="id-card-actions">
+          <button onclick="openIDCardEdit()" data-i18n="idc_edit">Modifier</button>
+          <button class="ghost" onclick="openShareDog()" data-i18n="idc_share">📤 Partager</button>
+        </div>
+      </div>
+
+      <!-- Statut abonnement -->
+      <div class="section-title" data-i18n="profile_plan">Mon abonnement</div>
+      <div class="menu-row" onclick="openSub('sub-plan')">
+        <div class="ic">⭐</div>
+        <div class="label" data-i18n="menu_plan">Plan K9</div>
+        <div id="planBadgeDisp" class="plan-badge free">Gratuit</div>
+        <div class="arr">›</div>
+      </div>
+
       <div class="section-title" data-i18n="profile_badges">Mes badges</div>
       <div class="badges-grid">
         <div class="badge"><div class="emoji">🏆</div><div class="name" data-i18n="badge_first">Premier pas</div></div>
@@ -2725,6 +2923,104 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
     </div>
   </div>
 
+  <!-- ID card edit -->
+  <div class="sub-screen" id="sub-idcard">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-idcard')">‹</button>
+      <div class="sub-title" data-i18n="idc_title">Carte d'identité</div>
+    </div>
+    <div class="sub-body">
+      <div class="id-card" style="margin: 12px 16px;">
+        <div class="id-row"><div class="ic">🎂</div><div class="k" data-i18n="idc_bday">Anniversaire</div><div class="v"><input type="date" id="idcBdayInput" /></div></div>
+        <div class="id-row"><div class="ic">🩺</div><div class="k" data-i18n="idc_vet_name">Nom véto</div><div class="v"><input type="text" id="idcVetName" placeholder="Dr Martin" /></div></div>
+        <div class="id-row"><div class="ic">📞</div><div class="k" data-i18n="idc_phone">Téléphone</div><div class="v"><input type="tel" id="idcVetPhone" placeholder="+33 1 23 45 67 89" /></div></div>
+        <div class="id-row"><div class="ic">💉</div><div class="k" data-i18n="idc_chip">Puce / tatouage</div><div class="v"><input type="text" id="idcChip" placeholder="250 269…" /></div></div>
+        <div class="id-row"><div class="ic">⚠️</div><div class="k" data-i18n="idc_allerg">Allergies</div><div class="v"><input type="text" id="idcAllerg" placeholder="Poulet, pollen…" /></div></div>
+        <div class="id-card-actions">
+          <button onclick="saveIDCard()" data-i18n="idc_save">Enregistrer</button>
+        </div>
+      </div>
+      <div style="padding: 0 16px; font-size: 11px; color: var(--ink-2); text-align: center;" data-i18n="idc_privacy">Ces infos restent sur cet appareil. Active l'export pour les sauvegarder.</div>
+    </div>
+  </div>
+
+  <!-- Share dog profile -->
+  <div class="sub-screen" id="sub-share-dog">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-share-dog')">‹</button>
+      <div class="sub-title" data-i18n="share_title">Partager le profil</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 14px 16px 6px; font-size: 13px; color: var(--ink-2); text-align: center;" data-i18n="share_desc">Une carte à envoyer à la famille, au pet-sitter ou aux amis.</div>
+      <canvas id="shareCanvas" class="share-preview" width="680" height="880"></canvas>
+      <div class="id-card-actions" style="margin: 0 16px 12px;">
+        <button onclick="downloadShareCard()" data-i18n="share_download">⬇️ Télécharger</button>
+        <button class="ghost" onclick="shareCardNative()" data-i18n="share_send">📲 Partager</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan / abonnement -->
+  <div class="sub-screen" id="sub-plan">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-plan')">‹</button>
+      <div class="sub-title" data-i18n="plan_title">Choisis ton plan K9</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 14px 16px 6px; font-size: 13px; color: var(--ink-2); text-align: center;" data-i18n="plan_intro">Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.</div>
+      <div class="tier-grid" id="tierGrid">
+        <div class="tier-card" id="tier-free">
+          <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h5 data-i18n="tier_free_t">Gratuit</h5>
+            <span class="plan-badge free" data-i18n="tier_free_b">Free</span>
+          </div>
+          <div class="price">0€ <small data-i18n="tier_always">pour toujours</small></div>
+          <ul>
+            <li data-i18n="tier_free_1">1 chien</li>
+            <li data-i18n="tier_free_2">10 questions IA par mois</li>
+            <li data-i18n="tier_free_3">Rappels santé de base</li>
+            <li data-i18n="tier_free_4">Journal de balades</li>
+            <li class="no" data-i18n="tier_free_5">Plans personnalisés</li>
+            <li class="no" data-i18n="tier_free_6">Export PDF véto</li>
+          </ul>
+          <button id="tierFreeBtn" class="cta-ghost" onclick="setPlan('free')" data-i18n="tier_free_cta">Plan actuel</button>
+        </div>
+        <div class="tier-card featured" id="tier-plus">
+          <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h5 data-i18n="tier_plus_t">K9 Plus</h5>
+            <span class="plan-badge plus" data-i18n="tier_plus_b">Populaire</span>
+          </div>
+          <div class="price">5,99€ <small data-i18n="tier_per_month">/ mois</small></div>
+          <ul>
+            <li data-i18n="tier_plus_1">Chiens illimités</li>
+            <li data-i18n="tier_plus_2">IA illimitée, réponses longues</li>
+            <li data-i18n="tier_plus_3">Plans santé & éducation personnalisés</li>
+            <li data-i18n="tier_plus_4">Export PDF véto</li>
+            <li data-i18n="tier_plus_5">Rappels avancés (saisons, lunaison)</li>
+            <li data-i18n="tier_plus_6">Badges premium</li>
+          </ul>
+          <button id="tierPlusBtn" class="cta-primary" onclick="setPlan('plus')" data-i18n="tier_plus_cta">Choisir Plus</button>
+        </div>
+        <div class="tier-card" id="tier-pro">
+          <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h5 data-i18n="tier_pro_t">K9 Pro</h5>
+            <span class="plan-badge pro" data-i18n="tier_pro_b">Pro</span>
+          </div>
+          <div class="price">12€ <small data-i18n="tier_per_month">/ mois</small></div>
+          <ul>
+            <li data-i18n="tier_pro_1">Tout K9 Plus</li>
+            <li data-i18n="tier_pro_2">Multi-profils (pet-sitter, éleveur)</li>
+            <li data-i18n="tier_pro_3">Dashboard clients</li>
+            <li data-i18n="tier_pro_4">Mode offline complet</li>
+            <li data-i18n="tier_pro_5">Rapport mensuel auto</li>
+          </ul>
+          <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Choisir Pro</button>
+        </div>
+      </div>
+      <div style="padding: 0 16px 20px; font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.55;" data-i18n="plan_disclaimer">Le paiement n'est pas encore activé sur cette version beta. Choisis ton plan pour l'aperçu, il sera facturé quand Stripe sera branché.</div>
+    </div>
+  </div>
+
   <!-- Languages -->
   <div class="sub-screen" id="sub-langs">
     <div class="sub-header">
@@ -2980,6 +3276,12 @@ const BREEDS = [
   { emoji: "🐕", fr: "Pomeranian", en: "Pomeranian" },
   { emoji: "🐕", fr: "Carlin", en: "Pug" },
   { emoji: "🐕", fr: "Laobé-Africanis", en: "Laobé-Africanis" },
+  { emoji: "🐕", fr: "Azawakh", en: "Azawakh" },
+  { emoji: "🐕", fr: "Sloughi", en: "Sloughi" },
+  { emoji: "🦮", fr: "Dogue du Tibet", en: "Tibetan Mastiff" },
+  { emoji: "🐕", fr: "Xoloitzcuintle", en: "Xoloitzcuintle" },
+  { emoji: "🐕", fr: "Basenji", en: "Basenji" },
+  { emoji: "🐕", fr: "Akita Américain", en: "American Akita" },
   { emoji: "🐶", fr: "Croisé", en: "Mixed breed" },
   { emoji: "❓", fr: "Je ne sais pas", en: "I don't know" },
 ];
@@ -3085,6 +3387,55 @@ const I18N = {
     sugg_3: "Pourquoi {dog} aboie-t-{il_elle} seul{e} ?",
     sugg_4: "Rappel : comment bien apprendre à {dog} ?",
     profile_title: "Profil",
+    profile_idcard: "Carte d'identité",
+    profile_plan: "Mon abonnement",
+    menu_plan: "Plan K9",
+    idc_title: "Carte d'identité",
+    idc_bday: "Anniversaire",
+    idc_bday_empty: "À renseigner",
+    idc_vet: "Vétérinaire",
+    idc_vet_empty: "À renseigner",
+    idc_vet_name: "Nom véto",
+    idc_phone: "Téléphone",
+    idc_chip: "Puce / tatouage",
+    idc_chip_empty: "À renseigner",
+    idc_allerg: "Allergies",
+    idc_edit: "Modifier",
+    idc_share: "📤 Partager",
+    idc_save: "Enregistrer",
+    idc_privacy: "Ces infos restent sur cet appareil. Active l'export pour les sauvegarder.",
+    share_title: "Partager le profil",
+    share_desc: "Une carte à envoyer à la famille, au pet-sitter ou aux amis.",
+    share_download: "⬇️ Télécharger",
+    share_send: "📲 Partager",
+    plan_title: "Choisis ton plan K9",
+    plan_intro: "Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.",
+    plan_disclaimer: "Le paiement n'est pas encore activé sur cette version beta. Choisis ton plan pour l'aperçu, il sera facturé quand Stripe sera branché.",
+    tier_free_t: "Gratuit", tier_free_b: "Free",
+    tier_always: "pour toujours",
+    tier_free_1: "1 chien",
+    tier_free_2: "10 questions IA par mois",
+    tier_free_3: "Rappels santé de base",
+    tier_free_4: "Journal de balades",
+    tier_free_5: "Plans personnalisés",
+    tier_free_6: "Export PDF véto",
+    tier_free_cta: "Plan actuel",
+    tier_plus_t: "K9 Plus", tier_plus_b: "Populaire",
+    tier_per_month: "/ mois",
+    tier_plus_1: "Chiens illimités",
+    tier_plus_2: "IA illimitée, réponses longues",
+    tier_plus_3: "Plans santé & éducation personnalisés",
+    tier_plus_4: "Export PDF véto",
+    tier_plus_5: "Rappels avancés (saisons, lunaison)",
+    tier_plus_6: "Badges premium",
+    tier_plus_cta: "Choisir Plus",
+    tier_pro_t: "K9 Pro", tier_pro_b: "Pro",
+    tier_pro_1: "Tout K9 Plus",
+    tier_pro_2: "Multi-profils (pet-sitter, éleveur)",
+    tier_pro_3: "Dashboard clients",
+    tier_pro_4: "Mode offline complet",
+    tier_pro_5: "Rapport mensuel auto",
+    tier_pro_cta: "Choisir Pro",
     profile_badges: "Mes badges",
     badge_first: "Premier pas", badge_walker: "Randonneur", badge_learner: "Élève appliqué",
     badge_social: "Sociable", badge_health: "Santé de fer", badge_photo: "Photographe",
@@ -3397,6 +3748,55 @@ const I18N = {
     sugg_3: "Why does {dog} bark when alone?",
     sugg_4: "Recall: how to train {dog} well?",
     profile_title: "Profile",
+    profile_idcard: "ID card",
+    profile_plan: "My plan",
+    menu_plan: "K9 Plan",
+    idc_title: "ID card",
+    idc_bday: "Birthday",
+    idc_bday_empty: "Not set",
+    idc_vet: "Vet",
+    idc_vet_empty: "Not set",
+    idc_vet_name: "Vet name",
+    idc_phone: "Phone",
+    idc_chip: "Chip / tattoo",
+    idc_chip_empty: "Not set",
+    idc_allerg: "Allergies",
+    idc_edit: "Edit",
+    idc_share: "📤 Share",
+    idc_save: "Save",
+    idc_privacy: "This info stays on this device. Enable export to back it up.",
+    share_title: "Share profile",
+    share_desc: "A card to send to family, pet-sitter or friends.",
+    share_download: "⬇️ Download",
+    share_send: "📲 Share",
+    plan_title: "Choose your K9 plan",
+    plan_intro: "Free covers the basics. Upgrade to Plus for unlimited AI and multiple dogs.",
+    plan_disclaimer: "Payment isn't live in beta yet. Pick your plan for preview — Stripe billing will kick in soon.",
+    tier_free_t: "Free", tier_free_b: "Free",
+    tier_always: "forever",
+    tier_free_1: "1 dog",
+    tier_free_2: "10 AI questions per month",
+    tier_free_3: "Basic health reminders",
+    tier_free_4: "Walk log",
+    tier_free_5: "Personalized plans",
+    tier_free_6: "Vet PDF export",
+    tier_free_cta: "Current plan",
+    tier_plus_t: "K9 Plus", tier_plus_b: "Popular",
+    tier_per_month: "/ month",
+    tier_plus_1: "Unlimited dogs",
+    tier_plus_2: "Unlimited AI, long answers",
+    tier_plus_3: "Personalized health & training plans",
+    tier_plus_4: "Vet PDF export",
+    tier_plus_5: "Advanced reminders (seasons, moon)",
+    tier_plus_6: "Premium badges",
+    tier_plus_cta: "Choose Plus",
+    tier_pro_t: "K9 Pro", tier_pro_b: "Pro",
+    tier_pro_1: "Everything in Plus",
+    tier_pro_2: "Multi-profiles (pet-sitters, breeders)",
+    tier_pro_3: "Client dashboard",
+    tier_pro_4: "Full offline mode",
+    tier_pro_5: "Monthly auto-report",
+    tier_pro_cta: "Choose Pro",
     profile_badges: "My badges",
     badge_first: "First step", badge_walker: "Hiker", badge_learner: "Dedicated student",
     badge_social: "Social", badge_health: "Iron health", badge_photo: "Photographer",
@@ -3757,6 +4157,10 @@ function obFinish() {
   renderDogSwitcher();
   onboardingDone = true;
   K9Store.save();
+  if (typeof renderIDCard === "function") renderIDCard();
+  if (typeof applySeniorMode === "function") applySeniorMode();
+  if (typeof checkBirthdayBanner === "function") checkBirthdayBanner();
+  if (typeof renderPlanBadge === "function") renderPlanBadge();
 }
 
 // ---------- Multi-chien switcher ----------
@@ -3798,6 +4202,11 @@ function selectDog(i) {
   renderDogSwitcher();
   // Re-injecte les placeholders {dog}/{owner} dans les textes i18n
   setLang(currentLang);
+  // Carte ID + mode senior + anniversaire + badge plan
+  if (typeof renderIDCard === "function") renderIDCard();
+  if (typeof applySeniorMode === "function") applySeniorMode();
+  if (typeof checkBirthdayBanner === "function") checkBirthdayBanner();
+  if (typeof renderPlanBadge === "function") renderPlanBadge();
 }
 function addNewDog() {
   // Réinitialise dogState et ouvre l'onboarding en sautant la page de bienvenue
@@ -4165,6 +4574,17 @@ async function sendAI() {
   const q = input.value.trim();
   if (!q) return;
   const body = document.getElementById("chatBody");
+  // Freemium quota check
+  const quota = checkAIQuota();
+  if (!quota.ok) {
+    const paywall = document.createElement("div");
+    paywall.className = "msg ai";
+    paywall.innerHTML = `${quota.msg}<br><br>
+      <button onclick="closeAI(); openSub('sub-plan');" style="background: var(--brand); color: #fff; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer;">⭐ ${currentLang === "fr" ? "Voir les plans" : "See plans"}</button>`;
+    body.appendChild(paywall);
+    body.scrollTop = body.scrollHeight;
+    return;
+  }
   // User message
   const um = document.createElement("div");
   um.className = "msg user";
@@ -4222,6 +4642,7 @@ async function sendAI() {
       replyText = data.reply || (currentLang === "fr"
         ? "Désolé, je n'ai pas pu générer de réponse. Reformule ta question ?"
         : "Sorry, I couldn't generate an answer. Could you rephrase?");
+      consumeAIQuota();
     }
   } catch (e) {
     console.error("chat fetch error", e);
@@ -4613,6 +5034,365 @@ function confirmResetData() {
   location.reload();
 }
 
+// ==================== ID CARD (véto, anniversaire, puce) ====================
+function getActiveDogObj() {
+  return (typeof DOGS !== "undefined" && DOGS[activeDogIdx]) || dogState || null;
+}
+function renderIDCard() {
+  const d = getActiveDogObj();
+  if (!d) return;
+  const bdayView = document.getElementById("idcBdayView");
+  const vetView = document.getElementById("idcVetView");
+  const vetPhoneRow = document.getElementById("idcVetPhoneRow");
+  const vetPhoneView = document.getElementById("idcVetPhoneView");
+  const chipView = document.getElementById("idcChipView");
+  const emptyTxt = currentLang === "fr" ? "À renseigner" : "Not set";
+  if (bdayView) {
+    bdayView.innerHTML = d.bday
+      ? `<span>${formatBday(d.bday)}</span>`
+      : `<span class="empty">${emptyTxt}</span>`;
+  }
+  if (vetView) {
+    vetView.innerHTML = d.vetName
+      ? `<span>${escapeHTML(d.vetName)}</span>`
+      : `<span class="empty">${emptyTxt}</span>`;
+  }
+  if (vetPhoneRow && vetPhoneView) {
+    if (d.vetPhone) {
+      vetPhoneRow.style.display = "";
+      const clean = String(d.vetPhone).replace(/\s+/g, "");
+      vetPhoneView.innerHTML = `<a class="tel-link" href="tel:${clean}">📞 ${escapeHTML(d.vetPhone)}</a>`;
+    } else {
+      vetPhoneRow.style.display = "none";
+    }
+  }
+  if (chipView) {
+    chipView.innerHTML = d.chipId
+      ? `<span>${escapeHTML(d.chipId)}</span>`
+      : `<span class="empty">${emptyTxt}</span>`;
+  }
+}
+function formatBday(iso) {
+  try {
+    const [y,m,dd] = iso.split("-");
+    const months = currentLang === "fr"
+      ? ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]
+      : ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${+dd} ${months[+m - 1] || ""} ${y}`;
+  } catch { return iso; }
+}
+function escapeHTML(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function openIDCardEdit() {
+  const d = getActiveDogObj();
+  if (!d) return;
+  document.getElementById("idcBdayInput").value = d.bday || "";
+  document.getElementById("idcVetName").value = d.vetName || "";
+  document.getElementById("idcVetPhone").value = d.vetPhone || "";
+  document.getElementById("idcChip").value = d.chipId || "";
+  document.getElementById("idcAllerg").value = d.allergies || "";
+  openSub("sub-idcard");
+}
+function saveIDCard() {
+  const d = getActiveDogObj();
+  if (!d) return;
+  d.bday = document.getElementById("idcBdayInput").value || "";
+  d.vetName = document.getElementById("idcVetName").value.trim();
+  d.vetPhone = document.getElementById("idcVetPhone").value.trim();
+  d.chipId = document.getElementById("idcChip").value.trim();
+  d.allergies = document.getElementById("idcAllerg").value.trim();
+  if (DOGS[activeDogIdx]) DOGS[activeDogIdx] = { ...DOGS[activeDogIdx], ...d };
+  K9Store.save();
+  renderIDCard();
+  checkBirthdayBanner();
+  closeSub("sub-idcard");
+}
+
+// ==================== BIRTHDAY BANNER ====================
+function checkBirthdayBanner() {
+  const d = getActiveDogObj();
+  if (!d || !d.bday) return hideBirthdayBanner();
+  const today = new Date();
+  const [y, m, dd] = d.bday.split("-").map(Number);
+  if (!y || !m || !dd) return hideBirthdayBanner();
+  if (today.getMonth() + 1 === m && today.getDate() === dd) {
+    showBirthdayBanner(d, today.getFullYear() - y);
+  } else {
+    hideBirthdayBanner();
+  }
+}
+function showBirthdayBanner(dog, age) {
+  let banner = document.getElementById("bdayBanner");
+  if (!banner) {
+    banner = document.createElement("div");
+    banner.className = "bday-banner";
+    banner.id = "bdayBanner";
+    const home = document.getElementById("screen-home");
+    if (home) home.insertBefore(banner, home.firstChild.nextSibling);
+  }
+  const msg = currentLang === "fr"
+    ? `Joyeux anniversaire ${dog.name} !`
+    : `Happy birthday ${dog.name}!`;
+  const sub = currentLang === "fr"
+    ? `${age} ${age > 1 ? "ans" : "an"} aujourd'hui 🎉`
+    : `${age} ${age > 1 ? "years" : "year"} old today 🎉`;
+  banner.innerHTML = `
+    <div class="emoji">🎂</div>
+    <div style="flex:1;">
+      <div class="t">${msg}</div>
+      <div class="d">${sub}</div>
+    </div>
+    <button class="close" onclick="hideBirthdayBanner()">×</button>
+  `;
+}
+function hideBirthdayBanner() {
+  const b = document.getElementById("bdayBanner");
+  if (b) b.remove();
+}
+
+// ==================== SENIOR MODE AUTO ====================
+function applySeniorMode() {
+  const d = getActiveDogObj();
+  const isSenior = d && (d.years || 0) >= 8;
+  document.body.classList.toggle("mode-senior", isSenior);
+  // Badge dans le profil
+  let badge = document.getElementById("seniorBadge");
+  const metaEl = document.getElementById("dogMetaHero");
+  if (isSenior) {
+    if (!badge && metaEl) {
+      badge = document.createElement("span");
+      badge.id = "seniorBadge";
+      badge.className = "senior-badge";
+      badge.textContent = currentLang === "fr" ? "🦴 Senior" : "🦴 Senior";
+      metaEl.appendChild(badge);
+    }
+  } else if (badge) {
+    badge.remove();
+  }
+  // Tip contextuel dans home
+  let tip = document.getElementById("seniorTip");
+  if (isSenior && !tip) {
+    tip = document.createElement("div");
+    tip.id = "seniorTip";
+    tip.className = "card";
+    tip.style.margin = "0 16px 14px";
+    tip.innerHTML = currentLang === "fr"
+      ? `<div class="chip mb-10">🦴 Mode senior activé</div>
+         <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Des articulations qui ont besoin d'attention</div>
+         <div style="font-size: 12.5px; color: var(--ink-2);">À partir de 8 ans, glucosamine + balades fractionnées (2× 20 min plutôt qu'1× 40 min). Bilan véto annuel recommandé.</div>`
+      : `<div class="chip mb-10">🦴 Senior mode on</div>
+         <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Joints that need attention</div>
+         <div style="font-size: 12.5px; color: var(--ink-2);">From age 8+, glucosamine + split walks (2× 20 min instead of 1× 40 min). Yearly vet check recommended.</div>`;
+    const home = document.getElementById("screen-home");
+    const anchor = home?.querySelector(".walk-card") || home?.querySelector(".ai-home-bar");
+    if (home && anchor) home.insertBefore(tip, anchor.nextSibling);
+    else if (home) home.appendChild(tip);
+  } else if (!isSenior && tip) {
+    tip.remove();
+  }
+}
+
+// ==================== SHARE DOG PROFILE (canvas) ====================
+function openShareDog() {
+  const d = getActiveDogObj();
+  if (!d) return;
+  openSub("sub-share-dog");
+  requestAnimationFrame(() => drawShareCard(d));
+}
+function drawShareCard(d) {
+  const cv = document.getElementById("shareCanvas");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height;
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, "#FFE9C9");
+  grad.addColorStop(1, "#FFD399");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  // Rounded card inside
+  const pad = 32;
+  ctx.fillStyle = "#FFFFFF";
+  roundRect(ctx, pad, pad, W - pad*2, H - pad*2, 36);
+  ctx.fill();
+  // Header strip
+  ctx.fillStyle = "#6C4BD4";
+  roundRect(ctx, pad, pad, W - pad*2, 110, { tl: 36, tr: 36, br: 0, bl: 0 });
+  ctx.fill();
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "700 28px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("K9 — " + (currentLang === "fr" ? "Carte d'identité" : "ID Card"), W/2, pad + 62);
+  // Dog emoji
+  ctx.font = "180px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(d.emoji || "🐕", W/2, pad + 330);
+  // Name
+  ctx.fillStyle = "#1C1D28";
+  ctx.font = "800 48px system-ui, sans-serif";
+  ctx.fillText(d.name || "—", W/2, pad + 400);
+  // Breed + age
+  const breed = BREEDS[d.breed] || BREEDS[BREEDS.length - 1];
+  const ageTxt = d.years > 0
+    ? `${d.years} ${currentLang === "fr" ? (d.years > 1 ? "ans" : "an") : (d.years > 1 ? "yrs" : "yr")}`
+    : `${d.months || 0} ${currentLang === "fr" ? "mois" : "months"}`;
+  ctx.fillStyle = "#5A5C6C";
+  ctx.font = "500 24px system-ui, sans-serif";
+  ctx.fillText(`${breed[currentLang] || breed.fr} · ${ageTxt} · ${d.weight || "?"} kg`, W/2, pad + 444);
+  // Info block
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#1C1D28";
+  ctx.font = "700 20px system-ui, sans-serif";
+  let y = pad + 520;
+  const lineH = 50;
+  const labelFR = { vet: "🩺 Véto", phone: "📞 Tél.", chip: "💉 Puce", allerg: "⚠️ Allergies", sex: "♂ Sexe" };
+  const labelEN = { vet: "🩺 Vet", phone: "📞 Phone", chip: "💉 Chip", allerg: "⚠️ Allergies", sex: "♂ Sex" };
+  const L = currentLang === "fr" ? labelFR : labelEN;
+  const rows = [
+    [L.sex, d.sex === "f" ? (currentLang === "fr" ? "Femelle" : "Female") : d.sex === "m" ? (currentLang === "fr" ? "Mâle" : "Male") : "—"],
+    [L.vet, d.vetName || "—"],
+    [L.phone, d.vetPhone || "—"],
+    [L.chip, d.chipId || "—"],
+    [L.allerg, d.allergies || "—"],
+  ];
+  rows.forEach(([lbl, val]) => {
+    ctx.fillStyle = "#5A5C6C";
+    ctx.font = "600 18px system-ui, sans-serif";
+    ctx.fillText(lbl, pad + 36, y);
+    ctx.fillStyle = "#1C1D28";
+    ctx.font = "700 20px system-ui, sans-serif";
+    ctx.fillText(String(val).slice(0, 28), pad + 200, y);
+    y += lineH;
+  });
+  // Footer
+  ctx.fillStyle = "#8A8D9E";
+  ctx.font = "500 16px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(currentLang === "fr" ? "Généré avec K9 — k9-one.vercel.app" : "Created with K9 — k9-one.vercel.app", W/2, H - pad - 30);
+}
+function roundRect(ctx, x, y, w, h, r) {
+  if (typeof r === "number") r = { tl: r, tr: r, br: r, bl: r };
+  ctx.beginPath();
+  ctx.moveTo(x + r.tl, y);
+  ctx.lineTo(x + w - r.tr, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+  ctx.lineTo(x + w, y + h - r.br);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+  ctx.lineTo(x + r.bl, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+  ctx.lineTo(x, y + r.tl);
+  ctx.quadraticCurveTo(x, y, x + r.tl, y);
+  ctx.closePath();
+}
+function downloadShareCard() {
+  const cv = document.getElementById("shareCanvas");
+  if (!cv) return;
+  const a = document.createElement("a");
+  const d = getActiveDogObj();
+  a.href = cv.toDataURL("image/png");
+  a.download = `k9-${(d?.name || "dog").toLowerCase()}.png`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+async function shareCardNative() {
+  const cv = document.getElementById("shareCanvas");
+  if (!cv) return;
+  try {
+    const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+    const file = new File([blob], "k9-profile.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "K9", text: (getActiveDogObj()?.name || "") + " 🐾" });
+    } else {
+      downloadShareCard();
+    }
+  } catch (e) {
+    downloadShareCard();
+  }
+}
+
+// ==================== FREEMIUM PLAN ====================
+let userPlan = "free"; // free | plus | pro
+let aiQuota = { month: "", used: 0 };
+function planLabel(p) {
+  return currentLang === "fr"
+    ? ({ free: "Gratuit", plus: "K9 Plus", pro: "K9 Pro" }[p] || "Gratuit")
+    : ({ free: "Free", plus: "K9 Plus", pro: "K9 Pro" }[p] || "Free");
+}
+function renderPlanBadge() {
+  const badge = document.getElementById("planBadgeDisp");
+  if (badge) {
+    badge.className = "plan-badge " + userPlan;
+    badge.textContent = planLabel(userPlan);
+  }
+  // Update tier buttons
+  ["free","plus","pro"].forEach(p => {
+    const card = document.getElementById("tier-" + p);
+    const btn  = document.getElementById("tier" + p[0].toUpperCase() + p.slice(1) + "Btn");
+    if (card) card.classList.toggle("current", p === userPlan);
+    if (btn) {
+      if (p === userPlan) {
+        btn.className = "cta-current";
+        btn.textContent = currentLang === "fr" ? "Plan actuel" : "Current plan";
+      } else {
+        btn.className = p === "plus" ? "cta-primary" : "cta-ghost";
+        btn.textContent = currentLang === "fr"
+          ? (p === "free" ? "Revenir au gratuit" : `Choisir ${planLabel(p)}`)
+          : (p === "free" ? "Back to free" : `Choose ${planLabel(p)}`);
+      }
+    }
+  });
+}
+function setPlan(p) {
+  userPlan = p;
+  try { localStorage.setItem("k9_plan", p); } catch {}
+  renderPlanBadge();
+  // Feedback
+  const msg = currentLang === "fr"
+    ? (p === "free" ? "Plan gratuit activé." : `${planLabel(p)} activé (beta, pas de facturation).`)
+    : (p === "free" ? "Free plan activated." : `${planLabel(p)} activated (beta, no billing yet).`);
+  alert(msg);
+}
+function loadPlan() {
+  try {
+    userPlan = localStorage.getItem("k9_plan") || "free";
+    const q = JSON.parse(localStorage.getItem("k9_ai_quota") || "null");
+    if (q) aiQuota = q;
+  } catch {}
+  const thisMonth = new Date().toISOString().slice(0,7);
+  if (aiQuota.month !== thisMonth) { aiQuota = { month: thisMonth, used: 0 }; saveQuota(); }
+}
+function saveQuota() {
+  try { localStorage.setItem("k9_ai_quota", JSON.stringify(aiQuota)); } catch {}
+}
+function checkAIQuota() {
+  if (userPlan !== "free") return { ok: true };
+  loadPlan();
+  const limit = 10;
+  if (aiQuota.used >= limit) {
+    return {
+      ok: false,
+      msg: currentLang === "fr"
+        ? `💫 Tu as utilisé tes ${limit} questions gratuites ce mois-ci. Passe en K9 Plus pour continuer sans limite.`
+        : `💫 You've used your ${limit} free questions this month. Upgrade to K9 Plus for unlimited.`,
+    };
+  }
+  return { ok: true, remaining: limit - aiQuota.used };
+}
+function consumeAIQuota() {
+  if (userPlan !== "free") return;
+  aiQuota.used = (aiQuota.used || 0) + 1;
+  saveQuota();
+}
+
+// ==================== EMPTY STATES ====================
+function renderEmptyStates() {
+  // Social feed honnête si aucun ami ajouté
+  const socialFeed = document.querySelector("#screen-social .social-feed");
+  if (socialFeed && !socialFeed.dataset.emptyChecked) {
+    socialFeed.dataset.emptyChecked = "1";
+  }
+}
+
 // ---------- Init ----------
 renderBreeds();
 renderEmojis();
@@ -4630,6 +5410,10 @@ if (!_k9Saved || !_k9Saved.settings?.lang) {
 } else {
   setLang(currentLang);
 }
+
+// 2b. Charge le plan freemium + quota IA
+loadPlan();
+renderPlanBadge();
 
 // 3. Si l'utilisateur a déjà onboardé (chien existant), on saute directement à l'app
 if (onboardingDone && DOGS.length > 0) {
