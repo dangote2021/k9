@@ -1828,11 +1828,11 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         <div class="age-row">
           <div style="flex: 2;">
             <div class="field-label" data-i18n="ob_age_years">Années</div>
-            <input class="input" id="dogYears" type="number" min="0" max="25" value="2" />
+            <input class="input" id="dogYears" type="number" inputmode="numeric" min="0" max="25" value="2" />
           </div>
           <div style="flex: 1;">
             <div class="field-label" data-i18n="ob_age_months">Mois</div>
-            <input class="input" id="dogMonths" type="number" min="0" max="11" value="0" />
+            <input class="input" id="dogMonths" type="number" inputmode="numeric" min="0" max="11" value="0" />
           </div>
         </div>
         <div class="field-label" data-i18n="ob_sex">Sexe</div>
@@ -1841,7 +1841,7 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
           <button class="breed-option" style="flex: 1; justify-content: center;" onclick="selectSex(this,'f')"><span class="bem">♀️</span><span data-i18n="sex_f">Femelle</span></button>
         </div>
         <div class="field-label" data-i18n="ob_weight">Poids (kg)</div>
-        <input class="input" id="dogWeight" type="number" min="0" step="0.1" value="15" />
+        <input class="input" id="dogWeight" type="text" inputmode="decimal" pattern="[0-9]+([.,][0-9]+)?" placeholder="" value="" />
       </div>
       <div class="ob-actions">
         <button class="btn ghost" onclick="obPrev()" data-i18n="back">Retour</button>
@@ -2200,7 +2200,7 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         <div class="id-row"><div class="ic">💉</div><div class="k" data-i18n="idc_chip">Puce / tatouage</div><div class="v" id="idcChipView"><span class="empty" data-i18n="idc_chip_empty">À renseigner</span></div></div>
         <div class="id-card-actions">
           <button onclick="openIDCardEdit()" data-i18n="idc_edit">Modifier</button>
-          <button class="ghost" onclick="openShareDog()" data-i18n="idc_share">📤 Partager</button>
+          <button class="ghost" onclick="openShareDog()" data-i18n="idc_share">📤 Partager la fiche</button>
         </div>
       </div>
 
@@ -3404,13 +3404,13 @@ const I18N = {
     idc_chip_empty: "À renseigner",
     idc_allerg: "Allergies",
     idc_edit: "Modifier",
-    idc_share: "📤 Partager",
+    idc_share: "📤 Partager la fiche",
     idc_save: "Enregistrer",
     idc_privacy: "Ces infos restent sur cet appareil. Active l'export pour les sauvegarder.",
     share_title: "Partager le profil",
     share_desc: "Une carte à envoyer à la famille, au pet-sitter ou aux amis.",
     share_download: "⬇️ Télécharger",
-    share_send: "📲 Partager",
+    share_send: "📲 Partager la fiche",
     plan_title: "Choisis ton plan K9",
     plan_intro: "Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.",
     plan_disclaimer: "Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.",
@@ -3766,13 +3766,13 @@ const I18N = {
     idc_chip_empty: "Not set",
     idc_allerg: "Allergies",
     idc_edit: "Edit",
-    idc_share: "📤 Share",
+    idc_share: "📤 Share card",
     idc_save: "Save",
     idc_privacy: "This info stays on this device. Enable export to back it up.",
     share_title: "Share profile",
     share_desc: "A card to send to family, pet-sitter or friends.",
     share_download: "⬇️ Download",
-    share_send: "📲 Share",
+    share_send: "📲 Share card",
     plan_title: "Choose your K9 plan",
     plan_intro: "Free covers the basics. Upgrade to Plus for unlimited AI and multiple dogs.",
     plan_disclaimer: "Secure payment via Stripe. Cancel anytime from the billing portal.",
@@ -4121,7 +4121,9 @@ function obNext() {
   if (obStepIdx === 3) {
     dogState.years = +document.getElementById("dogYears").value || 0;
     dogState.months = +document.getElementById("dogMonths").value || 0;
-    dogState.weight = +document.getElementById("dogWeight").value || 0;
+    // Accepte virgule et point (clavier FR/EN)
+    const wRaw = (document.getElementById("dogWeight").value || "").toString().replace(",", ".").trim();
+    dogState.weight = parseFloat(wRaw) || 0;
   }
   if (obStepIdx < TOTAL_STEPS - 1) showStep(obStepIdx + 1);
 }
