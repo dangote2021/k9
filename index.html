@@ -215,6 +215,177 @@ body {
   letter-spacing: .5px;
 }
 
+/* ============== Calendar & Reminders ============== */
+.notif-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(215, 107, 52, 0.22);
+}
+.notif-btn:hover { filter: brightness(1.05); }
+.notif-btn.done { background: var(--forest); box-shadow: 0 6px 14px rgba(76, 122, 84, 0.22); }
+.notif-btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--terra-dark);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.notif-btn-white.done { background: var(--forest-soft); color: var(--forest-dark); }
+
+.cal-event {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #F0E6DB;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 0 16px 10px;
+}
+.cal-event .ic {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.cal-event .ic.vax { background: #EAF3EC; color: var(--forest-dark); }
+.cal-event .ic.worm { background: #FDEEE1; color: var(--terra-dark); }
+.cal-event .ic.vet { background: #E7E7F3; color: #544989; }
+.cal-event .ic.birth { background: #FCE7E7; color: #B54B4B; }
+.cal-event .ic.food { background: #FFF3D6; color: #8E6A17; }
+.cal-event .ic.other { background: var(--sand); color: var(--ink-2); }
+.cal-event .body { flex: 1; min-width: 0; }
+.cal-event .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+.cal-event .sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.cal-event .when {
+  font-size: 11px;
+  color: var(--ink-2);
+  background: var(--sand);
+  padding: 4px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+.cal-event .when.soon { color: var(--terra-dark); background: #FDEEE1; }
+.cal-event .when.today { color: #fff; background: var(--terra); }
+.cal-event .when.overdue { color: #fff; background: #B54B4B; }
+.cal-empty {
+  margin: 0 16px 10px;
+  padding: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  background: var(--sand);
+  border-radius: 12px;
+}
+
+.cal-type-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--sand);
+  border: 1px solid transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.cal-type-chip.active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-dark);
+}
+
+/* ============== Plan Cards (AI) ============== */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px 8px;
+}
+.plan-card {
+  background: #fff;
+  border: 1px solid #F0E6DB;
+  border-radius: 14px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.plan-card:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+.plan-card .emo {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+.plan-card h5 {
+  font-size: 13.5px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.plan-card p {
+  font-size: 11.5px;
+  color: var(--ink-2);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Plan result formatting */
+.plan-section {
+  background: #fff;
+  border: 1px solid #F0E6DB;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.plan-section h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--terra-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.plan-section ul { margin: 0; padding-left: 18px; }
+.plan-section ul li { margin-bottom: 5px; }
+.plan-section p { margin: 0; color: var(--ink); }
+.plan-section.warning {
+  background: #FFF8EE;
+  border-color: #F3E3BF;
+}
+.plan-section.warning h4 { color: #8E6A17; }
+.plan-result-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.plan-result-loading .spinner {
+  display: inline-block;
+  width: 28px; height: 28px;
+  border: 3px solid var(--brand-soft);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: planspin 0.8s linear infinite;
+  margin-bottom: 14px;
+}
+@keyframes planspin { to { transform: rotate(360deg); } }
+
 /* Photo upload button around avatar */
 .avatar-wrap {
   position: relative;
@@ -472,22 +643,23 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 /* Quick actions grid */
 .quick-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
   padding: 0 16px 8px;
 }
 .qa-item {
   background: var(--white);
-  border-radius: 16px;
-  padding: 12px 6px;
+  border-radius: 14px;
+  padding: 10px 4px;
   text-align: center;
   box-shadow: var(--shadow);
   cursor: pointer;
   transition: transform .1s ease;
+  min-width: 0;
 }
 .qa-item:active { transform: scale(0.96); }
-.qa-item .ic { font-size: 24px; margin-bottom: 4px; }
-.qa-item .label { font-size: 11px; font-weight: 600; color: var(--ink-2); }
+.qa-item .ic { font-size: 22px; margin-bottom: 3px; }
+.qa-item .label { font-size: 10.5px; font-weight: 600; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Feed cards */
 .feed-card {
@@ -1569,11 +1741,14 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
       </div>
 
       <div class="quick-actions">
+        <div class="qa-item" onclick="openSub('sub-calendar')">
+          <div class="ic">📅</div><div class="label" data-i18n="qa_cal">Calendrier</div>
+        </div>
+        <div class="qa-item" onclick="openSub('sub-plans')">
+          <div class="ic">✨</div><div class="label" data-i18n="qa_plans">Plans IA</div>
+        </div>
         <div class="qa-item" onclick="openSub('sub-walks')">
           <div class="ic">🗺️</div><div class="label" data-i18n="qa_walks">Balades</div>
-        </div>
-        <div class="qa-item" onclick="openSub('sub-education')">
-          <div class="ic">🎓</div><div class="label" data-i18n="qa_edu">Éducation</div>
         </div>
         <div class="qa-item" onclick="openSub('sub-nutrition')">
           <div class="ic">🥘</div><div class="label" data-i18n="qa_nut">Nutrition</div>
@@ -1605,23 +1780,12 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         </div>
       </div>
 
-      <div class="section-title" data-i18n="sec_reminders">Prochains rappels</div>
-      <div class="reminder-card soon">
-        <div class="ic">💉</div>
-        <div style="flex:1;">
-          <div class="title" data-i18n="rem_vac">Rappel vaccin CHPPL</div>
-          <div class="desc" data-i18n="rem_vac_desc">Chez le vétérinaire du quartier</div>
-          <div class="date" id="remVacDate" data-i18n="rem_vac_date">Dans 5 jours</div>
-        </div>
+      <div class="section-title" style="display:flex; align-items:center; justify-content: space-between; padding-right: 16px;">
+        <span data-i18n="sec_reminders">Prochains rappels</span>
+        <a onclick="openSub('sub-calendar')" style="font-size: 12px; font-weight: 600; color: var(--terra); cursor: pointer;" data-i18n="cal_see_all">Tout voir ›</a>
       </div>
-      <div class="reminder-card">
-        <div class="ic">🪱</div>
-        <div style="flex:1;">
-          <div class="title" data-i18n="rem_verm">Vermifuge trimestriel</div>
-          <div class="desc" data-i18n="rem_verm_desc">Milbemax ou équivalent</div>
-          <div class="date" id="remVermDate" data-i18n="rem_verm_date">Dans 3 semaines</div>
-        </div>
-      </div>
+      <div id="homeReminders"></div>
+      <button id="notifActivate" class="notif-btn" onclick="requestNotifPermission()" style="margin: 4px 16px 0;" data-i18n="notif_activate">🔔 Activer les rappels</button>
 
       <div class="section-title" data-i18n="sec_feed">Fil de la communauté <span class="mini-tag" data-i18n="mini_example">Exemple</span></div>
       <div class="feed-card">
@@ -2405,6 +2569,138 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
     </div>
   </div>
 
+  <!-- ============== Calendrier unifié ============== -->
+  <div class="sub-screen" id="sub-calendar">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-calendar')">‹</button>
+      <div class="sub-title" data-i18n="cal_title">Calendrier</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, var(--terra), var(--terra-dark)); color: white; padding: 18px;">
+          <div style="font-weight: 700; font-size: 15px;" data-i18n="cal_intro_t">Une seule page, tous les rendez-vous</div>
+          <div style="font-size: 12.5px; opacity: .92; margin-top: 6px; line-height: 1.5;" data-i18n="cal_intro_d">Vaccins, vermifuges, rendez-vous véto, anniversaires — tout centralisé. Active les rappels et on s'occupe du reste.</div>
+          <button id="notifBtnCal" class="notif-btn-white" onclick="requestNotifPermission()" style="margin-top: 12px;" data-i18n="notif_activate">🔔 Activer les rappels</button>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="cal_this_week">Cette semaine</div>
+      <div id="calThisWeek"></div>
+
+      <div class="section-title" data-i18n="cal_this_month">Ce mois</div>
+      <div id="calThisMonth"></div>
+
+      <div class="section-title" data-i18n="cal_later">Plus tard</div>
+      <div id="calLater"></div>
+
+      <div style="padding: 14px 16px;">
+        <button class="btn" style="width:100%;" onclick="openSub('sub-cal-add')"><span>➕</span> <span data-i18n="cal_add">Ajouter un rendez-vous</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add calendar event -->
+  <div class="sub-screen" id="sub-cal-add">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-cal-add')">‹</button>
+      <div class="sub-title" data-i18n="cal_add_title">Nouveau rendez-vous</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px;">
+        <div class="field-label" data-i18n="cal_add_type">Type</div>
+        <div id="calTypeRow" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;"></div>
+
+        <div class="field-label" data-i18n="cal_add_title_f">Intitulé</div>
+        <input class="input" id="calAddTitle" placeholder="Ex. Rappel Leptospirose" style="margin-bottom: 14px;" />
+
+        <div class="field-label" data-i18n="cal_add_date">Date</div>
+        <input class="input" type="date" id="calAddDate" style="margin-bottom: 14px;" />
+
+        <div class="field-label" data-i18n="cal_add_notes">Notes (optionnel)</div>
+        <textarea class="input" id="calAddNotes" placeholder="Ex. Clinique Ménilmontant, Dr. Marceau" style="min-height: 70px; resize: vertical;"></textarea>
+
+        <button class="btn" style="margin-top: 18px; width:100%;" onclick="saveCalEvent()" data-i18n="cal_save">Enregistrer</button>
+        <div style="text-align: center; font-size: 12px; color: var(--ink-2); margin-top: 14px; line-height: 1.5;" data-i18n="cal_save_hint">Un rappel navigateur sera envoyé 3 jours avant, puis le matin même (si les rappels sont activés).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== Plans IA personnalisés ============== -->
+  <div class="sub-screen" id="sub-plans">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-plans')">‹</button>
+      <div class="sub-title" data-i18n="plans_title">Plans IA personnalisés</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 0 16px 14px;">
+        <div class="card" style="margin:0; background: linear-gradient(135deg, #F9E8D8, #EED1B3); border: 1px solid #E8C8A1;">
+          <div style="font-weight: 700; font-size: 14px;" data-i18n="plans_intro_t">Un plan sur mesure en 15 secondes</div>
+          <div style="font-size: 12.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.55;" data-i18n="plans_intro_d">Choisis un objectif : l'IA génère un plan 3 phases adapté à <span id="plansDogName">ton chien</span> (race, âge, poids). 100 % renforcement positif, zéro dominance.</div>
+        </div>
+      </div>
+
+      <div class="section-title"><span data-i18n="plans_cat_edu">Éducation & comportement</span></div>
+      <div class="plan-grid">
+        <div class="plan-card" onclick="openPlan('training','Apprendre un rappel fiable','Comment lui apprendre à revenir à chaque appel, même avec distractions.')">
+          <div class="emo">🎯</div><h5 data-i18n="plan_recall_t">Rappel fiable</h5><p data-i18n="plan_recall_d">Revenir à l'appel · même avec distractions</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('training','Marcher en laisse détendue','Comment arrêter de tirer en laisse avec une méthode douce et concrète.')">
+          <div class="emo">🦴</div><h5 data-i18n="plan_leash_t">Laisse détendue</h5><p data-i18n="plan_leash_d">Stopper les tirages · plan progressif</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('training','Gérer la propreté','Routine pour propreté rapide et sans stress (chiot ou adulte).')">
+          <div class="emo">🧻</div><h5 data-i18n="plan_house_t">Propreté</h5><p data-i18n="plan_house_d">Routine chiot ou adulte · sans punition</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('training','Réduire les aboiements excessifs','Identifier la cause et plan pour réduire les aboiements intempestifs.')">
+          <div class="emo">🔊</div><h5 data-i18n="plan_bark_t">Aboiements</h5><p data-i18n="plan_bark_d">Identifier la cause · plan progressif</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('training','Gérer la solitude et éviter l\'anxiété de séparation','Protocole pour habituer progressivement le chien à rester seul.')">
+          <div class="emo">🏠</div><h5 data-i18n="plan_alone_t">Rester seul</h5><p data-i18n="plan_alone_d">Protocole anti-anxiété · dose progressive</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('training','Socialisation avec autres chiens','Comment présenter et socialiser avec chiens adultes et jeunes.')">
+          <div class="emo">🐾</div><h5 data-i18n="plan_social_t">Socialisation</h5><p data-i18n="plan_social_d">Présentations · rencontres positives</p>
+        </div>
+      </div>
+
+      <div class="section-title"><span data-i18n="plans_cat_health">Santé & bien-être</span></div>
+      <div class="plan-grid">
+        <div class="plan-card" onclick="openPlan('health','Adapter l\'alimentation au stade de vie','Quantité, fréquence, type d\'aliment pour le stade de vie actuel.')">
+          <div class="emo">🥘</div><h5 data-i18n="plan_nut_t">Alimentation</h5><p data-i18n="plan_nut_d">Adapter au stade de vie · quantité, fréquence</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('health','Gérer le stress et les peurs','Désensibilisation aux bruits, transports, vétérinaire.')">
+          <div class="emo">🧘</div><h5 data-i18n="plan_stress_t">Stress & peurs</h5><p data-i18n="plan_stress_d">Bruits · transports · vétérinaire</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('health','Réguler les troubles digestifs légers','Quand consulter, que faire en attendant, régime temporaire.')">
+          <div class="emo">💧</div><h5 data-i18n="plan_digest_t">Digestion</h5><p data-i18n="plan_digest_d">Diarrhée, vomissements légers · 1res mesures</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('health','Suspicion d\'allergie cutanée ou alimentaire','Identifier, éviter, quand consulter un véto.')">
+          <div class="emo">🌿</div><h5 data-i18n="plan_allergy_t">Allergies</h5><p data-i18n="plan_allergy_d">Cutanée ou alimentaire · identifier & agir</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('health','Préparer la transition vers senior','Ajuster exercices, nutrition, confort à partir de 7-8 ans.')">
+          <div class="emo">🐾</div><h5 data-i18n="plan_senior_t">Senior</h5><p data-i18n="plan_senior_d">Transition · exercice · confort</p>
+        </div>
+        <div class="plan-card" onclick="openPlan('health','Hygiène complète (dents, pattes, oreilles)','Routine hebdomadaire de soins à la maison.')">
+          <div class="emo">🦷</div><h5 data-i18n="plan_hygiene_t">Hygiène</h5><p data-i18n="plan_hygiene_d">Dents · pattes · oreilles · routine hebdo</p>
+        </div>
+      </div>
+
+      <div style="padding: 14px 16px;">
+        <div style="font-size: 11px; color: var(--ink-2); line-height: 1.55; text-align: center;" data-i18n="plans_disclaimer">Les plans sont générés par IA. Pour tout symptôme sérieux ou problème qui persiste, consulte un vétérinaire.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan result modal -->
+  <div class="sub-screen" id="sub-plan-result">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-plan-result')">‹</button>
+      <div class="sub-title" id="planResultTitle" data-i18n="plan_result_title">Ton plan personnalisé</div>
+    </div>
+    <div class="sub-body">
+      <div id="planResultMeta" style="padding: 0 16px 10px; font-size: 12px; color: var(--ink-2);"></div>
+      <div id="planResultBody" style="padding: 0 16px 20px; font-size: 14px; line-height: 1.65;"></div>
+    </div>
+  </div>
+
   <!-- Languages -->
   <div class="sub-screen" id="sub-langs">
     <div class="sub-header">
@@ -2803,6 +3099,47 @@ const I18N = {
     vid_2_t: "Rappel fiable : protocole Premack", vid_2_d: "Comment rendre revenir VERS toi plus fun que partir",
     vid_3_t: "Laisse détendue : arrêter de tirer", vid_3_d: "2 exercices, 10 min / jour",
     vid_4_t: "5 jeux de reniflage maison", vid_4_d: "Défoule autant qu'une heure de balade",
+    // Quick actions
+    qa_cal: "Calendrier",
+    qa_plans: "Plans IA",
+    // Calendar
+    cal_title: "Calendrier",
+    cal_intro_t: "Une seule page, tous les rendez-vous",
+    cal_intro_d: "Vaccins, vermifuges, rendez-vous véto, anniversaires — tout centralisé. Active les rappels et on s'occupe du reste.",
+    cal_this_week: "Cette semaine",
+    cal_this_month: "Ce mois",
+    cal_later: "Plus tard",
+    cal_add: "Ajouter un rendez-vous",
+    cal_add_title: "Nouveau rendez-vous",
+    cal_add_type: "Type",
+    cal_add_title_f: "Intitulé",
+    cal_add_date: "Date",
+    cal_add_notes: "Notes (optionnel)",
+    cal_save: "Enregistrer",
+    cal_save_hint: "Un rappel navigateur sera envoyé 3 jours avant, puis le matin même (si les rappels sont activés).",
+    cal_see_all: "Tout voir ›",
+    sec_reminders: "Prochains rappels",
+    notif_activate: "🔔 Activer les rappels",
+    // Plans IA
+    plans_title: "Plans IA personnalisés",
+    plans_intro_t: "Un plan sur mesure en 15 secondes",
+    plans_intro_d: "Choisis un objectif : l'IA génère un plan 3 phases adapté à ton chien (race, âge, poids). 100 % renforcement positif, zéro dominance.",
+    plans_cat_edu: "Éducation & comportement",
+    plans_cat_health: "Santé & bien-être",
+    plans_disclaimer: "Les plans sont générés par IA. Pour tout symptôme sérieux ou problème qui persiste, consulte un vétérinaire.",
+    plan_result_title: "Ton plan personnalisé",
+    plan_recall_t: "Rappel fiable", plan_recall_d: "Revenir à l'appel · même avec distractions",
+    plan_leash_t: "Laisse détendue", plan_leash_d: "Stopper les tirages · plan progressif",
+    plan_house_t: "Propreté", plan_house_d: "Routine chiot ou adulte · sans punition",
+    plan_bark_t: "Aboiements", plan_bark_d: "Identifier la cause · plan progressif",
+    plan_alone_t: "Rester seul", plan_alone_d: "Protocole anti-anxiété · dose progressive",
+    plan_social_t: "Socialisation", plan_social_d: "Présentations · rencontres positives",
+    plan_nut_t: "Alimentation", plan_nut_d: "Adapter au stade de vie · quantité, fréquence",
+    plan_stress_t: "Stress & peurs", plan_stress_d: "Bruits · transports · vétérinaire",
+    plan_digest_t: "Digestion", plan_digest_d: "Diarrhée, vomissements légers · 1res mesures",
+    plan_allergy_t: "Allergies", plan_allergy_d: "Cutanée ou alimentaire · identifier & agir",
+    plan_senior_t: "Senior", plan_senior_d: "Transition · exercice · confort",
+    plan_hygiene_t: "Hygiène", plan_hygiene_d: "Dents · pattes · oreilles · routine hebdo",
   },
   en: {
     welcome_title: "Welcome to K9",
@@ -3069,6 +3406,47 @@ const I18N = {
     vid_2_t: "Reliable recall: Premack protocol", vid_2_d: "Make coming TO you more fun than leaving",
     vid_3_t: "Loose leash: stop the pull", vid_3_d: "2 exercises, 10 min / day",
     vid_4_t: "5 indoor sniffing games", vid_4_d: "Tires them out like an hour of walking",
+    // Quick actions
+    qa_cal: "Calendar",
+    qa_plans: "AI Plans",
+    // Calendar
+    cal_title: "Calendar",
+    cal_intro_t: "One page, every appointment",
+    cal_intro_d: "Vaccines, dewormers, vet visits, birthdays — all in one place. Turn on reminders and we handle the rest.",
+    cal_this_week: "This week",
+    cal_this_month: "This month",
+    cal_later: "Later",
+    cal_add: "Add an appointment",
+    cal_add_title: "New appointment",
+    cal_add_type: "Type",
+    cal_add_title_f: "Title",
+    cal_add_date: "Date",
+    cal_add_notes: "Notes (optional)",
+    cal_save: "Save",
+    cal_save_hint: "A browser reminder will fire 3 days before, and again that morning (if reminders are on).",
+    cal_see_all: "See all ›",
+    sec_reminders: "Upcoming reminders",
+    notif_activate: "🔔 Turn on reminders",
+    // AI Plans
+    plans_title: "Personalized AI Plans",
+    plans_intro_t: "A tailored plan in 15 seconds",
+    plans_intro_d: "Pick a goal: the AI generates a 3-phase plan tuned to your dog (breed, age, weight). 100% positive reinforcement, zero dominance.",
+    plans_cat_edu: "Training & behavior",
+    plans_cat_health: "Health & wellbeing",
+    plans_disclaimer: "Plans are AI-generated. For any serious or persistent symptom, see a veterinarian.",
+    plan_result_title: "Your personalized plan",
+    plan_recall_t: "Reliable recall", plan_recall_d: "Come when called · even with distractions",
+    plan_leash_t: "Loose-leash walking", plan_leash_d: "Stop the pulling · progressive plan",
+    plan_house_t: "House training", plan_house_d: "Puppy or adult routine · no punishment",
+    plan_bark_t: "Barking", plan_bark_d: "Spot the cause · structured plan",
+    plan_alone_t: "Home alone", plan_alone_d: "Anti-anxiety protocol · progressive",
+    plan_social_t: "Socialization", plan_social_d: "Intros · positive encounters",
+    plan_nut_t: "Nutrition", plan_nut_d: "Match life stage · quantity, frequency",
+    plan_stress_t: "Stress & fears", plan_stress_d: "Noises · transport · vet visits",
+    plan_digest_t: "Digestion", plan_digest_d: "Mild diarrhea/vomiting · first steps",
+    plan_allergy_t: "Allergies", plan_allergy_d: "Skin or food · identify & act",
+    plan_senior_t: "Senior transition", plan_senior_d: "Transition · exercise · comfort",
+    plan_hygiene_t: "Hygiene", plan_hygiene_d: "Teeth · paws · ears · weekly routine",
   }
 };
 
@@ -3567,28 +3945,330 @@ function escapeHtml(s) {
 
 // ---------- Dynamic reminder dates ----------
 function updateReminderDates() {
-  const today = new Date();
-  const monthsFR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-  const monthsEN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const fmt = (d) => {
-    const months = currentLang === "fr" ? monthsFR : monthsEN;
-    return currentLang === "fr" ? `${d.getDate()} ${months[d.getMonth()]}` : `${months[d.getMonth()]} ${d.getDate()}`;
+  // Delegated to calendar system now — populates homeReminders via renderCalendar()
+  if (typeof renderCalendar === "function") renderCalendar();
+}
+
+// ==================== CALENDRIER UNIFIÉ ====================
+const CAL_TYPES = [
+  { id: "vax",   icon: "💉", fr: "Vaccin",        en: "Vaccine" },
+  { id: "worm",  icon: "🪱", fr: "Vermifuge",     en: "Dewormer" },
+  { id: "vet",   icon: "🩺", fr: "Rendez-vous véto", en: "Vet appointment" },
+  { id: "birth", icon: "🎂", fr: "Anniversaire",  en: "Birthday" },
+  { id: "food",  icon: "🥘", fr: "Alimentation",  en: "Food" },
+  { id: "other", icon: "📌", fr: "Autre",         en: "Other" },
+];
+
+function todayISO() {
+  const d = new Date(); d.setHours(0,0,0,0);
+  return d.toISOString().slice(0,10);
+}
+function dateInDays(n) {
+  const d = new Date(); d.setDate(d.getDate()+n); d.setHours(0,0,0,0);
+  return d.toISOString().slice(0,10);
+}
+// Default seed events so the calendar never feels empty on first open
+let calendarEvents = [
+  { id: "e1", type: "vax",   title: "Rappel CHPPL",           date: dateInDays(5),   notes: "Clinique habituelle" },
+  { id: "e2", type: "worm",  title: "Vermifuge Milbemax",     date: dateInDays(21),  notes: "" },
+  { id: "e3", type: "birth", title: "Anniversaire",           date: dateInDays(74),  notes: "Party time 🎉" },
+  { id: "e4", type: "vet",   title: "Contrôle annuel",        date: dateInDays(120), notes: "" },
+];
+
+function calTypeLabel(typeId) {
+  const t = CAL_TYPES.find(x => x.id === typeId) || CAL_TYPES[CAL_TYPES.length-1];
+  return currentLang === "fr" ? t.fr : t.en;
+}
+function calTypeIcon(typeId) {
+  const t = CAL_TYPES.find(x => x.id === typeId) || CAL_TYPES[CAL_TYPES.length-1];
+  return t.icon;
+}
+function daysBetween(isoDate) {
+  const d = new Date(isoDate); d.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+function fmtEventDate(isoDate) {
+  const monthsFR = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+  const monthsEN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const d = new Date(isoDate);
+  const months = currentLang === "fr" ? monthsFR : monthsEN;
+  return currentLang === "fr"
+    ? `${d.getDate()} ${months[d.getMonth()]}`
+    : `${months[d.getMonth()]} ${d.getDate()}`;
+}
+function fmtEventWhen(isoDate) {
+  const n = daysBetween(isoDate);
+  if (n < 0) return { label: currentLang === "fr" ? `En retard · ${fmtEventDate(isoDate)}` : `Overdue · ${fmtEventDate(isoDate)}`, cls: "overdue" };
+  if (n === 0) return { label: currentLang === "fr" ? "Aujourd'hui" : "Today", cls: "today" };
+  if (n === 1) return { label: currentLang === "fr" ? "Demain" : "Tomorrow", cls: "soon" };
+  if (n <= 7) return { label: currentLang === "fr" ? `Dans ${n} jours · ${fmtEventDate(isoDate)}` : `In ${n} days · ${fmtEventDate(isoDate)}`, cls: "soon" };
+  if (n <= 31) return { label: `${fmtEventDate(isoDate)}`, cls: "" };
+  return { label: `${fmtEventDate(isoDate)}`, cls: "" };
+}
+function eventSubline(ev) {
+  const typeLbl = calTypeLabel(ev.type);
+  if (ev.notes && ev.notes.trim()) return `${typeLbl} · ${ev.notes}`;
+  return typeLbl;
+}
+function eventCardHTML(ev) {
+  const w = fmtEventWhen(ev.date);
+  return `
+    <div class="cal-event">
+      <div class="ic ${ev.type}">${calTypeIcon(ev.type)}</div>
+      <div class="body">
+        <div class="title">${escapeHtml(ev.title)}</div>
+        <div class="sub">${escapeHtml(eventSubline(ev))}</div>
+      </div>
+      <div class="when ${w.cls}">${w.label}</div>
+    </div>`;
+}
+function renderCalendar() {
+  // Sort by date ascending
+  const sorted = [...calendarEvents].sort((a,b) => a.date.localeCompare(b.date));
+  const thisWeek = [], thisMonth = [], later = [];
+  for (const ev of sorted) {
+    const n = daysBetween(ev.date);
+    if (n < 0) thisWeek.push(ev);          // overdue goes in this week bucket (top)
+    else if (n <= 7) thisWeek.push(ev);
+    else if (n <= 31) thisMonth.push(ev);
+    else later.push(ev);
+  }
+  const emptyTxt = currentLang === "fr" ? "Rien pour le moment" : "Nothing scheduled";
+  const fill = (sel, arr) => {
+    const el = document.getElementById(sel);
+    if (!el) return;
+    el.innerHTML = arr.length ? arr.map(eventCardHTML).join("") : `<div class="cal-empty">${emptyTxt}</div>`;
   };
-  const addDays = (n) => { const d = new Date(today); d.setDate(d.getDate() + n); return d; };
+  fill("calThisWeek", thisWeek);
+  fill("calThisMonth", thisMonth);
+  fill("calLater", later);
 
-  // Vaccin CHPPL : dans 5 jours
-  const vac = addDays(5);
-  const vacEl = document.getElementById("remVacDate");
-  if (vacEl) vacEl.textContent = currentLang === "fr"
-    ? `Dans 5 jours · ${fmt(vac)}`
-    : `In 5 days · ${fmt(vac)}`;
+  // Home reminders: top 3 upcoming (non-overdue & overdue)
+  const homeEl = document.getElementById("homeReminders");
+  if (homeEl) {
+    const upcoming = sorted.slice(0, 3);
+    homeEl.innerHTML = upcoming.length ? upcoming.map(eventCardHTML).join("") : `<div class="cal-empty">${emptyTxt}</div>`;
+  }
 
-  // Vermifuge : dans 3 semaines
-  const vrm = addDays(21);
-  const vrmEl = document.getElementById("remVermDate");
-  if (vrmEl) vrmEl.textContent = currentLang === "fr"
-    ? `Dans 3 semaines · ${fmt(vrm)}`
-    : `In 3 weeks · ${fmt(vrm)}`;
+  // Refresh notif button state
+  updateNotifButtons();
+}
+
+function updateNotifButtons() {
+  const supported = "Notification" in window;
+  const state = supported ? Notification.permission : "unsupported";
+  const btns = [document.getElementById("notifActivate"), document.getElementById("notifBtnCal")];
+  btns.forEach(btn => {
+    if (!btn) return;
+    if (state === "granted") {
+      btn.classList.add("done");
+      btn.textContent = currentLang === "fr" ? "🔔 Rappels activés" : "🔔 Reminders on";
+      btn.removeAttribute("data-i18n");
+    } else if (state === "denied") {
+      btn.classList.remove("done");
+      btn.textContent = currentLang === "fr" ? "🔕 Rappels bloqués" : "🔕 Reminders blocked";
+      btn.removeAttribute("data-i18n");
+    } else if (state === "unsupported") {
+      btn.style.display = "none";
+    } else {
+      btn.classList.remove("done");
+      btn.textContent = currentLang === "fr" ? "🔔 Activer les rappels" : "🔔 Turn on reminders";
+    }
+  });
+}
+
+function requestNotifPermission() {
+  if (!("Notification" in window)) {
+    alert(currentLang === "fr" ? "Ton navigateur ne supporte pas les notifications." : "Your browser doesn't support notifications.");
+    return;
+  }
+  if (Notification.permission === "granted") {
+    new Notification(currentLang === "fr" ? "K9 · rappels actifs" : "K9 · reminders on", {
+      body: currentLang === "fr" ? "On t'enverra un rappel avant chaque rendez-vous." : "We'll ping you before each appointment.",
+      icon: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='48' font-size='48'>🐶</text></svg>"
+    });
+    updateNotifButtons();
+    return;
+  }
+  Notification.requestPermission().then(p => {
+    updateNotifButtons();
+    if (p === "granted") {
+      new Notification(currentLang === "fr" ? "K9 · rappels actifs" : "K9 · reminders on", {
+        body: currentLang === "fr" ? "On t'enverra un rappel avant chaque rendez-vous." : "We'll ping you before each appointment.",
+      });
+      // Check immediately if there's anything due today/tomorrow
+      checkAndFireReminders();
+    }
+  });
+}
+
+function checkAndFireReminders() {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const today = todayISO();
+  // Only fire once per event per day — track in memory (session only)
+  if (!window._k9firedToday) window._k9firedToday = new Set();
+  for (const ev of calendarEvents) {
+    const n = daysBetween(ev.date);
+    if (n === 0 || n === 3) {
+      const key = `${ev.id}__${today}__${n}`;
+      if (window._k9firedToday.has(key)) continue;
+      window._k9firedToday.add(key);
+      const typeLbl = calTypeLabel(ev.type);
+      const when = n === 0
+        ? (currentLang === "fr" ? "Aujourd'hui" : "Today")
+        : (currentLang === "fr" ? `Dans ${n} jours` : `In ${n} days`);
+      new Notification(`${calTypeIcon(ev.type)} ${ev.title}`, {
+        body: `${typeLbl} · ${when}`,
+      });
+    }
+  }
+}
+
+// Type-chip selector in Add form
+let selectedCalType = "vet";
+function renderCalTypeChips() {
+  const row = document.getElementById("calTypeRow");
+  if (!row) return;
+  row.innerHTML = CAL_TYPES.map(t => {
+    const lbl = currentLang === "fr" ? t.fr : t.en;
+    const active = t.id === selectedCalType ? "active" : "";
+    return `<div class="cal-type-chip ${active}" data-type="${t.id}" onclick="pickCalType('${t.id}')">${t.icon} ${lbl}</div>`;
+  }).join("");
+}
+function pickCalType(id) {
+  selectedCalType = id;
+  renderCalTypeChips();
+}
+
+function saveCalEvent() {
+  const title = (document.getElementById("calAddTitle") || {}).value || "";
+  const date = (document.getElementById("calAddDate") || {}).value || "";
+  const notes = (document.getElementById("calAddNotes") || {}).value || "";
+  if (!title.trim()) {
+    alert(currentLang === "fr" ? "Ajoute un intitulé." : "Add a title.");
+    return;
+  }
+  if (!date) {
+    alert(currentLang === "fr" ? "Choisis une date." : "Pick a date.");
+    return;
+  }
+  const ev = {
+    id: "u" + Date.now(),
+    type: selectedCalType,
+    title: title.trim(),
+    date: date,
+    notes: notes.trim(),
+  };
+  calendarEvents.push(ev);
+  // Reset form
+  document.getElementById("calAddTitle").value = "";
+  document.getElementById("calAddDate").value = "";
+  document.getElementById("calAddNotes").value = "";
+  selectedCalType = "vet";
+  renderCalTypeChips();
+  renderCalendar();
+  closeSub("sub-cal-add");
+}
+
+// ==================== PLANS IA PERSONNALISÉS ====================
+async function openPlan(category, goal, desc) {
+  openSub("sub-plan-result");
+  const titleEl = document.getElementById("planResultTitle");
+  const metaEl = document.getElementById("planResultMeta");
+  const bodyEl = document.getElementById("planResultBody");
+  if (titleEl) titleEl.textContent = goal;
+
+  const d = DOGS[activeDogIdx] || dogState;
+  const metaParts = [];
+  if (d && d.name) metaParts.push(d.name);
+  if (d && d.breed) metaParts.push(d.breed);
+  if (d && d.age) metaParts.push(d.age);
+  const catLbl = category === "health"
+    ? (currentLang === "fr" ? "Santé" : "Health")
+    : (currentLang === "fr" ? "Éducation" : "Training");
+  if (metaEl) metaEl.textContent = `${catLbl} · ${metaParts.join(" · ") || (currentLang === "fr" ? "ton chien" : "your dog")}`;
+  if (bodyEl) bodyEl.innerHTML = `
+    <div class="plan-result-loading">
+      <div class="spinner"></div>
+      <div>${currentLang === "fr" ? "L'IA construit ton plan sur mesure…" : "AI is building your tailored plan…"}</div>
+    </div>`;
+
+  const dogForAPI = {
+    name: d?.name || "",
+    breed: d?.breed || "",
+    age: d?.age || "",
+    weight: d?.weight || "",
+    sex: d?.sex || "",
+  };
+
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: desc || goal,
+        history: [],
+        dog: dogForAPI,
+        lang: currentLang,
+        mode: "plan",
+        goal,
+        category,
+      }),
+    });
+    const data = await resp.json();
+    const reply = data?.reply || (currentLang === "fr" ? "Pas de réponse — réessaye." : "No reply — try again.");
+    if (bodyEl) bodyEl.innerHTML = renderPlanMarkdown(reply);
+  } catch (e) {
+    if (bodyEl) bodyEl.innerHTML = `<div class="cal-empty">${currentLang === "fr" ? "Problème de connexion à l'IA. Réessaye." : "Couldn't reach the AI. Try again."}</div>`;
+  }
+}
+
+// Parse the structured markdown the API returns and render it as clean sections
+function renderPlanMarkdown(md) {
+  // Split on section headers **...**
+  // Each section: **Title**\ncontent
+  const lines = md.split(/\r?\n/);
+  const sections = [];
+  let current = null;
+  for (const line of lines) {
+    const header = line.match(/^\s*\*\*(.+?)\*\*\s*$/);
+    if (header) {
+      if (current) sections.push(current);
+      current = { title: header[1].trim(), lines: [] };
+    } else {
+      if (!current) { current = { title: "", lines: [] }; }
+      current.lines.push(line);
+    }
+  }
+  if (current) sections.push(current);
+
+  const warnHeaders = ["à éviter", "avoid", "quand consulter un pro", "when to consult a pro"];
+  const htmlSections = sections.map(sec => {
+    const isWarn = warnHeaders.some(w => sec.title.toLowerCase().includes(w));
+    const cls = isWarn ? "plan-section warning" : "plan-section";
+    // Convert bullets (• or -) to <ul><li>
+    const bulletLines = sec.lines.filter(l => /^\s*[•\-\*]\s+/.test(l));
+    const nonBulletLines = sec.lines.filter(l => !/^\s*[•\-\*]\s+/.test(l) && l.trim());
+    let contentHtml = "";
+    if (nonBulletLines.length) {
+      contentHtml += `<p>${nonBulletLines.map(l => escapeHtml(l.trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")).join(" ")}</p>`;
+    }
+    if (bulletLines.length) {
+      contentHtml += "<ul>" + bulletLines.map(l => {
+        const text = l.replace(/^\s*[•\-\*]\s+/, "").trim();
+        return `<li>${escapeHtml(text).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</li>`;
+      }).join("") + "</ul>";
+    }
+    const titleHtml = sec.title ? `<h4>${escapeHtml(sec.title)}</h4>` : "";
+    return `<div class="${cls}">${titleHtml}${contentHtml}</div>`;
+  });
+
+  // Disclaimer
+  const disclaimer = currentLang === "fr"
+    ? "Conseils IA fondés sur l'éducation bienveillante. Pour tout symptôme sérieux, consulte un vétérinaire."
+    : "AI advice grounded in force-free training. For any serious symptom, see a vet.";
+  return htmlSections.join("") + `<div style="font-size:11px; color: var(--ink-2); text-align:center; margin-top: 10px; line-height: 1.5;">${disclaimer}</div>`;
 }
 
 // ---------- Init ----------
@@ -3598,7 +4278,13 @@ showStep(0);
 // Détection auto de la langue du navigateur
 const navLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
 setLang(navLang.startsWith("en") ? "en" : "fr");
-updateReminderDates();
+renderCalTypeChips();
+renderCalendar();
+updateNotifButtons();
+// Fire due-today/3d notifications if permission already granted
+if ("Notification" in window && Notification.permission === "granted") {
+  setTimeout(checkAndFireReminders, 1500);
+}
 </script>
 </body>
 </html>

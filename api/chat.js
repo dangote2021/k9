@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    const { message, history = [], dog = {}, lang = "fr" } = body || {};
+    const { message, history = [], dog = {}, lang = "fr", mode = "chat", goal = null, category = null } = body || {};
     if (!message) { res.status(400).json({ error: "Missing message" }); return; }
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -23,6 +23,7 @@ export default async function handler(req, res) {
           ? "🔧 Claude n'est pas encore connecté sur ce déploiement. Ajoutez ANTHROPIC_API_KEY dans les variables d'environnement Vercel et l'IA répondra en direct."
           : "🔧 Claude isn't connected on this deployment yet. Add ANTHROPIC_API_KEY to your Vercel environment variables and the AI will answer live.",
         mock: true,
+        mode,
       });
       return;
     }
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
       ? `${dog.name}, ${dog.breed || "chien"}, ${dog.age || "?"}, ${dog.weight || "?"} kg${dog.sex ? `, ${dog.sex === "f" ? "femelle" : "mâle"}` : ""}`
       : "chien inconnu";
 
-    const systemPrompt = lang === "fr"
+    const chatSystem = lang === "fr"
       ? `Tu es "K9 Coach", le compagnon IA de l'application K9 pour les propriétaires de chiens francophones.
 
 Tu t'adresses à un propriétaire de chien. Son chien : ${dogDesc}.
@@ -61,6 +62,80 @@ Rules:
 - Do not make medical diagnoses. You guide.
 - If the question is off-topic (non-canine), redirect gently.`;
 
+    // PLAN MODE: structured 3-phase personalized plan
+    const categoryLabel = category === "health" ? (lang === "fr" ? "santé" : "health") : (lang === "fr" ? "éducation" : "training");
+    const planSystem = lang === "fr"
+      ? `Tu es "K9 Coach", expert en ${categoryLabel} canine de l'application K9. Tu rédiges un plan personnalisé pour un propriétaire qui veut travailler un objectif précis avec son chien.
+
+Chien : ${dogDesc}.
+Objectif : ${goal || "à préciser"}.
+
+Format de réponse OBLIGATOIRE :
+
+**Pourquoi ça marche**
+1-2 phrases expliquant la logique (science comportementale ou vétérinaire, jamais de dominance).
+
+**Phase 1 — [nom de la phase] · [durée]**
+• Étape 1 : …
+• Étape 2 : …
+• Étape 3 : …
+
+**Phase 2 — [nom] · [durée]**
+• …
+
+**Phase 3 — [nom] · [durée]**
+• …
+
+**À éviter**
+1-2 erreurs classiques.
+
+**Quand consulter un pro**
+Une phrase : dans quel cas appeler un éducateur canin comportementaliste (ou vétérinaire si volet santé).
+
+Règles :
+- Adapte précisément au profil : race, âge, poids, sexe.
+- Sois concret : durée d'exercice, fréquence, indices (ex. "2× 5 min par jour").
+- Renforcement positif uniquement.
+- Tutoiement, ton chaleureux.
+- Si santé : pas de diagnostic, oriente vers le véto pour tout symptôme sérieux.
+- Max 350 mots.`
+      : `You are "K9 Coach", a canine ${categoryLabel} expert in the K9 app. You're writing a personalized plan for an owner working on a specific goal with their dog.
+
+Dog: ${dogDesc}.
+Goal: ${goal || "to define"}.
+
+REQUIRED response format:
+
+**Why it works**
+1-2 sentences explaining the logic (behavioral science or vet, never dominance).
+
+**Phase 1 — [phase name] · [duration]**
+• Step 1: …
+• Step 2: …
+• Step 3: …
+
+**Phase 2 — [name] · [duration]**
+• …
+
+**Phase 3 — [name] · [duration]**
+• …
+
+**Avoid**
+1-2 classic mistakes.
+
+**When to consult a pro**
+One sentence: when to call a behaviorist (or vet if health-related).
+
+Rules:
+- Adapt precisely to the profile: breed, age, weight, sex.
+- Be concrete: exercise duration, frequency, cues (e.g., "2× 5 min per day").
+- Force-free positive reinforcement only.
+- Warm tone.
+- If health: no diagnosis, refer to vet for any serious symptom.
+- Max 350 words.`;
+
+    const systemPrompt = mode === "plan" ? planSystem : chatSystem;
+
     // Shape messages for Anthropic API
     const messages = [];
     for (const turn of history.slice(-10)) {
@@ -77,7 +152,7 @@ Rules:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 600,
+        max_tokens: mode === "plan" ? 900 : 600,
         system: systemPrompt,
         messages,
       }),
@@ -92,7 +167,7 @@ Rules:
 
     const data = await resp.json();
     const reply = data?.content?.[0]?.text || (lang === "fr" ? "Je n'ai pas pu répondre, réessaye." : "Couldn't reply, try again.");
-    res.status(200).json({ reply });
+    res.status(200).json({ reply, mode });
   } catch (e) {
     console.error("chat handler error:", e);
     res.status(500).json({ error: "Server error", detail: String(e && e.message || e) });
