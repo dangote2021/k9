@@ -2,7 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/share/:token", "destination": "/index.html" }
+    { "source": "/share/:token", "destination": "/index.html" },
+    { "source": "/api/config", "destination": "/api/me?public=1" },
+    { "source": "/api/quotas", "destination": "/api/me?action=quotas" },
+    { "source": "/api/push-subscribe", "destination": "/api/me?action=push-subscribe" },
+    { "source": "/api/plan-status", "destination": "/api/me?action=plan-status" }
   ],
   "headers": [
     {
