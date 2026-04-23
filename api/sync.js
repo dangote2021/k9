@@ -1,136 +1,222 @@
 // =====================================================================
-// K9 — /api/sync  (squelette Supabase)
+// K9 — /api/sync  (production-ready, activé quand Supabase est branché)
 // =====================================================================
-// Ce endpoint accepte un snapshot K9Store et :
-//   - GET  : renvoie le snapshot serveur le plus récent (quand Supabase actif)
-//   - POST : upsert le snapshot client côté serveur (quand Supabase actif)
+// GET  /api/sync  → renvoie { snapshot } agrégé depuis Supabase
+// POST /api/sync  → upsert un snapshot K9Store côté serveur (merge non destructif)
 //
-// Tant que les variables SUPABASE_URL / SUPABASE_SERVICE_KEY ne sont pas
-// définies dans Vercel, ce endpoint répond 200 avec mock:true — le client
-// reste en mode localStorage-only sans planter.
-//
-// Pour activer :
-//   1. Créer un projet Supabase, exécuter db/schema.sql
-//   2. Ajouter SUPABASE_URL + SUPABASE_SERVICE_KEY dans Vercel env
-//   3. Ajouter SUPABASE_ANON_KEY côté front (pas critique pour ce stub)
-//   4. Décommenter la section "DB" ci-dessous
+// Auth : header "Authorization: Bearer <supabase_access_token>"
+// En l'absence de Supabase configuré, on renvoie mock:true et le client
+// continue en localStorage-only.
 // =====================================================================
+
+import { supabaseEnabled, createAdminClient, getUser, applyCors, preflight, readBody, json, err, mockResponse } from "./_lib/supabase.js";
 
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") { res.status(200).end(); return; }
+  if (preflight(req, res)) return;
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-  const supabaseEnabled = !!(supabaseUrl && supabaseKey);
-
-  // Stub mode : localStorage only, on ne fait que valider le payload
   if (!supabaseEnabled) {
+    if (req.method === "GET" || req.method === "POST") {
+      return mockResponse(res, { snapshot: null });
+    }
+    return err(res, 405, "Method not allowed");
+  }
+
+  const user = await getUser(req);
+  if (!user) return err(res, 401, "Missing or invalid token");
+  const admin = createAdminClient();
+
+  try {
     if (req.method === "GET") {
-      res.status(200).json({ mock: true, snapshot: null, message: "Supabase not configured — localStorage only mode." });
-      return;
-    }
-    if (req.method === "POST") {
-      const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-      res.status(200).json({ mock: true, ok: true, echoed: body ? true : false });
-      return;
-    }
-    res.status(405).json({ error: "Method not allowed" });
-    return;
-  }
+      const [p, d, c, w, r, a, q] = await Promise.all([
+        admin.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
+        admin.from("dogs").select("*").eq("user_id", user.id).order("position"),
+        admin.from("calendar_events").select("*").eq("user_id", user.id).order("event_date"),
+        admin.from("walks").select("*").eq("user_id", user.id).order("started_at", { ascending: false }).limit(200),
+        admin.from("rescue_entries").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(500),
+        admin.from("lost_found_alerts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+        admin.from("ai_quotas").select("*").eq("user_id", user.id).order("day", { ascending: false }).limit(1),
+      ]);
 
-  // --- Supabase mode (à décommenter et tester quand Supabase est branché) ---
-  /*
-  // TODO: import { createClient } from "@supabase/supabase-js";
-  // const supabase = createClient(supabaseUrl, supabaseKey);
-
-  // Auth : extract user_id depuis le JWT Authorization: Bearer <token>
-  const auth = req.headers.authorization || "";
-  const token = auth.replace(/^Bearer\s+/i, "");
-  if (!token) { res.status(401).json({ error: "Missing token" }); return; }
-  const { data: userData, error: userErr } = await supabase.auth.getUser(token);
-  if (userErr || !userData?.user) { res.status(401).json({ error: "Invalid token" }); return; }
-  const userId = userData.user.id;
-
-  if (req.method === "GET") {
-    // Agrège profil + dogs + events + walks + rescue + settings
-    const [p, d, c, w, r] = await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", userId).single(),
-      supabase.from("dogs").select("*").eq("user_id", userId).order("position"),
-      supabase.from("calendar_events").select("*").eq("user_id", userId).order("event_date"),
-      supabase.from("walks").select("*").eq("user_id", userId).order("started_at", { ascending: false }),
-      supabase.from("rescue_entries").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-    ]);
-    res.status(200).json({
-      snapshot: {
-        v: 1,
-        owner: { name: p.data?.name || "" },
+      const profile = p.data || {};
+      const snapshot = {
+        v: 2,
+        savedAt: new Date().toISOString(),
+        owner: { name: profile.name || "", email: profile.email || user.email || "" },
+        onboardingDone: !!profile.name,
+        activeDogIdx: (d.data || []).findIndex((x) => x.is_active) >= 0
+          ? (d.data || []).findIndex((x) => x.is_active)
+          : 0,
+        dogs: (d.data || []).map((row) => ({
+          id: row.id,
+          name: row.name,
+          breed: row.breed_idx,
+          ageY: row.years,
+          ageM: row.months,
+          sex: row.sex,
+          weight: row.weight_kg ? Number(row.weight_kg) : 0,
+          emoji: row.emoji,
+          coat: row.coat,
+          photo: row.photo_url || row.photo_data_url || null,
+          chipId: row.chip_id || "",
+          birthday: row.birthday || "",
+          goal: row.goal || "",
+          exp: row.exp || "",
+          vet: { name: row.vet_name || "", phone: row.vet_phone || "", address: row.vet_address || "" },
+        })),
+        calendarEvents: (c.data || []).map((row) => ({
+          id: row.id,
+          dogIdx: null, // résolu côté client à partir de dog_id
+          dogId: row.dog_id,
+          type: row.type,
+          title: row.title,
+          date: row.event_date,
+          notes: row.notes || "",
+        })),
+        walkHistory: (w.data || []).map((row) => ({
+          id: row.id,
+          dogId: row.dog_id,
+          startedAt: row.started_at,
+          endedAt: row.ended_at,
+          durationMin: row.duration_min,
+          distanceKm: row.distance_km ? Number(row.distance_km) : 0,
+          source: row.source,
+          notes: row.notes,
+        })),
+        rescueEntries: (r.data || []).map((row) => ({
+          id: row.id,
+          dogId: row.dog_id,
+          program: row.program,
+          text: row.text,
+          createdAt: row.created_at,
+        })),
+        lostFoundAlerts: (a.data || []).map((row) => ({
+          id: row.id,
+          type: row.type,
+          dogName: row.dog_name,
+          breed: row.breed,
+          photo: row.photo_url || row.photo_data_url || null,
+          place: row.place,
+          description: row.description,
+          contact: row.contact,
+          resolved: row.resolved,
+          createdAt: row.created_at,
+        })),
         settings: {
-          lang: p.data?.lang || "fr",
-          useImperial: !!p.data?.use_imperial,
-          aiSoftMode: !!p.data?.ai_soft_mode,
-          a11y: !!p.data?.a11y_large,
+          lang: profile.lang || "fr",
+          useImperial: !!profile.use_imperial,
+          aiSoftMode: !!profile.ai_soft_mode,
+          a11y: !!profile.a11y_large,
+          notifEnabled: !!profile.notif_enabled,
         },
-        dogs: d.data || [],
-        calendarEvents: c.data || [],
-        walkHistory: w.data || [],
-        rescueEntries: r.data || [],
-      },
-    });
-    return;
+        plan: {
+          tier: profile.plan || "free",
+          currentPeriodEnd: profile.plan_current_period_end,
+        },
+        aiQuotaToday: q.data?.[0]?.count || 0,
+      };
+
+      return json(res, 200, { snapshot });
+    }
+
+    if (req.method === "POST") {
+      const body = await readBody(req);
+      const snap = body?.snapshot;
+      if (!snap) return err(res, 400, "Missing snapshot");
+
+      // 1. Profil
+      await admin.from("profiles").upsert({
+        user_id: user.id,
+        name: snap.owner?.name || null,
+        email: user.email,
+        lang: snap.settings?.lang || "fr",
+        use_imperial: !!snap.settings?.useImperial,
+        ai_soft_mode: !!snap.settings?.aiSoftMode,
+        a11y_large: !!snap.settings?.a11y,
+        notif_enabled: !!snap.settings?.notifEnabled,
+      }, { onConflict: "user_id" });
+
+      // 2. Dogs (merge : on remplace par l'état client = source de vérité le plus récent)
+      const clientDogs = snap.dogs || [];
+      if (clientDogs.length) {
+        const rows = clientDogs.map((dog, i) => ({
+          id: dog.id, // may be undefined → supabase génère
+          user_id: user.id,
+          name: dog.name,
+          breed_idx: dog.breed,
+          years: dog.ageY ?? dog.years ?? 0,
+          months: dog.ageM ?? dog.months ?? 0,
+          sex: dog.sex,
+          weight_kg: Number(dog.weight) || null,
+          emoji: dog.emoji || "🐕",
+          coat: dog.coat || null,
+          photo_data_url: (dog.photo && dog.photo.startsWith?.("data:")) ? dog.photo : null,
+          photo_url: (dog.photo && !dog.photo.startsWith?.("data:")) ? dog.photo : null,
+          chip_id: dog.chipId || null,
+          birthday: dog.birthday || null,
+          goal: dog.goal || null,
+          exp: dog.exp || null,
+          vet_name: dog.vet?.name || null,
+          vet_phone: dog.vet?.phone || null,
+          vet_address: dog.vet?.address || null,
+          is_active: i === (snap.activeDogIdx || 0),
+          position: i,
+        }));
+        // On supprime d'abord les lignes qui n'existent plus côté client
+        const incomingIds = rows.map((r) => r.id).filter(Boolean);
+        if (incomingIds.length) {
+          await admin.from("dogs").delete()
+            .eq("user_id", user.id)
+            .not("id", "in", `(${incomingIds.join(",")})`);
+        }
+        await admin.from("dogs").upsert(rows, { onConflict: "id" });
+      }
+
+      // 3. Calendar events
+      for (const ev of snap.calendarEvents || []) {
+        await admin.from("calendar_events").upsert({
+          id: ev.id,
+          user_id: user.id,
+          dog_id: ev.dogId || null,
+          type: ev.type,
+          title: ev.title,
+          event_date: ev.date,
+          notes: ev.notes || null,
+        }, { onConflict: "id" });
+      }
+
+      // 4. Walks — append-only, pas de delete (historique préservé)
+      for (const w of snap.walkHistory || []) {
+        await admin.from("walks").upsert({
+          id: w.id,
+          user_id: user.id,
+          dog_id: w.dogId || null,
+          started_at: w.startedAt,
+          ended_at: w.endedAt,
+          duration_min: w.durationMin,
+          distance_km: w.distanceKm,
+          source: w.source || "timer",
+          track_points: w.trackPoints || null,
+          notes: w.notes || null,
+        }, { onConflict: "id" });
+      }
+
+      // 5. Rescue entries
+      for (const r of snap.rescueEntries || []) {
+        await admin.from("rescue_entries").upsert({
+          id: r.id,
+          user_id: user.id,
+          dog_id: r.dogId || null,
+          program: r.program || "rescue_3_3_3",
+          text: r.text,
+        }, { onConflict: "id" });
+      }
+
+      return json(res, 200, { ok: true, synced_at: new Date().toISOString() });
+    }
+
+    return err(res, 405, "Method not allowed");
+  } catch (e) {
+    console.error("sync handler error:", e);
+    return err(res, 500, "Server error", String(e?.message || e));
   }
-
-  if (req.method === "POST") {
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    const snap = body?.snapshot;
-    if (!snap) { res.status(400).json({ error: "Missing snapshot" }); return; }
-
-    // Upsert profile
-    await supabase.from("profiles").upsert({
-      user_id: userId,
-      name: snap.owner?.name || null,
-      lang: snap.settings?.lang || "fr",
-      use_imperial: !!snap.settings?.useImperial,
-      ai_soft_mode: !!snap.settings?.aiSoftMode,
-      a11y_large: !!snap.settings?.a11y,
-    });
-
-    // Upsert dogs — simplifié, à raffiner
-    for (const [i, dog] of (snap.dogs || []).entries()) {
-      await supabase.from("dogs").upsert({
-        id: dog.id, user_id: userId, name: dog.name, breed_idx: dog.breed,
-        years: dog.years, months: dog.months, sex: dog.sex, weight_kg: dog.weight,
-        emoji: dog.emoji, coat: dog.coat, photo_data_url: dog.photo,
-        is_active: i === (snap.activeDogIdx || 0), position: i,
-      });
-    }
-
-    // Upsert events
-    for (const ev of (snap.calendarEvents || [])) {
-      await supabase.from("calendar_events").upsert({
-        id: ev.id, user_id: userId, type: ev.type, title: ev.title,
-        event_date: ev.date, notes: ev.notes || null,
-      });
-    }
-
-    // Upsert walks — append-only (on ne modifie pas un historique)
-    for (const w of (snap.walkHistory || [])) {
-      await supabase.from("walks").upsert({
-        id: w.id, user_id: userId, started_at: w.startedAt, ended_at: w.endedAt,
-        duration_min: w.durationMin, distance_km: w.distanceKm, source: w.source || "timer",
-      });
-    }
-
-    res.status(200).json({ ok: true, synced_at: new Date().toISOString() });
-    return;
-  }
-
-  res.status(405).json({ error: "Method not allowed" });
-  */
-
-  // Fallback si supabaseEnabled mais Supabase n'est pas encore décommenté
-  res.status(503).json({ error: "Supabase enabled but handler not activated — uncomment DB section in api/sync.js" });
 }

@@ -1,0 +1,16 @@
+{
+  "name": "K9 — compagnons de chiens",
+  "short_name": "K9",
+  "description": "Ton carnet de santé chien + coach IA — tout en un",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8F0",
+  "theme_color": "#E87A3B",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["lifestyle", "health", "utilities"],
+  "lang": "fr-FR"
+}

@@ -2541,6 +2541,29 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="badge locked"><div class="emoji">❓</div><div class="name">?</div></div>
       </div>
 
+      <div class="section-title" data-i18n="profile_cloud">Compte K9 Cloud</div>
+      <div class="menu-row" id="k9CloudRow" onclick="openSub('sub-cloud')">
+        <div class="ic">☁️</div>
+        <div class="label" id="k9CloudLabel" data-i18n="menu_cloud_signin">Se connecter · sync multi-device</div>
+        <div style="color: var(--ink-2); font-size: 12px; margin-right: 6px;" id="k9CloudStatus"></div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" id="k9ScanRow" onclick="k9OpenScanCarnet()" style="display:none">
+        <div class="ic">📸</div>
+        <div class="label" data-i18n="menu_scan_carnet">Scanner mon carnet véto</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" id="k9ShareVetRow" onclick="k9ShareVet()" style="display:none">
+        <div class="ic">🩺</div>
+        <div class="label" data-i18n="menu_vet_share">Partager avec mon véto (24h)</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" id="k9ExportPdfRow" onclick="k9ExportPDF()" style="display:none">
+        <div class="ic">📄</div>
+        <div class="label" data-i18n="menu_export_pdf">Exporter le carnet PDF</div>
+        <div class="arr">›</div>
+      </div>
+
       <div class="section-title" data-i18n="profile_settings">Réglages</div>
       <div class="menu-row" onclick="openSub('sub-langs')">
         <div class="ic">🌐</div>
@@ -3363,6 +3386,72 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
   </div>
 
+  <!-- K9 Cloud — compte & sync -->
+  <div class="sub-screen" id="sub-cloud">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-cloud')">‹</button>
+      <div class="sub-title" data-i18n="cloud_title">K9 Cloud</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 16px;">
+        <div class="card" style="margin: 0 0 14px 0; background: linear-gradient(135deg, #FFF8F0, #FFEED9); border: 1px solid #F2C693;">
+          <div style="font-size: 28px; margin-bottom: 6px;">☁️🐶</div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--ink-1); margin-bottom: 4px;" data-i18n="cloud_pitch_t">Sauvegarde & sync multi-device</div>
+          <div style="font-size: 13px; color: var(--ink-2); line-height: 1.55;" data-i18n="cloud_pitch_d">Connecte-toi par email (lien magique — pas de mot de passe). Tes carnets, calendrier, balades et alertes sont sauvegardés sur le cloud et synchronisés entre tes appareils.</div>
+        </div>
+
+        <!-- Signed out -->
+        <div id="k9CloudSignedOut">
+          <div class="alert-form-row" style="padding: 0;">
+            <label data-i18n="cloud_email_label">Ton email</label>
+            <input type="email" id="k9CloudEmail" placeholder="toi@exemple.com" inputmode="email" autocomplete="email" />
+          </div>
+          <button class="btn" style="width: 100%; margin-top: 8px;" onclick="k9SignIn()" data-i18n="cloud_signin_btn">📧 Recevoir mon lien de connexion</button>
+          <div id="k9CloudMessage" style="margin-top: 12px; font-size: 13px; color: var(--ink-2); text-align: center; line-height: 1.5;"></div>
+        </div>
+
+        <!-- Signed in -->
+        <div id="k9CloudSignedIn" style="display:none;">
+          <div class="card" style="margin: 0 0 12px;">
+            <div style="font-size: 13px; color: var(--ink-2); margin-bottom: 4px;" data-i18n="cloud_connected_as">Connecté en tant que</div>
+            <div id="k9CloudUserEmail" style="font-size: 15px; font-weight: 600; color: var(--ink-1);"></div>
+            <div id="k9CloudLastSync" style="font-size: 12px; color: var(--ink-2); margin-top: 6px;"></div>
+          </div>
+          <button class="btn" style="width: 100%; margin-bottom: 8px;" onclick="k9SyncPush()" data-i18n="cloud_sync_now">☁️ Synchroniser maintenant</button>
+          <button class="btn ghost" style="width: 100%; margin-bottom: 8px;" onclick="k9EnablePush()" data-i18n="cloud_push_enable">🔔 Activer les notifications push</button>
+          <button class="btn ghost" style="width: 100%;" onclick="k9SignOut()" data-i18n="cloud_signout_btn">🚪 Se déconnecter</button>
+        </div>
+
+        <div style="margin-top: 18px; font-size: 11px; color: var(--ink-2); line-height: 1.55; text-align: center;" data-i18n="cloud_privacy">K9 Cloud chiffre tes données au repos et applique une isolation stricte : tu es le seul à pouvoir lire ton carnet. Tu peux tout supprimer à tout moment.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scan carnet véto -->
+  <div class="sub-screen" id="sub-scan-carnet">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-scan-carnet')">‹</button>
+      <div class="sub-title" data-i18n="scan_title">Scanner mon carnet</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 14px 16px;">
+        <div class="card" style="margin: 0 0 14px 0; background: #FFF8F0;">
+          <div style="font-size: 13px; color: var(--ink-2); line-height: 1.55;" data-i18n="scan_intro">Prends en photo une page de ton carnet de santé. L'IA extrait automatiquement les vaccins, vermifuges et traitements trouvés, et les propose pour ajout au calendrier.</div>
+        </div>
+        <label class="alert-photo-slot" for="scanCarnetInput" id="scanCarnetSlot">
+          <div class="ph">
+            <div class="emo">📸</div>
+            <div data-i18n="scan_hint">Prendre une photo de ton carnet</div>
+          </div>
+          <img id="scanCarnetPreview" alt="" style="display:none;" />
+          <input type="file" id="scanCarnetInput" accept="image/*" capture="environment" style="display:none;" onchange="k9HandleScanPhoto(event)" />
+        </label>
+        <button class="btn" id="scanCarnetBtn" style="width:100%; margin-top: 10px;" onclick="k9RunScanCarnet()" disabled data-i18n="scan_run">✨ Extraire avec l'IA</button>
+        <div id="scanCarnetResult" style="margin-top: 14px;"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Plan / abonnement -->
   <div class="sub-screen" id="sub-plan">
     <div class="sub-header">
@@ -3605,6 +3694,207 @@ const K9Store = (function() {
   }
 
   return { OK, load, save, clear, exportJSON, importJSON, snapshot };
+})();
+
+// ====================================================================
+// K9Cloud — Auth magic-link + Sync snapshot + Web Push
+// ====================================================================
+// Couche optionnelle : si le backend Supabase est configuré côté Vercel,
+// on active les fonctions cloud (compte, sync multi-device, push). Sinon
+// tout continue en localStorage-only sans rien casser.
+//
+// Le module expose : K9Cloud.init(), signIn(email), signOut(), push(),
+// pull(), subscribePush(), isReady(), getUser()
+// ====================================================================
+const K9Cloud = (function() {
+  let _client = null;
+  let _config = null;
+  let _session = null;
+  let _ready = false;
+  let _listeners = [];
+
+  async function loadSupabaseSDK() {
+    if (window._createSupabaseClient) return window._createSupabaseClient;
+    try {
+      const mod = await import("https://esm.sh/@supabase/supabase-js@2.45.4");
+      window._createSupabaseClient = mod.createClient;
+      return mod.createClient;
+    } catch (e) {
+      console.warn("K9Cloud: SDK load failed", e);
+      return null;
+    }
+  }
+
+  async function init() {
+    try {
+      const r = await fetch("/api/config");
+      _config = await r.json();
+    } catch (e) {
+      _config = { cloudEnabled: false };
+    }
+    if (!_config?.cloudEnabled) return false;
+
+    const createClient = await loadSupabaseSDK();
+    if (!createClient) return false;
+
+    _client = createClient(_config.supabaseUrl, _config.supabaseAnonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, storage: window.localStorage },
+    });
+
+    const { data } = await _client.auth.getSession();
+    _session = data?.session || null;
+
+    _client.auth.onAuthStateChange((_event, session) => {
+      _session = session || null;
+      _listeners.forEach((fn) => { try { fn(session); } catch {} });
+    });
+
+    _ready = true;
+    return true;
+  }
+
+  function isReady() { return _ready && !!_config?.cloudEnabled; }
+  function isSignedIn() { return !!_session; }
+  function getUser() { return _session?.user || null; }
+  function onAuthChange(fn) { _listeners.push(fn); return () => { _listeners = _listeners.filter((f) => f !== fn); }; }
+
+  async function signIn(email) {
+    if (!isReady()) throw new Error("Cloud not configured");
+    const redirectTo = window.location.origin + "/";
+    const { error } = await _client.auth.signInWithOtp({
+      email, options: { emailRedirectTo: redirectTo },
+    });
+    if (error) throw error;
+    return true;
+  }
+
+  async function signOut() {
+    if (!_client) return;
+    await _client.auth.signOut();
+    _session = null;
+  }
+
+  async function token() {
+    if (!isReady()) return null;
+    const { data } = await _client.auth.getSession();
+    return data?.session?.access_token || null;
+  }
+
+  // --- Snapshot sync ------------------------------------------------
+
+  async function push() {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    const snapshot = K9Store.snapshot();
+    try {
+      const r = await fetch("/api/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+        body: JSON.stringify({ snapshot }),
+      });
+      return await r.json();
+    } catch (e) {
+      return { ok: false, error: String(e?.message || e) };
+    }
+  }
+
+  async function pull() {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    try {
+      const r = await fetch("/api/sync", { headers: { "Authorization": `Bearer ${t}` } });
+      const j = await r.json();
+      if (j.snapshot) {
+        K9Store.importJSON(JSON.stringify({ ...j.snapshot, v: 1 })); // local format
+        k9ApplySnapshot(j.snapshot);
+      }
+      return j;
+    } catch (e) {
+      return { ok: false, error: String(e?.message || e) };
+    }
+  }
+
+  // --- Web Push -----------------------------------------------------
+
+  function urlBase64ToUint8Array(base64) {
+    const padding = "=".repeat((4 - base64.length % 4) % 4);
+    const b64 = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const raw = window.atob(b64);
+    const out = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+
+  async function subscribePush() {
+    if (!isReady() || !_config?.vapidPublicKey) return { ok: false, reason: "no-vapid" };
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return { ok: false, reason: "unsupported" };
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") return { ok: false, reason: "denied" };
+
+    const reg = await navigator.serviceWorker.register("/service-worker.js");
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(_config.vapidPublicKey),
+    });
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    const r = await fetch("/api/push-subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+      body: JSON.stringify({
+        endpoint: sub.endpoint,
+        keys: { p256dh: arrayBufferToBase64(sub.getKey("p256dh")), auth: arrayBufferToBase64(sub.getKey("auth")) },
+        userAgent: navigator.userAgent,
+      }),
+    });
+    return await r.json();
+  }
+
+  function arrayBufferToBase64(buf) {
+    const bytes = new Uint8Array(buf);
+    let s = ""; for (let i = 0; i < bytes.byteLength; i++) s += String.fromCharCode(bytes[i]);
+    return window.btoa(s);
+  }
+
+  // --- Share link (véto) --------------------------------------------
+
+  async function createShareLink(dogId, hours = 24) {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    const r = await fetch("/api/share-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+      body: JSON.stringify({ dogId, scope: "health", hours }),
+    });
+    return await r.json();
+  }
+
+  // --- Carnet scan --------------------------------------------------
+
+  async function scanCarnet(imageDataUrl, lang = "fr") {
+    const t = await token();
+    const headers = { "Content-Type": "application/json" };
+    if (t) headers["Authorization"] = `Bearer ${t}`;
+    const r = await fetch("/api/scan-carnet", {
+      method: "POST", headers,
+      body: JSON.stringify({ imageDataUrl, lang }),
+    });
+    return await r.json();
+  }
+
+  // --- PDF export ---------------------------------------------------
+
+  async function exportPDF(dogId) {
+    const t = await token(); if (!t) return null;
+    const r = await fetch(`/api/export-pdf?dogId=${encodeURIComponent(dogId)}`, {
+      headers: { "Authorization": `Bearer ${t}` },
+    });
+    if (!r.ok) return null;
+    return await r.blob();
+  }
+
+  return {
+    init, isReady, isSignedIn, getUser, onAuthChange,
+    signIn, signOut, push, pull, subscribePush,
+    createShareLink, scanCarnet, exportPDF,
+    config: () => _config,
+  };
 })();
 
 // Applique un snapshot aux états globaux (appelé au démarrage si localStorage contient qqch)
@@ -6418,6 +6708,299 @@ if ("Notification" in window && Notification.permission === "granted") {
     scr.addEventListener("scroll", onScroll, { passive: true });
   });
   // Scroll sur l'overlay IA : pas besoin de fader le FAB (il est masqué au dessus)
+})();
+
+// ====================================================================
+// K9 Cloud UI — init & handlers
+// ====================================================================
+
+let _k9CloudLastPull = null;
+let _k9CloudLastPush = null;
+let _k9ScanPhotoData = null;
+
+function k9UpdateCloudUI() {
+  const signedIn = K9Cloud.isSignedIn();
+  const ready = K9Cloud.isReady();
+  const row = document.getElementById("k9CloudRow");
+  const label = document.getElementById("k9CloudLabel");
+  const status = document.getElementById("k9CloudStatus");
+  if (!row) return;
+
+  if (!ready) {
+    row.style.opacity = "0.55";
+    if (label) label.textContent = (currentLang === "en") ? "Cloud not configured on this server" : "Cloud non configuré sur ce serveur";
+    if (status) status.textContent = "";
+    return;
+  }
+  row.style.opacity = "1";
+  if (signedIn) {
+    if (label) label.textContent = (currentLang === "en") ? "K9 Cloud · signed in" : "K9 Cloud · connecté";
+    const user = K9Cloud.getUser();
+    if (status) status.textContent = user?.email || "";
+  } else {
+    if (label) label.textContent = I18N[currentLang]?.menu_cloud_signin || "Se connecter · sync multi-device";
+    if (status) status.textContent = "";
+  }
+
+  // Cacher/afficher les boutons liés au compte connecté
+  const scanRow = document.getElementById("k9ScanRow");
+  const shareRow = document.getElementById("k9ShareVetRow");
+  const pdfRow = document.getElementById("k9ExportPdfRow");
+  [scanRow, shareRow, pdfRow].forEach(el => { if (el) el.style.display = signedIn ? "flex" : "none"; });
+
+  const signedOut = document.getElementById("k9CloudSignedOut");
+  const signedInBox = document.getElementById("k9CloudSignedIn");
+  if (signedOut) signedOut.style.display = signedIn ? "none" : "block";
+  if (signedInBox) signedInBox.style.display = signedIn ? "block" : "none";
+  if (signedIn) {
+    const emailEl = document.getElementById("k9CloudUserEmail");
+    if (emailEl) emailEl.textContent = K9Cloud.getUser()?.email || "";
+    const lastSync = document.getElementById("k9CloudLastSync");
+    if (lastSync) {
+      const parts = [];
+      if (_k9CloudLastPush) parts.push((currentLang === "en" ? "Last push: " : "Dernier envoi : ") + new Date(_k9CloudLastPush).toLocaleTimeString());
+      if (_k9CloudLastPull) parts.push((currentLang === "en" ? "Last pull: " : "Dernière réception : ") + new Date(_k9CloudLastPull).toLocaleTimeString());
+      lastSync.textContent = parts.join(" · ");
+    }
+  }
+}
+
+async function k9SignIn() {
+  const email = (document.getElementById("k9CloudEmail")?.value || "").trim();
+  const msg = document.getElementById("k9CloudMessage");
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+    if (msg) msg.textContent = (currentLang === "en") ? "Please enter a valid email." : "Saisis un email valide.";
+    return;
+  }
+  if (msg) msg.textContent = (currentLang === "en") ? "Sending magic link…" : "Envoi du lien magique…";
+  try {
+    await K9Cloud.signIn(email);
+    if (msg) msg.innerHTML = (currentLang === "en")
+      ? `✅ Check <strong>${email}</strong> — the link expires in 1h.`
+      : `✅ Vérifie <strong>${email}</strong> — le lien expire dans 1h.`;
+  } catch (e) {
+    if (msg) msg.textContent = (currentLang === "en") ? `Error: ${e?.message || e}` : `Erreur : ${e?.message || e}`;
+  }
+}
+
+async function k9SignOut() {
+  await K9Cloud.signOut();
+  k9UpdateCloudUI();
+  showAlertToast(currentLang === "en" ? "Signed out" : "Déconnecté");
+}
+
+async function k9SyncPush() {
+  const r = await K9Cloud.push();
+  if (r?.ok) {
+    _k9CloudLastPush = Date.now();
+    showAlertToast(currentLang === "en" ? "Synced ✓" : "Synchronisé ✓");
+  } else {
+    showAlertToast(currentLang === "en" ? "Sync failed" : "Échec sync");
+  }
+  k9UpdateCloudUI();
+}
+
+async function k9SyncPull() {
+  const r = await K9Cloud.pull();
+  if (r?.snapshot) {
+    _k9CloudLastPull = Date.now();
+    // Re-render
+    if (typeof selectDog === "function") selectDog(activeDogIdx || 0);
+    if (typeof renderCalendar === "function") renderCalendar();
+    if (typeof renderWalkHistory === "function") renderWalkHistory();
+    if (typeof renderAlertsFeed === "function") renderAlertsFeed();
+    showAlertToast(currentLang === "en" ? "Loaded from cloud ✓" : "Chargé depuis le cloud ✓");
+  }
+  k9UpdateCloudUI();
+}
+
+async function k9EnablePush() {
+  const r = await K9Cloud.subscribePush();
+  if (r?.ok) showAlertToast(currentLang === "en" ? "Push notifications enabled ✓" : "Notifications push activées ✓");
+  else showAlertToast(currentLang === "en" ? ("Push: " + (r?.reason || "failed")) : ("Push : " + (r?.reason || "échec")));
+}
+
+async function k9ShareVet() {
+  if (!K9Cloud.isSignedIn()) { showAlertToast(currentLang === "en" ? "Sign in first" : "Connecte-toi d'abord"); return; }
+  const d = DOGS[activeDogIdx];
+  if (!d?.id) {
+    // Force push first to create dog server-side
+    await K9Cloud.push();
+    const pull = await K9Cloud.pull();
+    const d2 = pull?.snapshot?.dogs?.[activeDogIdx];
+    if (!d2?.id) { showAlertToast(currentLang === "en" ? "Sync your dog first" : "Synchronise d'abord ton chien"); return; }
+    d.id = d2.id;
+  }
+  const r = await K9Cloud.createShareLink(d.id, 24);
+  if (r?.url) {
+    try { await navigator.clipboard?.writeText(r.url); } catch {}
+    const msg = (currentLang === "en")
+      ? `Link copied — valid 24h:\n${r.url}`
+      : `Lien copié — valable 24h :\n${r.url}`;
+    if (navigator.share) navigator.share({ title: "K9 — carnet santé", text: msg, url: r.url }).catch(() => {});
+    else alert(msg);
+  } else {
+    showAlertToast(currentLang === "en" ? "Failed to create link" : "Échec création lien");
+  }
+}
+
+async function k9ExportPDF() {
+  if (!K9Cloud.isSignedIn()) { showAlertToast(currentLang === "en" ? "Sign in first" : "Connecte-toi d'abord"); return; }
+  const d = DOGS[activeDogIdx];
+  if (!d?.id) {
+    await K9Cloud.push();
+    const pull = await K9Cloud.pull();
+    const d2 = pull?.snapshot?.dogs?.[activeDogIdx];
+    if (d2?.id) d.id = d2.id;
+  }
+  if (!d?.id) { showAlertToast(currentLang === "en" ? "Sync first" : "Synchronise d'abord"); return; }
+  const blob = await K9Cloud.exportPDF(d.id);
+  if (!blob) { showAlertToast(currentLang === "en" ? "PDF failed" : "Échec PDF"); return; }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `K9-${d.name || "chien"}.pdf`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function k9OpenScanCarnet() { openSub("sub-scan-carnet"); }
+
+function k9HandleScanPhoto(ev) {
+  const f = ev.target.files?.[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    _k9ScanPhotoData = r.result;
+    const img = document.getElementById("scanCarnetPreview");
+    const slot = document.getElementById("scanCarnetSlot");
+    if (img) { img.src = r.result; img.style.display = "block"; }
+    if (slot) slot.querySelector(".ph").style.display = "none";
+    const btn = document.getElementById("scanCarnetBtn");
+    if (btn) btn.disabled = false;
+  };
+  r.readAsDataURL(f);
+}
+
+async function k9RunScanCarnet() {
+  if (!_k9ScanPhotoData) return;
+  const result = document.getElementById("scanCarnetResult");
+  const btn = document.getElementById("scanCarnetBtn");
+  if (btn) { btn.disabled = true; btn.textContent = currentLang === "en" ? "Analyzing…" : "Analyse en cours…"; }
+  try {
+    const r = await K9Cloud.scanCarnet(_k9ScanPhotoData, currentLang);
+    if (r.mock) {
+      result.innerHTML = `<div class="card" style="background:#FFF8F0;">${r.warning || "Demo mode"}</div>`;
+    } else if (r.error) {
+      result.innerHTML = `<div class="card" style="background:#FFE8E5;">⚠️ ${r.error}</div>`;
+    } else if (Array.isArray(r.events) && r.events.length) {
+      const listHtml = r.events.map((ev, i) => `
+        <div class="card" style="margin: 0 0 8px;">
+          <div style="font-size: 13px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px;">${ev.type}</div>
+          <div style="font-size: 15px; font-weight: 600;">${escapeHtml(ev.title || "—")}</div>
+          <div style="font-size: 13px; color: var(--ink-2); margin-top: 2px;">${ev.date || ""}${ev.notes ? " · " + escapeHtml(ev.notes) : ""}</div>
+          <button class="btn ghost" style="margin-top: 8px; font-size: 13px; padding: 8px 12px;" onclick="k9AddScanEvent(${i})">+ ${currentLang === "en" ? "Add to calendar" : "Ajouter au calendrier"}</button>
+        </div>`).join("");
+      window._k9ScanEvents = r.events;
+      result.innerHTML = `<div style="font-size: 13px; color: var(--ink-2); margin-bottom: 8px;">${r.events.length} ${currentLang === "en" ? "event(s) detected" : "événement(s) détecté(s)"}</div>${listHtml}`;
+    } else {
+      result.innerHTML = `<div class="card" style="background:#FFF8F0;">${r.warning || (currentLang === "en" ? "Nothing detected" : "Rien détecté")}</div>`;
+    }
+  } catch (e) {
+    result.innerHTML = `<div class="card" style="background:#FFE8E5;">❌ ${e?.message || e}</div>`;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = currentLang === "en" ? "✨ Extract with AI" : "✨ Extraire avec l'IA"; }
+  }
+}
+
+function k9AddScanEvent(idx) {
+  const ev = window._k9ScanEvents?.[idx];
+  if (!ev) return;
+  if (typeof calendarEvents === "undefined") return;
+  const entry = {
+    id: "cal_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+    type: ev.type || "other",
+    title: ev.title || "—",
+    date: ev.date,
+    notes: ev.notes || "",
+    dogIdx: activeDogIdx,
+  };
+  calendarEvents.push(entry);
+  K9Store.save();
+  if (typeof renderCalendar === "function") renderCalendar();
+  showAlertToast(currentLang === "en" ? "Added ✓" : "Ajouté ✓");
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]); }
+
+// Init cloud : lazy, non bloquant
+(async function initK9Cloud() {
+  try {
+    const ok = await K9Cloud.init();
+    k9UpdateCloudUI();
+    if (ok) {
+      K9Cloud.onAuthChange(async () => {
+        k9UpdateCloudUI();
+        if (K9Cloud.isSignedIn()) {
+          // Pull snapshot à la connexion
+          await k9SyncPull();
+        }
+      });
+      // Si déjà connecté (session persistée), déclencher un pull discret
+      if (K9Cloud.isSignedIn()) {
+        setTimeout(k9SyncPull, 800);
+      }
+      // Auto-push toutes les 2 min si connecté + changement détecté
+      let _lastSnapHash = null;
+      setInterval(() => {
+        if (!K9Cloud.isSignedIn()) return;
+        try {
+          const h = JSON.stringify(K9Store.snapshot()).length;
+          if (h !== _lastSnapHash) {
+            _lastSnapHash = h;
+            K9Cloud.push().then(() => { _k9CloudLastPush = Date.now(); k9UpdateCloudUI(); });
+          }
+        } catch {}
+      }, 120000);
+    }
+  } catch (e) {
+    console.warn("K9Cloud init failed (non-fatal):", e);
+  }
+})();
+
+// Register service worker (pour push + PWA)
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+
+// Handle ?share=<token> → ouvre un mode lecture seule véto (best-effort)
+(async function maybeOpenShareMode() {
+  try {
+    const u = new URL(window.location.href);
+    const token = u.searchParams.get("share");
+    if (!token) return;
+    const r = await fetch(`/api/share-link?token=${encodeURIComponent(token)}`);
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data?.dog) return;
+    // Injecte un read-only overlay minimal — page dédiée côté futur sprint
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;background:#FFF8F0;z-index:99999;overflow-y:auto;padding:20px;font-family:system-ui;";
+    const ev = (data.events || []).map(e => `<li>${e.date} — <strong>${escapeHtml(e.title)}</strong> <em style="color:#666">(${e.type})</em>${e.notes ? " · " + escapeHtml(e.notes) : ""}</li>`).join("");
+    overlay.innerHTML = `
+      <div style="max-width:520px;margin:0 auto;">
+        <div style="color:#E87A3B;font-weight:800;font-size:22px;margin-bottom:10px;">🐶 K9 — Partage véto</div>
+        <div style="color:#999;font-size:12px;margin-bottom:20px;">Lecture seule · expire ${new Date(data.expiresAt).toLocaleString()}</div>
+        <h2 style="color:#1B4332;">${data.dog.emoji || "🐕"} ${escapeHtml(data.dog.name || "")}</h2>
+        <p>${data.dog.years} an(s) ${data.dog.months || 0} mois · ${data.dog.weight || "?"} kg · ${data.dog.sex || ""}</p>
+        ${data.dog.chipId ? `<p>Puce : ${escapeHtml(data.dog.chipId)}</p>` : ""}
+        ${data.dog.vet?.name ? `<p><strong>Véto :</strong> ${escapeHtml(data.dog.vet.name)} · ${escapeHtml(data.dog.vet.phone || "")}</p>` : ""}
+        <h3 style="margin-top:24px;color:#1B4332;">Historique santé</h3>
+        <ul style="line-height:1.7;">${ev || "<li>Aucun événement.</li>"}</ul>
+        <button style="margin-top:24px;padding:12px 20px;background:#E87A3B;color:white;border:none;border-radius:10px;font-weight:700;" onclick="this.parentElement.parentElement.remove()">Fermer</button>
+      </div>`;
+    document.body.appendChild(overlay);
+  } catch (e) { console.warn("share mode failed:", e); }
 })();
 </script>
 </body>

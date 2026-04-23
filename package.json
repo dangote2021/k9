@@ -1,12 +1,16 @@
 {
   "name": "k9",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "description": "K9 — porte d'entrée unique pour propriétaires de chiens",
   "engines": {
     "node": "20.x"
   },
   "dependencies": {
-    "stripe": "^17.5.0"
+    "@supabase/supabase-js": "^2.45.4",
+    "pdfkit": "^0.15.0",
+    "resend": "^4.0.0",
+    "stripe": "^17.5.0",
+    "web-push": "^3.6.7"
   }
 }
