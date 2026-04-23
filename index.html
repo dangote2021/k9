@@ -1373,6 +1373,16 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
   animation: fabPulse 3s ease-in-out infinite;
 }
 .fab:active { transform: scale(0.94); }
+/* B4 — Pendant le scroll, le FAB devient translucide pour ne pas masquer les CTA bas d'écran */
+.fab.scrolling {
+  opacity: 0.5;
+  transform: scale(0.92);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.fab:not(.scrolling) {
+  opacity: 1;
+  transition: opacity .35s ease, transform .2s ease;
+}
 .fab .sparkle {
   position: absolute;
   top: 4px; right: 6px;
@@ -1435,6 +1445,231 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .ai-home-bar .title { font-size: 13px; font-weight: 700; }
 .ai-home-bar .sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
 .ai-home-bar .arr { color: var(--brand); font-size: 20px; font-weight: 700; }
+
+/* ===== Lost/Found dog alerts ===== */
+.alert-home-cta {
+  margin: 0 16px 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #C33C2F 0%, #8E2A20 100%);
+  color: white;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(195,60,47,.28);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform .1s ease;
+  position: relative;
+  overflow: hidden;
+}
+.alert-home-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 0%, rgba(255,255,255,.18), transparent 50%);
+  pointer-events: none;
+}
+.alert-home-cta:active { transform: scale(0.99); }
+.alert-home-cta .ic {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.alert-home-cta .txt { flex: 1; min-width: 0; }
+.alert-home-cta .title { font-size: 14px; font-weight: 800; }
+.alert-home-cta .sub { font-size: 11.5px; opacity: .92; margin-top: 2px; }
+.alert-home-cta .arr { font-size: 20px; font-weight: 700; opacity: .9; }
+body.a11y-large .alert-home-cta .title { font-size: 16px; }
+body.a11y-large .alert-home-cta .sub { font-size: 13.5px; }
+
+.alert-type-pick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0 16px 14px;
+}
+.alert-type-btn {
+  border: 2px solid var(--border);
+  background: white;
+  border-radius: 16px;
+  padding: 16px 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: inherit;
+  transition: all .12s ease;
+}
+.alert-type-btn .emo { font-size: 26px; }
+.alert-type-btn .lbl { font-size: 14px; font-weight: 800; color: var(--ink); }
+.alert-type-btn .sub { font-size: 11px; color: var(--ink-2); line-height: 1.35; }
+.alert-type-btn.sel {
+  border-color: var(--terra);
+  background: linear-gradient(135deg, #FFF6EC, #FFE7D3);
+  box-shadow: 0 4px 12px rgba(232,122,59,.15);
+}
+.alert-type-btn.sel.found {
+  border-color: var(--forest);
+  background: linear-gradient(135deg, #EAF3EC, #D6E6DA);
+  box-shadow: 0 4px 12px rgba(45,90,61,.15);
+}
+
+.alert-photo-slot {
+  margin: 0 16px 14px;
+  aspect-ratio: 16/10;
+  border: 2px dashed var(--border);
+  border-radius: 18px;
+  background: var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: border-color .15s ease;
+}
+.alert-photo-slot:hover { border-color: var(--terra); }
+.alert-photo-slot .ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+}
+.alert-photo-slot .ph .emo { font-size: 36px; }
+.alert-photo-slot img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.alert-photo-slot .replace {
+  position: absolute;
+  right: 10px; top: 10px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.alert-form-row {
+  margin: 0 16px 12px;
+}
+.alert-form-row label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.alert-form-row input,
+.alert-form-row textarea,
+.alert-form-row select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background: white;
+  color: var(--ink);
+}
+.alert-form-row textarea { resize: vertical; min-height: 80px; }
+
+.alert-card {
+  margin: 0 16px 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.alert-card .cover {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  position: relative;
+  overflow: hidden;
+}
+.alert-card .cover img { width: 100%; height: 100%; object-fit: cover; }
+.alert-card .badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+.alert-card .badge.lost { background: #C33C2F; }
+.alert-card .badge.found { background: var(--forest); }
+.alert-card .body { padding: 12px 14px 14px; }
+.alert-card h4 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.alert-card .meta {
+  font-size: 12px;
+  color: var(--ink-2);
+  margin-bottom: 8px;
+}
+.alert-card .desc {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.alert-card .actions {
+  display: flex;
+  gap: 8px;
+}
+.alert-card .actions button {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: white;
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+}
+.alert-card .actions button.primary {
+  background: var(--terra);
+  color: white;
+  border-color: var(--terra);
+}
+
+.alert-empty {
+  margin: 24px 16px;
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--ink-2);
+  background: var(--sand);
+  border-radius: 18px;
+  border: 1px dashed var(--border);
+}
+.alert-empty .emo { font-size: 40px; margin-bottom: 8px; }
+.alert-empty .t { font-weight: 800; color: var(--ink); margin-bottom: 4px; font-size: 14px; }
+.alert-empty .d { font-size: 12.5px; line-height: 1.5; }
 
 /* ===== Urgent reminders banner (home) ===== */
 .urgent-banner {
@@ -1512,10 +1747,30 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   font-size: 28px;
   border: 3px solid transparent;
   transition: all .15s ease;
+  position: relative;
 }
 .dog-pill.active .ring {
   border-color: var(--terra);
-  box-shadow: 0 0 0 2px rgba(232,122,59,.18);
+  background: linear-gradient(135deg, #FFF1E8 0%, #FFE0CC 100%);
+  box-shadow: 0 0 0 3px rgba(232,122,59,.22), 0 4px 10px rgba(232,122,59,.18);
+  transform: scale(1.06);
+}
+/* Coche ✓ sur le chien actif pour lecture rapide multi-chiens */
+.dog-pill.active .ring::after {
+  content: "✓";
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--terra);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+  border: 2px solid var(--cream);
 }
 .dog-pill .lbl {
   font-size: 11px;
@@ -1525,6 +1780,10 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.dog-pill.active .lbl {
+  color: var(--terra-dark);
+  font-weight: 800;
 }
 .dog-pill.add .ring {
   border: 2px dashed var(--border);
@@ -1947,6 +2206,15 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 
       <div id="urgentBanner"></div>
 
+      <div class="alert-home-cta" onclick="openSub('sub-alerts')" role="button">
+        <div class="ic">🚨</div>
+        <div class="txt">
+          <div class="title" data-i18n="alert_cta_t">Chien perdu ou trouvé ?</div>
+          <div class="sub" data-i18n="alert_cta_d">Signale et partage autour de toi en 30 secondes</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+
       <div class="ai-home-bar" onclick="openAI()">
         <div class="spark">✨</div>
         <div class="txt">
@@ -2293,7 +2561,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
       <div class="menu-row">
         <div class="ic">✨</div>
-        <div class="label" data-i18n="menu_ai_soft">IA discrète (moins de suggestions)</div>
+        <div class="label" data-i18n="menu_ai_soft">Coach minimaliste — moins de suggestions</div>
         <div class="toggle" id="togAIsoft" onclick="toggleAIsoft(this)"></div>
       </div>
       <div class="menu-row">
@@ -2751,12 +3019,12 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 
       <div class="section-title" data-i18n="rescue_journal">Journal d'évolution</div>
       <div class="card">
-        <textarea id="rescueEntryInput" placeholder="Aujourd'hui, Oscar a..." style="width:100%; min-height: 90px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 13px; resize: vertical;"></textarea>
+        <textarea id="rescueEntryInput" data-i18n-ph="rescue_entry_ph" placeholder="Aujourd'hui, Oscar a..." style="width:100%; min-height: 90px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 13px; resize: vertical;"></textarea>
         <button class="btn" style="margin-top: 8px;" onclick="saveRescueEntry()" data-i18n="rescue_save">Enregistrer</button>
         <div id="rescueFeed" style="margin-top: 14px;"></div>
       </div>
 
-      <button class="ask-ai-cta" onclick="openAIWith('Mon chien adopté se cache et ne mange plus, que faire ?')"><span>✨</span> <span data-i18n="rescue_ask_ai">Demander à l'IA conseil rescue</span></button>
+      <button class="ask-ai-cta" onclick="openAIWith(currentLang === 'fr' ? 'Mon chien adopté se cache et ne mange plus, que faire ?' : 'My rescue dog hides and won\'t eat, what should I do?')"><span>✨</span> <span data-i18n="rescue_ask_ai">Demander à l'IA conseil rescue</span></button>
     </div>
   </div>
 
@@ -3004,6 +3272,97 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
   </div>
 
+  <!-- ================ Alertes perdu / trouvé ================ -->
+  <div class="sub-screen" id="sub-alerts">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-alerts')">‹</button>
+      <div class="sub-title" data-i18n="alerts_title">Alertes perdu / trouvé</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 14px 16px 8px; font-size: 13px; color: var(--ink-2); line-height: 1.5;" data-i18n="alerts_intro">
+        Quand un chien disparaît ou qu'on en trouve un errant, chaque minute compte. Signale ici, partage le lien, aide la communauté.
+      </div>
+
+      <div style="padding: 0 16px 10px; display: flex; gap: 10px;">
+        <button class="btn" style="flex:1;" onclick="openAlertCreate('lost')" data-i18n="alerts_cta_lost">
+          🔴 J'ai perdu un chien
+        </button>
+        <button class="btn forest" style="flex:1;" onclick="openAlertCreate('found')" data-i18n="alerts_cta_found">
+          🟢 J'ai trouvé un chien
+        </button>
+      </div>
+
+      <div class="section-title" style="margin-top: 10px;" data-i18n="alerts_recent">Alertes récentes</div>
+      <div id="alertsFeed"></div>
+    </div>
+  </div>
+
+  <!-- Alerte — création -->
+  <div class="sub-screen" id="sub-alert-create">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-alert-create')">‹</button>
+      <div class="sub-title" data-i18n="alert_new_title">Nouveau signalement</div>
+    </div>
+    <div class="sub-body">
+      <div style="padding: 14px 16px 6px;">
+        <div class="section-title" style="padding: 0; margin-bottom: 10px;" data-i18n="alert_type_label">Type de signalement</div>
+      </div>
+      <div class="alert-type-pick">
+        <button class="alert-type-btn" id="alertTypeLost" onclick="pickAlertType('lost')">
+          <div class="emo">🔴</div>
+          <div class="lbl" data-i18n="alert_type_lost">Perdu</div>
+          <div class="sub" data-i18n="alert_type_lost_d">Mon chien a disparu</div>
+        </button>
+        <button class="alert-type-btn" id="alertTypeFound" onclick="pickAlertType('found')">
+          <div class="emo">🟢</div>
+          <div class="lbl" data-i18n="alert_type_found">Trouvé</div>
+          <div class="sub" data-i18n="alert_type_found_d">J'ai trouvé un chien errant</div>
+        </button>
+      </div>
+
+      <div class="section-title" style="margin-top: 8px;" data-i18n="alert_photo_label">Photo du chien</div>
+      <label class="alert-photo-slot" id="alertPhotoSlot" for="alertPhotoInput">
+        <div class="ph" id="alertPhotoPlaceholder">
+          <div class="emo">📷</div>
+          <div data-i18n="alert_photo_hint">Appuie ici pour prendre une photo ou en choisir une</div>
+        </div>
+        <img id="alertPhotoPreview" alt="" style="display:none;" />
+        <span class="replace" id="alertPhotoReplace" style="display:none;" data-i18n="alert_photo_replace">Changer</span>
+        <input type="file" id="alertPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleAlertPhoto(event)" />
+      </label>
+
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_name">Nom du chien <span style="opacity:.6; font-weight: 400; text-transform: none;" data-i18n="alert_field_opt">(si connu)</span></label>
+        <input type="text" id="alertName" placeholder="" />
+      </div>
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_breed">Race / apparence</label>
+        <input type="text" id="alertBreed" placeholder="" />
+      </div>
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_place">Lieu</label>
+        <input type="text" id="alertPlace" placeholder="" />
+      </div>
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_when">Date / heure</label>
+        <input type="datetime-local" id="alertWhen" />
+      </div>
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_desc">Description <span style="opacity:.6; font-weight: 400; text-transform: none;" data-i18n="alert_field_desc_hint">(collier, comportement, signe distinctif…)</span></label>
+        <textarea id="alertDesc"></textarea>
+      </div>
+      <div class="alert-form-row">
+        <label data-i18n="alert_field_contact">Contact (tél. ou email)</label>
+        <input type="text" id="alertContact" inputmode="tel" />
+      </div>
+
+      <div style="padding: 6px 16px 18px; display: flex; gap: 10px;">
+        <button class="btn ghost" style="flex:1;" onclick="closeSub('sub-alert-create')" data-i18n="alert_cancel">Annuler</button>
+        <button class="btn" style="flex:1;" onclick="submitAlert()" data-i18n="alert_publish">📣 Publier</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Plan / abonnement -->
   <div class="sub-screen" id="sub-plan">
     <div class="sub-header">
@@ -3124,7 +3483,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   </div>
 
   <!-- ================== Floating AI Button ================== -->
-  <button class="fab" onclick="openAI()" aria-label="Demander à l'IA">
+  <button class="fab" id="fabAI" onclick="openAI()" aria-label="Demander à l'IA">
     <span>✨</span>
     <span class="sparkle"></span>
   </button>
@@ -3197,6 +3556,7 @@ const K9Store = (function() {
       calendarEvents: (typeof calendarEvents !== "undefined") ? calendarEvents : [],
       walkHistory: (typeof walkHistory !== "undefined") ? walkHistory : [],
       rescueEntries: (typeof rescueEntries !== "undefined") ? rescueEntries : [],
+      lostFoundAlerts: (typeof lostFoundAlerts !== "undefined") ? lostFoundAlerts : [],
       settings: {
         lang: (typeof currentLang !== "undefined") ? currentLang : "fr",
         useImperial: (typeof useImperial !== "undefined") ? useImperial : false,
@@ -3271,6 +3631,9 @@ function k9ApplySnapshot(data) {
     }
     if (Array.isArray(data.rescueEntries)) {
       rescueEntries = data.rescueEntries;
+    }
+    if (Array.isArray(data.lostFoundAlerts)) {
+      lostFoundAlerts = data.lostFoundAlerts;
     }
     if (data.settings) {
       if (data.settings.lang) currentLang = data.settings.lang;
@@ -3456,6 +3819,53 @@ const I18N = {
     share_desc: "Une carte à envoyer à la famille, au pet-sitter ou aux amis.",
     share_download: "⬇️ Télécharger",
     share_send: "📲 Partager la fiche",
+
+    // Alertes perdu / trouvé
+    alert_cta_t: "Chien perdu ou trouvé ?",
+    alert_cta_d: "Signale et partage autour de toi en 30 secondes",
+    alerts_title: "Alertes perdu / trouvé",
+    alerts_intro: "Quand un chien disparaît ou qu'on en trouve un errant, chaque minute compte. Signale ici, partage le lien, aide la communauté.",
+    alerts_cta_lost: "🔴 J'ai perdu un chien",
+    alerts_cta_found: "🟢 J'ai trouvé un chien",
+    alerts_recent: "Alertes récentes",
+    alerts_empty_t: "Aucune alerte pour le moment",
+    alerts_empty_d: "Ton signalement apparaîtra ici et sera prêt à partager sur WhatsApp, Messenger ou par SMS.",
+    alert_new_title: "Nouveau signalement",
+    alert_type_label: "Type de signalement",
+    alert_type_lost: "Perdu",
+    alert_type_lost_d: "Mon chien a disparu",
+    alert_type_found: "Trouvé",
+    alert_type_found_d: "J'ai trouvé un chien errant",
+    alert_photo_label: "Photo du chien",
+    alert_photo_hint: "Appuie ici pour prendre une photo ou en choisir une",
+    alert_photo_replace: "Changer",
+    alert_field_name: "Nom du chien",
+    alert_field_opt: "(si connu)",
+    alert_field_breed: "Race / apparence",
+    alert_field_place: "Lieu",
+    alert_field_when: "Date / heure",
+    alert_field_desc: "Description",
+    alert_field_desc_hint: "(collier, comportement, signe distinctif…)",
+    alert_field_contact: "Contact (tél. ou email)",
+    alert_cancel: "Annuler",
+    alert_publish: "📣 Publier",
+    alert_need_type: "Choisis d'abord : perdu ou trouvé ?",
+    alert_need_place: "Indique au moins un lieu pour que l'alerte soit utile.",
+    alert_need_contact: "Ajoute un contact pour que les gens puissent te joindre.",
+    alert_saved: "✅ Alerte publiée — partage-la largement",
+    alert_badge_lost: "PERDU",
+    alert_badge_found: "TROUVÉ",
+    alert_share: "📲 Partager",
+    alert_resolve: "✓ Retrouvé",
+    alert_delete: "Supprimer",
+    alert_confirm_delete: "Supprimer cette alerte ?",
+    alert_confirm_resolve: "Marquer comme retrouvé ? L'alerte sera archivée.",
+    alert_ago_min: "il y a {n} min",
+    alert_ago_h: "il y a {n}h",
+    alert_ago_d: "il y a {n}j",
+    alert_share_text_lost: "🚨 CHIEN PERDU — {name} ({breed}) près de {place}. Merci de partager et de me contacter si tu l'as vu : {contact}",
+    alert_share_text_found: "🐕 CHIEN TROUVÉ près de {place}. Il semble {breed}. Contacte-moi pour le récupérer : {contact}",
+
     plan_title: "Choisis ton plan K9",
     plan_intro: "Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.",
     plan_disclaimer: "Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.",
@@ -3495,7 +3905,7 @@ const I18N = {
     menu_lang: "Langue", menu_notif: "Notifications", menu_geo: "Géolocalisation",
     menu_a11y: "Grande police & haut contraste",
     menu_units: "Unités",
-    menu_ai_soft: "IA discrète (moins de suggestions)",
+    menu_ai_soft: "Coach minimaliste — moins de suggestions",
     menu_priv: "Confidentialité", menu_help: "Aide & support", menu_logout: "Se déconnecter",
     tab_home: "Accueil", tab_health: "Santé", tab_social: "Social", tab_profile: "Profil",
     sub_edu: "Éducation positive",
@@ -3628,6 +4038,7 @@ const I18N = {
     rescue_s3_t: "3 mois · Intégration", rescue_s3_d: "Il est devenu \"lui-même\". Tu connais ses signaux. C'est le bon moment pour une éducation positive structurée et des objectifs communs.",
     rescue_journal: "Journal d'évolution",
     rescue_save: "Enregistrer",
+    rescue_entry_ph: "Aujourd'hui, mon chien a…",
     rescue_ask_ai: "Demander à l'IA conseil rescue",
     // Seniors
     senior_title: "Vieillir ensemble",
@@ -3819,6 +4230,53 @@ const I18N = {
     share_desc: "A card to send to family, pet-sitter or friends.",
     share_download: "⬇️ Download",
     share_send: "📲 Share card",
+
+    // Lost / found alerts
+    alert_cta_t: "Lost or found a dog?",
+    alert_cta_d: "Report and share around you in 30 seconds",
+    alerts_title: "Lost / found alerts",
+    alerts_intro: "When a dog goes missing or you find one wandering, every minute counts. Report here, share the link, help the community.",
+    alerts_cta_lost: "🔴 I lost a dog",
+    alerts_cta_found: "🟢 I found a dog",
+    alerts_recent: "Recent alerts",
+    alerts_empty_t: "No alerts yet",
+    alerts_empty_d: "Your report will show up here, ready to share on WhatsApp, Messenger or SMS.",
+    alert_new_title: "New report",
+    alert_type_label: "Report type",
+    alert_type_lost: "Lost",
+    alert_type_lost_d: "My dog is missing",
+    alert_type_found: "Found",
+    alert_type_found_d: "I found a stray dog",
+    alert_photo_label: "Photo of the dog",
+    alert_photo_hint: "Tap to take a photo or pick one",
+    alert_photo_replace: "Change",
+    alert_field_name: "Dog's name",
+    alert_field_opt: "(if known)",
+    alert_field_breed: "Breed / appearance",
+    alert_field_place: "Location",
+    alert_field_when: "Date / time",
+    alert_field_desc: "Description",
+    alert_field_desc_hint: "(collar, behaviour, distinctive mark…)",
+    alert_field_contact: "Contact (phone or email)",
+    alert_cancel: "Cancel",
+    alert_publish: "📣 Publish",
+    alert_need_type: "Pick first: lost or found?",
+    alert_need_place: "Add at least a location so the alert is useful.",
+    alert_need_contact: "Add a contact so people can reach you.",
+    alert_saved: "✅ Alert published — share it widely",
+    alert_badge_lost: "LOST",
+    alert_badge_found: "FOUND",
+    alert_share: "📲 Share",
+    alert_resolve: "✓ Reunited",
+    alert_delete: "Delete",
+    alert_confirm_delete: "Delete this alert?",
+    alert_confirm_resolve: "Mark as reunited? The alert will be archived.",
+    alert_ago_min: "{n} min ago",
+    alert_ago_h: "{n}h ago",
+    alert_ago_d: "{n}d ago",
+    alert_share_text_lost: "🚨 LOST DOG — {name} ({breed}) near {place}. Please share and contact me if you've seen them: {contact}",
+    alert_share_text_found: "🐕 FOUND DOG near {place}. Looks like {breed}. Contact me to claim them: {contact}",
+
     plan_title: "Choose your K9 plan",
     plan_intro: "Free covers the basics. Upgrade to Plus for unlimited AI and multiple dogs.",
     plan_disclaimer: "Secure payment via Stripe. Cancel anytime from the billing portal.",
@@ -3858,7 +4316,7 @@ const I18N = {
     menu_lang: "Language", menu_notif: "Notifications", menu_geo: "Location",
     menu_a11y: "Larger text & high contrast",
     menu_units: "Units",
-    menu_ai_soft: "Minimal AI (fewer prompts)",
+    menu_ai_soft: "Minimalist coach — fewer prompts",
     menu_priv: "Privacy", menu_help: "Help & support", menu_logout: "Log out",
     tab_home: "Home", tab_health: "Health", tab_social: "Social", tab_profile: "Profile",
     sub_edu: "Positive training",
@@ -3991,6 +4449,7 @@ const I18N = {
     rescue_s3_t: "3 months · Integration", rescue_s3_d: "They've become \"themselves\". You know their signals. Perfect time for structured positive training and shared goals.",
     rescue_journal: "Progress journal",
     rescue_save: "Save",
+    rescue_entry_ph: "Today, my dog…",
     rescue_ask_ai: "Ask the AI for rescue advice",
     // Seniors
     senior_title: "Growing old together",
@@ -4510,6 +4969,241 @@ function markDone(btn) {
   btn.style.opacity = ".7";
 }
 
+// ==================== LOST / FOUND ALERTS ====================
+let lostFoundAlerts = [];
+let alertDraft = { type: null, photo: null };
+
+function t(key, vars) {
+  const s = (I18N[currentLang] && I18N[currentLang][key]) || key;
+  if (!vars) return s;
+  return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? vars[k] : ""));
+}
+
+function openAlertCreate(preType) {
+  openSub("sub-alert-create");
+  // reset draft + form
+  alertDraft = { type: null, photo: null };
+  ["alertName", "alertBreed", "alertPlace", "alertWhen", "alertDesc", "alertContact"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  const prev = document.getElementById("alertPhotoPreview");
+  const placeholder = document.getElementById("alertPhotoPlaceholder");
+  const replace = document.getElementById("alertPhotoReplace");
+  if (prev) { prev.style.display = "none"; prev.removeAttribute("src"); }
+  if (placeholder) placeholder.style.display = "flex";
+  if (replace) replace.style.display = "none";
+  const inp = document.getElementById("alertPhotoInput");
+  if (inp) inp.value = "";
+  // Default date = now
+  const now = new Date();
+  const tz = now.getTimezoneOffset() * 60000;
+  const localIso = new Date(now - tz).toISOString().slice(0, 16);
+  const whenEl = document.getElementById("alertWhen");
+  if (whenEl) whenEl.value = localIso;
+  // Prefill contact from last used
+  try {
+    const lastContact = localStorage.getItem("k9_alert_contact") || "";
+    const contactEl = document.getElementById("alertContact");
+    if (contactEl && lastContact) contactEl.value = lastContact;
+  } catch {}
+  if (preType) pickAlertType(preType);
+}
+
+function pickAlertType(type) {
+  alertDraft.type = type;
+  const lost = document.getElementById("alertTypeLost");
+  const found = document.getElementById("alertTypeFound");
+  if (lost) lost.classList.toggle("sel", type === "lost");
+  if (found) { found.classList.toggle("sel", type === "found"); found.classList.toggle("found", type === "found"); }
+}
+
+function handleAlertPhoto(ev) {
+  const file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    alertDraft.photo = dataUrl;
+    const prev = document.getElementById("alertPhotoPreview");
+    const placeholder = document.getElementById("alertPhotoPlaceholder");
+    const replace = document.getElementById("alertPhotoReplace");
+    if (prev) { prev.src = dataUrl; prev.style.display = "block"; }
+    if (placeholder) placeholder.style.display = "none";
+    if (replace) replace.style.display = "inline-block";
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitAlert() {
+  if (!alertDraft.type) {
+    alert(t("alert_need_type"));
+    return;
+  }
+  const place = (document.getElementById("alertPlace")?.value || "").trim();
+  const contact = (document.getElementById("alertContact")?.value || "").trim();
+  if (!place) { alert(t("alert_need_place")); document.getElementById("alertPlace")?.focus(); return; }
+  if (!contact) { alert(t("alert_need_contact")); document.getElementById("alertContact")?.focus(); return; }
+
+  const whenInput = (document.getElementById("alertWhen")?.value || "");
+  const whenISO = whenInput ? new Date(whenInput).toISOString() : new Date().toISOString();
+
+  const record = {
+    id: "a" + Date.now(),
+    type: alertDraft.type,
+    name: (document.getElementById("alertName")?.value || "").trim(),
+    breed: (document.getElementById("alertBreed")?.value || "").trim(),
+    place: place,
+    when: whenISO,
+    desc: (document.getElementById("alertDesc")?.value || "").trim(),
+    contact: contact,
+    photo: alertDraft.photo || null,
+    createdAt: new Date().toISOString(),
+    status: "active",
+  };
+  lostFoundAlerts.unshift(record);
+  try { localStorage.setItem("k9_alert_contact", contact); } catch {}
+  K9Store.save();
+  renderAlertsFeed();
+  closeSub("sub-alert-create");
+  // Ouvre sub-alerts si pas déjà là
+  setTimeout(() => {
+    const sa = document.getElementById("sub-alerts");
+    if (!sa || !sa.classList.contains("active")) openSub("sub-alerts");
+    // Toast
+    showAlertToast(t("alert_saved"));
+  }, 100);
+}
+
+function showAlertToast(msg) {
+  const existing = document.getElementById("alertToast");
+  if (existing) existing.remove();
+  const toast = document.createElement("div");
+  toast.id = "alertToast";
+  toast.textContent = msg;
+  toast.style.cssText = "position:fixed; left:50%; bottom:92px; transform:translateX(-50%); background:var(--forest); color:white; padding:11px 18px; border-radius:999px; font-size:13px; font-weight:700; z-index:9999; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: calc(100% - 32px); text-align:center;";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2800);
+}
+
+function fmtAlertAgo(iso) {
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  const diffMin = Math.round((now - then) / 60000);
+  if (diffMin < 60) return t("alert_ago_min", { n: Math.max(1, diffMin) });
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return t("alert_ago_h", { n: diffH });
+  const diffD = Math.round(diffH / 24);
+  return t("alert_ago_d", { n: diffD });
+}
+
+function fmtAlertWhen(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const loc = currentLang === "fr" ? "fr-FR" : "en-US";
+  return d.toLocaleDateString(loc, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+function renderAlertsFeed() {
+  const feed = document.getElementById("alertsFeed");
+  if (!feed) return;
+  if (!lostFoundAlerts.length) {
+    feed.innerHTML = `
+      <div class="alert-empty">
+        <div class="emo">🐾</div>
+        <div class="t">${escapeHtml(t("alerts_empty_t"))}</div>
+        <div class="d">${escapeHtml(t("alerts_empty_d"))}</div>
+      </div>`;
+    return;
+  }
+  feed.innerHTML = lostFoundAlerts.map(a => {
+    const badgeKey = a.type === "lost" ? "alert_badge_lost" : "alert_badge_found";
+    const cover = a.photo
+      ? `<img src="${a.photo}" alt="" />`
+      : (a.type === "lost" ? "🔴🐕" : "🟢🐕");
+    const title = a.name
+      ? escapeHtml(a.name) + (a.breed ? " · " + escapeHtml(a.breed) : "")
+      : (a.breed ? escapeHtml(a.breed) : (currentLang === "fr" ? "Chien non identifié" : "Unidentified dog"));
+    const when = a.when ? fmtAlertWhen(a.when) : "";
+    const ago = fmtAlertAgo(a.createdAt);
+    const meta = `📍 ${escapeHtml(a.place)}${when ? " · " + escapeHtml(when) : ""} · ${escapeHtml(ago)}`;
+    const isResolved = a.status === "resolved";
+    return `
+      <div class="alert-card" data-alert="${a.id}" style="${isResolved ? 'opacity:.55;' : ''}">
+        <div class="cover">${cover}
+          <span class="badge ${a.type}">${isResolved ? (currentLang==='fr'?'ARCHIVÉE':'ARCHIVED') : escapeHtml(t(badgeKey))}</span>
+        </div>
+        <div class="body">
+          <h4>${title}</h4>
+          <div class="meta">${meta}</div>
+          ${a.desc ? `<div class="desc">${escapeHtml(a.desc)}</div>` : ''}
+          <div class="actions">
+            <button class="primary" onclick="shareAlert('${a.id}')" data-i18n-tx="alert_share">${escapeHtml(t("alert_share"))}</button>
+            ${!isResolved ? `<button onclick="resolveAlert('${a.id}')">${escapeHtml(t("alert_resolve"))}</button>` : ''}
+            <button onclick="deleteAlert('${a.id}')" title="${escapeHtml(t('alert_delete'))}">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function buildAlertShareText(a) {
+  const key = a.type === "lost" ? "alert_share_text_lost" : "alert_share_text_found";
+  const name = a.name || (currentLang === "fr" ? "un chien" : "a dog");
+  const breed = a.breed || (currentLang === "fr" ? "race inconnue" : "unknown breed");
+  return t(key, { name, breed, place: a.place, contact: a.contact });
+}
+
+async function shareAlert(id) {
+  const a = lostFoundAlerts.find(x => x.id === id);
+  if (!a) return;
+  const text = buildAlertShareText(a);
+  const title = a.type === "lost"
+    ? (currentLang === "fr" ? "🚨 Chien perdu" : "🚨 Lost dog")
+    : (currentLang === "fr" ? "🐕 Chien trouvé" : "🐕 Found dog");
+
+  // Try file share first when photo present
+  try {
+    if (a.photo && navigator.canShare) {
+      const blob = await (await fetch(a.photo)).blob();
+      const file = new File([blob], "k9-alert.jpg", { type: blob.type || "image/jpeg" });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title, text });
+        return;
+      }
+    }
+    if (navigator.share) {
+      await navigator.share({ title, text });
+      return;
+    }
+  } catch (e) { /* user canceled or unsupported */ }
+
+  // Fallback — copy to clipboard
+  try {
+    await navigator.clipboard.writeText(text);
+    showAlertToast(currentLang === "fr" ? "✅ Texte copié — colle-le où tu veux" : "✅ Text copied — paste anywhere");
+  } catch {
+    prompt(currentLang === "fr" ? "Copie ce texte :" : "Copy this text:", text);
+  }
+}
+
+function resolveAlert(id) {
+  const a = lostFoundAlerts.find(x => x.id === id);
+  if (!a) return;
+  if (!confirm(t("alert_confirm_resolve"))) return;
+  a.status = "resolved";
+  a.resolvedAt = new Date().toISOString();
+  K9Store.save();
+  renderAlertsFeed();
+}
+
+function deleteAlert(id) {
+  if (!confirm(t("alert_confirm_delete"))) return;
+  lostFoundAlerts = lostFoundAlerts.filter(x => x.id !== id);
+  K9Store.save();
+  renderAlertsFeed();
+}
+
 // ---------- Tabs ----------
 function switchTab(name) {
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
@@ -4588,6 +5282,11 @@ function setLang(lang) {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.dataset.i18n;
     if (I18N[lang][key]) el.textContent = i18nInterpolate(I18N[lang][key]);
+  });
+  // Placeholders avec data-i18n-ph
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (I18N[lang][key]) el.setAttribute("placeholder", I18N[lang][key]);
   });
   // Update placeholders & specific elements
   const searchInput = document.getElementById("breedSearch");
@@ -5697,12 +6396,29 @@ renderCalTypeChips();
 renderCalendar();
 if (typeof renderWalkHistory === "function") renderWalkHistory();
 if (typeof renderRescueFeed === "function") renderRescueFeed();
+if (typeof renderAlertsFeed === "function") renderAlertsFeed();
 updateNotifButtons();
 
 // 5. Fire due-today/3d notifications if permission already granted
 if ("Notification" in window && Notification.permission === "granted") {
   setTimeout(checkAndFireReminders, 1500);
 }
+
+// 6. B4 — FAB translucide pendant le scroll (petits écrans Android notamment)
+(function setupFabScrollFade() {
+  const fab = document.getElementById("fabAI");
+  if (!fab) return;
+  let scrollTimer = null;
+  const onScroll = () => {
+    fab.classList.add("scrolling");
+    if (scrollTimer) clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => fab.classList.remove("scrolling"), 450);
+  };
+  document.querySelectorAll(".screen").forEach(scr => {
+    scr.addEventListener("scroll", onScroll, { passive: true });
+  });
+  // Scroll sur l'overlay IA : pas besoin de fader le FAB (il est masqué au dessus)
+})();
 </script>
 </body>
 </html>
