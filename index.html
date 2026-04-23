@@ -272,6 +272,13 @@ body {
 .cal-event .ic.other { background: var(--sand); color: var(--ink-2); }
 .cal-event .body { flex: 1; min-width: 0; }
 .cal-event .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+.cal-event .cal-dog-tag {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 14px;
+  line-height: 1;
+  vertical-align: -1px;
+}
 .cal-event .sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
 .cal-event .when {
   font-size: 11px;
@@ -1429,6 +1436,41 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .ai-home-bar .sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
 .ai-home-bar .arr { color: var(--brand); font-size: 20px; font-weight: 700; }
 
+/* ===== Urgent reminders banner (home) ===== */
+.urgent-banner {
+  margin: 4px 16px 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #FFF1E8 0%, #FFE0CC 100%);
+  border: 1.5px solid #E87A3B;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(232,122,59,.12);
+  transition: transform .1s ease;
+}
+.urgent-banner:active { transform: scale(0.99); }
+.urgent-banner.overdue {
+  background: linear-gradient(135deg, #FFE8E5 0%, #FFD2CC 100%);
+  border-color: #C04A35;
+}
+.urgent-banner .ic {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.55);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.urgent-banner .txt { flex: 1; min-width: 0; }
+.urgent-banner .title { font-size: 13px; font-weight: 800; color: #8A3A12; }
+.urgent-banner.overdue .title { color: #8A2E1E; }
+.urgent-banner .sub { font-size: 11.5px; color: var(--ink-2); margin-top: 2px; }
+.urgent-banner .arr { color: var(--terra); font-size: 18px; font-weight: 700; }
+body.a11y-large .urgent-banner .title { font-size: 15px; }
+body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
+
 /* ===== Disclaimer banner ===== */
 .disclaimer {
   margin: 8px 16px 4px;
@@ -1902,6 +1944,8 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
           <div class="stat"><div class="num" id="homeStatBadges">0</div><div class="lbl" data-i18n="stat_badges">Badges</div></div>
         </div>
       </div>
+
+      <div id="urgentBanner"></div>
 
       <div class="ai-home-bar" onclick="openAI()">
         <div class="spark">✨</div>
@@ -2954,8 +2998,8 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
       <div style="padding: 14px 16px 6px; font-size: 13px; color: var(--ink-2); text-align: center;" data-i18n="share_desc">Une carte à envoyer à la famille, au pet-sitter ou aux amis.</div>
       <canvas id="shareCanvas" class="share-preview" width="680" height="880"></canvas>
       <div class="id-card-actions" style="margin: 0 16px 12px;">
-        <button onclick="downloadShareCard()" data-i18n="share_download">⬇️ Télécharger</button>
-        <button class="ghost" onclick="shareCardNative()" data-i18n="share_send">📲 Partager</button>
+        <button onclick="shareCardNative()" data-i18n="share_send">📲 Partager</button>
+        <button class="ghost" onclick="downloadShareCard()" data-i18n="share_download">⬇️ Télécharger</button>
       </div>
     </div>
   </div>
@@ -3004,17 +3048,18 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
         <div class="tier-card" id="tier-pro">
           <div style="display:flex; justify-content: space-between; align-items: center;">
             <h5 data-i18n="tier_pro_t">K9 Pro</h5>
-            <span class="plan-badge pro" data-i18n="tier_pro_b">Pro</span>
+            <span class="plan-badge pro" data-i18n="tier_pro_b">Bêta</span>
           </div>
           <div class="price">12€ <small data-i18n="tier_per_month">/ mois</small></div>
+          <div style="font-size: 11.5px; color: var(--ink-2); background: #FFF4E0; border: 1px solid #F2D49A; padding: 8px 10px; border-radius: 10px; margin-bottom: 10px; line-height: 1.5;" data-i18n="tier_pro_beta_note">⚠️ Accès progressif : les features marquées « à venir » arrivent au fil de la bêta (Q3 2026).</div>
           <ul>
             <li data-i18n="tier_pro_1">Tout K9 Plus</li>
-            <li data-i18n="tier_pro_2">Multi-profils (pet-sitter, éleveur)</li>
-            <li data-i18n="tier_pro_3">Dashboard clients</li>
-            <li data-i18n="tier_pro_4">Mode offline complet</li>
-            <li data-i18n="tier_pro_5">Rapport mensuel auto</li>
+            <li data-i18n="tier_pro_2">Multi-profils (pet-sitter, éleveur) — à venir</li>
+            <li data-i18n="tier_pro_3">Dashboard clients — à venir</li>
+            <li data-i18n="tier_pro_4">Mode offline complet — à venir</li>
+            <li data-i18n="tier_pro_5">Rapport mensuel auto — à venir</li>
           </ul>
-          <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Choisir Pro</button>
+          <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Rejoindre la bêta Pro</button>
         </div>
       </div>
       <div style="padding: 0 16px 10px; font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.55;" data-i18n="plan_disclaimer">Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.</div>
@@ -3433,13 +3478,14 @@ const I18N = {
     tier_plus_5: "Rappels avancés (saisons, lunaison)",
     tier_plus_6: "Badges premium",
     tier_plus_cta: "Choisir Plus",
-    tier_pro_t: "K9 Pro", tier_pro_b: "Pro",
+    tier_pro_t: "K9 Pro", tier_pro_b: "Bêta",
+    tier_pro_beta_note: "⚠️ Accès progressif : les features marquées « à venir » arrivent au fil de la bêta (Q3 2026).",
     tier_pro_1: "Tout K9 Plus",
-    tier_pro_2: "Multi-profils (pet-sitter, éleveur)",
-    tier_pro_3: "Dashboard clients",
-    tier_pro_4: "Mode offline complet",
-    tier_pro_5: "Rapport mensuel auto",
-    tier_pro_cta: "Choisir Pro",
+    tier_pro_2: "Multi-profils (pet-sitter, éleveur) — à venir",
+    tier_pro_3: "Dashboard clients — à venir",
+    tier_pro_4: "Mode offline complet — à venir",
+    tier_pro_5: "Rapport mensuel auto — à venir",
+    tier_pro_cta: "Rejoindre la bêta Pro",
     profile_badges: "Mes badges",
     badge_first: "Premier pas", badge_walker: "Randonneur", badge_learner: "Élève appliqué",
     badge_social: "Sociable", badge_health: "Santé de fer", badge_photo: "Photographe",
@@ -3795,13 +3841,14 @@ const I18N = {
     tier_plus_5: "Advanced reminders (seasons, moon)",
     tier_plus_6: "Premium badges",
     tier_plus_cta: "Choose Plus",
-    tier_pro_t: "K9 Pro", tier_pro_b: "Pro",
+    tier_pro_t: "K9 Pro", tier_pro_b: "Beta",
+    tier_pro_beta_note: "⚠️ Progressive access: features marked 'coming soon' land during the beta (Q3 2026).",
     tier_pro_1: "Everything in Plus",
-    tier_pro_2: "Multi-profiles (pet-sitters, breeders)",
-    tier_pro_3: "Client dashboard",
-    tier_pro_4: "Full offline mode",
-    tier_pro_5: "Monthly auto-report",
-    tier_pro_cta: "Choose Pro",
+    tier_pro_2: "Multi-profiles (pet-sitters, breeders) — coming",
+    tier_pro_3: "Client dashboard — coming",
+    tier_pro_4: "Full offline mode — coming",
+    tier_pro_5: "Monthly auto-report — coming",
+    tier_pro_cta: "Join Pro beta",
     profile_badges: "My badges",
     badge_first: "First step", badge_walker: "Hiker", badge_learner: "Dedicated student",
     badge_social: "Social", badge_health: "Iron health", badge_photo: "Photographer",
@@ -4256,8 +4303,8 @@ function mockStartWalk() {
     K9Store.save();
     renderWalkHistory();
     const prompt = currentLang === "fr"
-      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · ~${entry.distanceKm} km`
-      : `🐾 Walk logged!\n\n${entry.durationMin} min · ~${entry.distanceKm} km`;
+      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · distance estimée ≈ ${entry.distanceKm} km\n\n(Calcul basé sur une allure moyenne de 4 km/h. GPS temps réel bientôt.)`
+      : `🐾 Walk logged!\n\n${entry.durationMin} min · estimated distance ≈ ${entry.distanceKm} km\n\n(Based on an average 4 km/h pace. Real-time GPS coming soon.)`;
     alert(prompt);
     return;
   }
@@ -4284,16 +4331,22 @@ function renderWalkHistory() {
     el.innerHTML = `<div class="cal-empty">${currentLang === "fr" ? "Pas encore de balade enregistrée" : "No walks logged yet"}</div>`;
     return;
   }
-  el.innerHTML = walkHistory.slice(0, 20).map(w => {
+  const estLabel = currentLang === "fr" ? "estimée" : "est.";
+  const gpsHint = currentLang === "fr"
+    ? "Distances estimées à partir de la durée. GPS temps réel à venir."
+    : "Distances estimated from duration. Real-time GPS coming soon.";
+  el.innerHTML = `<div style="font-size: 11.5px; color: var(--ink-2); padding: 4px 2px 8px; line-height: 1.5;">ℹ️ ${gpsHint}</div>` + walkHistory.slice(0, 20).map(w => {
     const d = new Date(w.startedAt);
     const dateLbl = d.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US", { weekday: "short", day: "numeric", month: "short" });
     const timeLbl = d.toLocaleTimeString(currentLang === "fr" ? "fr-FR" : "en-US", { hour: "2-digit", minute: "2-digit" });
     const unit = useImperial ? "mi" : "km";
     const dist = useImperial ? (w.distanceKm * 0.621371).toFixed(2) : w.distanceKm;
+    const isEst = !w.source || w.source === "timer";
+    const distLabel = isEst ? `~${dist} ${unit} <small style="font-size:10px; color: var(--ink-2); font-weight: 500;">(${estLabel})</small>` : `${dist} ${unit}`;
     return `<div class="cal-event">
       <div class="ic vax">🗺️</div>
       <div class="body">
-        <div class="title">${escapeHtml(w.dogName || "—")} · ${dist} ${unit}</div>
+        <div class="title">${escapeHtml(w.dogName || "—")} · ${distLabel}</div>
         <div class="sub">${w.durationMin} min · ${dateLbl} ${timeLbl}</div>
       </div>
     </div>`;
@@ -4740,11 +4793,21 @@ function eventSubline(ev) {
 }
 function eventCardHTML(ev) {
   const w = fmtEventWhen(ev.date);
+  // Q3: prefix with the relevant dog's emoji when household has ≥ 2 dogs
+  let dogPrefix = "";
+  if (DOGS.length >= 2) {
+    const idx = (typeof ev.dogIdx === "number" && DOGS[ev.dogIdx]) ? ev.dogIdx : activeDogIdx;
+    const d = DOGS[idx] || DOGS[0];
+    if (d) {
+      const name = d.name || (currentLang === "fr" ? "Chien" : "Dog");
+      dogPrefix = `<span class="cal-dog-tag" title="${escapeHtml(name)}">${d.emoji || "🐕"}</span>`;
+    }
+  }
   return `
     <div class="cal-event">
       <div class="ic ${ev.type}">${calTypeIcon(ev.type)}</div>
       <div class="body">
-        <div class="title">${escapeHtml(ev.title)}</div>
+        <div class="title">${dogPrefix}${escapeHtml(ev.title)}</div>
         <div class="sub">${escapeHtml(eventSubline(ev))}</div>
       </div>
       <div class="when ${w.cls}">${w.label}</div>
@@ -4776,6 +4839,57 @@ function renderCalendar() {
   if (homeEl) {
     const upcoming = sorted.slice(0, 3);
     homeEl.innerHTML = upcoming.length ? upcoming.map(eventCardHTML).join("") : `<div class="cal-empty">${emptyTxt}</div>`;
+  }
+
+  // Q2: Urgent reminders banner (overdue + within 7 days), shown near top of home
+  const urgentEl = document.getElementById("urgentBanner");
+  if (urgentEl) {
+    const overdue = sorted.filter(ev => daysBetween(ev.date) < 0);
+    const thisWeekOnly = sorted.filter(ev => {
+      const n = daysBetween(ev.date);
+      return n >= 0 && n <= 7;
+    });
+    const total = overdue.length + thisWeekOnly.length;
+    if (total > 0) {
+      const isOverdue = overdue.length > 0;
+      let title, sub;
+      if (currentLang === "fr") {
+        if (isOverdue && overdue.length === total) {
+          title = overdue.length === 1 ? "1 rappel en retard" : `${overdue.length} rappels en retard`;
+          sub = "Pense à mettre à jour le carnet.";
+        } else if (isOverdue) {
+          title = `${overdue.length} en retard · ${thisWeekOnly.length} cette semaine`;
+          sub = "Vérifie ce qui est urgent.";
+        } else {
+          title = total === 1 ? "1 rappel cette semaine" : `${total} rappels cette semaine`;
+          sub = total === 1 ? "Un petit geste pour ton chien." : "Quelques gestes à prévoir.";
+        }
+      } else {
+        if (isOverdue && overdue.length === total) {
+          title = overdue.length === 1 ? "1 overdue reminder" : `${overdue.length} overdue reminders`;
+          sub = "Time to update the health record.";
+        } else if (isOverdue) {
+          title = `${overdue.length} overdue · ${thisWeekOnly.length} this week`;
+          sub = "Check what's urgent.";
+        } else {
+          title = total === 1 ? "1 reminder this week" : `${total} reminders this week`;
+          sub = total === 1 ? "A small thing for your dog." : "A few things to plan.";
+        }
+      }
+      const icon = isOverdue ? "⚠️" : "🔔";
+      const cls = isOverdue ? "urgent-banner overdue" : "urgent-banner";
+      urgentEl.innerHTML = `
+        <div class="${cls}" onclick="switchTab('health'); setTimeout(() => openSub('sub-calendar'), 50);">
+          <div class="ic">${icon}</div>
+          <div class="txt">
+            <div class="title">${escapeHtml(title)}</div>
+            <div class="sub">${escapeHtml(sub)}</div>
+          </div>
+          <div class="arr">›</div>
+        </div>`;
+    } else {
+      urgentEl.innerHTML = "";
+    }
   }
 
   // Refresh notif button state
@@ -4886,6 +5000,7 @@ function saveCalEvent() {
     title: title.trim(),
     date: date,
     notes: notes.trim(),
+    dogIdx: activeDogIdx,
   };
   calendarEvents.push(ev);
   K9Store.save();
@@ -5198,6 +5313,40 @@ function applySeniorMode() {
   } else if (!isSenior && tip) {
     tip.remove();
   }
+  // Auto-activation grande police si senior (dismissible, non-intrusif)
+  if (isSenior) suggestSeniorA11y();
+}
+
+function suggestSeniorA11y() {
+  // Si l'utilisateur a déjà choisi (activé ou refusé) ou si déjà actif : ne rien faire
+  if (localStorage.getItem("k9_senior_a11y_asked") === "yes") return;
+  if (document.body.classList.contains("a11y-large")) return;
+  // Active a11y automatiquement
+  document.body.classList.add("a11y-large");
+  const togA11y = document.getElementById("togA11y");
+  if (togA11y) togA11y.classList.add("on");
+  localStorage.setItem("k9_senior_a11y_asked", "yes");
+  // Notice dismissible en haut de home pour informer l'utilisateur
+  const home = document.getElementById("screen-home");
+  if (!home || document.getElementById("seniorA11yNotice")) return;
+  const notice = document.createElement("div");
+  notice.id = "seniorA11yNotice";
+  notice.style.cssText = "margin: 10px 16px 0; padding: 10px 12px; background: #F0F7FF; border: 1px solid #D4E8FF; border-radius: 12px; font-size: 12.5px; color: var(--ink-1); display: flex; align-items: center; gap: 8px; line-height: 1.4;";
+  notice.innerHTML = currentLang === "fr"
+    ? `<span style="font-size: 18px;">🔎</span><span style="flex:1;">Grande police activée automatiquement pour un chien senior. <a href="#" onclick="dismissSeniorA11y(event)" style="color: var(--brand); text-decoration: underline; font-weight: 700;">Désactiver</a></span><button onclick="document.getElementById('seniorA11yNotice').remove()" style="background: none; border: none; font-size: 18px; color: var(--ink-2); cursor: pointer; padding: 0 4px;">×</button>`
+    : `<span style="font-size: 18px;">🔎</span><span style="flex:1;">Larger text auto-enabled for a senior dog. <a href="#" onclick="dismissSeniorA11y(event)" style="color: var(--brand); text-decoration: underline; font-weight: 700;">Turn off</a></span><button onclick="document.getElementById('seniorA11yNotice').remove()" style="background: none; border: none; font-size: 18px; color: var(--ink-2); cursor: pointer; padding: 0 4px;">×</button>`;
+  home.insertBefore(notice, home.firstChild);
+  K9Store.save();
+}
+
+function dismissSeniorA11y(ev) {
+  if (ev) ev.preventDefault();
+  document.body.classList.remove("a11y-large");
+  const togA11y = document.getElementById("togA11y");
+  if (togA11y) togA11y.classList.remove("on");
+  const n = document.getElementById("seniorA11yNotice");
+  if (n) n.remove();
+  K9Store.save();
 }
 
 // ==================== SHARE DOG PROFILE (canvas) ====================
