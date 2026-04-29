@@ -12,9 +12,9 @@
 // Sinon on garde le base64 en colonne (compat v1).
 // =====================================================================
 
-import { supabaseEnabled, createAdminClient, getUser, preflight, readBody, json, err, mockResponse } from "./_lib/supabase.js";
+import { supabaseEnabled, createAdminClient, getUser, preflight, readBody, json, err, mockResponse, BUCKETS } from "./_lib/supabase.js";
 
-const BUCKET = "alert-photos";
+const BUCKET = BUCKETS.ALERT_PHOTOS;
 
 async function uploadPhoto(admin, userId, dataUrl) {
   if (!dataUrl || !dataUrl.startsWith("data:image/")) return null;

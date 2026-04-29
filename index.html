@@ -3739,6 +3739,9 @@ const K9Cloud = (function() {
 
     _client = createClient(_config.supabaseUrl, _config.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true, storage: window.localStorage },
+      // K9 partage la base avec un autre produit — schéma isolé `k9`.
+      // Doit être ajouté dans Settings → API → Exposed schemas côté Supabase.
+      db: { schema: "k9" },
     });
 
     const { data } = await _client.auth.getSession();

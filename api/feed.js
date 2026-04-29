@@ -6,9 +6,9 @@
 //   body: { text, photo (dataURL), place, geoLat, geoLon, dogId }
 // =====================================================================
 
-import { supabaseEnabled, createAdminClient, getUser, preflight, readBody, json, err, mockResponse } from "./_lib/supabase.js";
+import { supabaseEnabled, createAdminClient, getUser, preflight, readBody, json, err, mockResponse, BUCKETS } from "./_lib/supabase.js";
 
-const BUCKET = "post-photos";
+const BUCKET = BUCKETS.POST_PHOTOS;
 
 async function uploadPhoto(admin, userId, dataUrl) {
   if (!dataUrl || !dataUrl.startsWith("data:image/")) return null;

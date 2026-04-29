@@ -1,81 +1,168 @@
-# K9 — Activation du backend Supabase (v2.0)
+# K9 — Activation Supabase (mode schéma partagé)
 
-Tant que les env vars ci-dessous ne sont pas posées, l'app fonctionne en **mode local-only** (comme v1.9) : tous les endpoints renvoient `{ok:true, mock:true}` et rien ne casse.
+K9 partage le **projet Supabase `ravito`** pour rester sur le plan Free
+(limite : 2 projets/orga). Pour éviter toute collision avec les tables de
+ravito, **tout K9 vit dans un schéma dédié `k9`** : tables, RPC,
+triggers, et même les buckets Storage (préfixe `k9-`).
 
-## 1. Créer le projet Supabase
+## Statut côté Supabase
 
-1. https://supabase.com → new project → Europe (Frankfurt recommandé pour latence France)
-2. Noter `SUPABASE_URL`, `ANON_KEY`, `SERVICE_ROLE_KEY`
+| Item | Valeur |
+|------|--------|
+| Projet | `ravito` (org `juhwpvkywuhxdvcmayex`) |
+| Project ref | `kymhcdxcyrpwyxbtgrdt` |
+| URL | `https://kymhcdxcyrpwyxbtgrdt.supabase.co` |
+| Région | `eu-west-3` (Paris) |
+| Schéma K9 | `k9` (16 tables, RLS active partout) |
+| Migrations appliquées | `k9_isolated_schema_v2_1`, `k9_rls_policies_and_triggers`, `k9_rpc_functions`, `k9_lock_function_search_paths` |
 
-## 2. Installer le schéma
+---
 
-- SQL Editor → New query → coller le contenu de `db/schema.sql` → Run
-- Vérifier : tables créées + RLS active (Authentication → Policies)
+## Variables d'environnement Vercel — à poser
 
-## 3. Créer les buckets Storage
-
-Storage → Create bucket (tous **public** pour servir les images sans auth) :
-- `alert-photos` (perdus/trouvés)
-- `post-photos` (feed communauté)
-- `dog-photos` (avatars chiens)
-
-Policies par défaut OK (public read, authenticated write).
-
-## 4. Générer les clés VAPID (Web Push)
+Dashboard Vercel → Project `k9-one` → Settings → Environment Variables :
 
 ```bash
-npx web-push generate-vapid-keys
-```
+SUPABASE_URL=https://kymhcdxcyrpwyxbtgrdt.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bWhjZHhjeXJwd3l4YnRncmR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODgxNDcsImV4cCI6MjA5MjQ2NDE0N30.nVQH_LVjw44W1BdnhbJHvGQaqOKCvG3kQVd2-FPuFhk
 
-→ Garder la public key (pour le client) et la private key (pour le serveur).
+# Service role key — la même que celle utilisée pour ravito
+# (elle donne accès à TOUT le projet, pas seulement au schéma k9 — à manipuler avec soin)
+SUPABASE_SERVICE_KEY=<copier depuis Supabase Dashboard → ravito → Settings → API → service_role>
 
-## 5. Env vars Vercel
-
-Dans **Vercel → Project → Settings → Environment Variables** :
-
-### Obligatoires (auth + sync)
-```
-SUPABASE_URL=https://xxxxx.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_KEY=eyJ...           # service-role, SECRET
-```
-
-### Recommandées (rappels, scan, push)
-```
-ANTHROPIC_API_KEY=sk-ant-...          # scan carnet + chat
-RESEND_API_KEY=re_...                 # rappels email
-RESEND_FROM_EMAIL=rappels@k9.app
-VAPID_PUBLIC_KEY=B...
+# Recommandées (sinon dégradation propre)
+ANTHROPIC_API_KEY=...                # pour /api/chat et /api/scan-carnet
+RESEND_API_KEY=re_...                # pour /api/cron-reminders (emails)
+RESEND_FROM=K9 <noreply@k9-one.vercel.app>
+VAPID_PUBLIC_KEY=...                 # web push (cf. plus bas)
 VAPID_PRIVATE_KEY=...
-VAPID_SUBJECT=mailto:contact@k9.app
-PUBLIC_APP_URL=https://k9-one.vercel.app
-CRON_SECRET=<random-long-string>      # sécurise /api/cron-reminders
-```
+VAPID_SUBJECT=mailto:guillaumecoulon1@gmail.com
+CRON_SECRET=<long-random-string>     # protège /api/cron-reminders
 
-### Optionnelles (monétisation)
-```
+# Stripe (optionnel — Plus/Pro)
 STRIPE_SECRET_KEY=sk_live_...
+STRIPE_PUBLISHABLE_KEY=pk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PRICE_PLUS=price_...
 STRIPE_PRICE_PRO=price_...
+PUBLIC_APP_URL=https://k9-one.vercel.app
 ```
 
-## 6. Redéployer
+Une fois posées : **redéployer** (Vercel → Deployments → ⋯ → Redeploy)
+ou pousser un nouveau commit.
 
-`git push` (ou "Redeploy" depuis Vercel) → à l'ouverture de l'app, `/api/config` renvoie `cloudEnabled:true` et la section "☁️ K9 Cloud" apparaît dans Réglages.
+---
 
-## 7. Test de bout en bout
+## Étapes manuelles à faire (1 fois) côté Supabase
 
-1. Ouvrir l'app → Réglages → K9 Cloud → saisir son email
-2. Cliquer "Recevoir le lien magique"
-3. Vérifier l'email, cliquer le lien → retour sur l'app connecté
-4. "Synchroniser maintenant" → vérifier dans Supabase Table Editor que `profiles` + `dogs` + `events` sont peuplés
-5. Se déconnecter, réinstaller l'app / autre device → se reconnecter avec le même email → les données reviennent
+Le MCP Supabase ne couvre pas tout. Voici ce qui reste à faire **dans le
+dashboard** pour terminer l'activation :
 
-## Dépannage
+### 1. Exposer le schéma `k9` via l'API REST
 
-- **"cloudEnabled:false" alors que les env vars sont là** : redéployer (les env vars sont lues au build time côté API)
-- **Magic link ne marche pas** : dans Supabase → Authentication → Email templates → vérifier le `SITE_URL` (doit pointer sur `https://k9-one.vercel.app`)
-- **RLS errors** : vérifier qu'on utilise bien `createUserClient(req)` (JWT) et pas `createAdminClient()` pour les requêtes user-facing
-- **Cron ne tourne pas** : Vercel Hobby limite à 1 cron/jour → déjà configuré à `0 7 * * *` (7h UTC). Vérifier Vercel → Cron Jobs
-- **Push notif n'arrive pas** : vérifier que le service-worker est bien `/service-worker.js` (pas dans un sous-dossier) et que `Service-Worker-Allowed: /` est servi (déjà dans `vercel.json`)
+Sans ça, supabase-js ne pourra pas requêter `k9.*` depuis le navigateur.
+
+→ Dashboard `ravito` → **Settings** → **API** → **Exposed schemas** →
+ajouter `k9` à la liste (déjà : `public`, `storage`, `graphql_public`).
+
+### 2. Créer les Storage buckets K9
+
+Dashboard `ravito` → **Storage** → **New bucket** :
+
+| Nom | Public ? | Usage |
+|-----|----------|-------|
+| `k9-dog-photos` | ✅ Oui | Avatars chiens |
+| `k9-alert-photos` | ✅ Oui | Photos perdus/trouvés |
+| `k9-post-photos` | ✅ Oui | Photos feed communauté |
+| `k9-vet-scans` | ❌ Non (privé) | Scans carnets de santé (OCR Claude) |
+
+Le namespace `k9-` garantit qu'on ne collisionne pas avec d'éventuels
+buckets ravito.
+
+### 3. Récupérer la Service Role Key
+
+Dashboard `ravito` → **Settings** → **API** → **Project API Keys** →
+copier la valeur `service_role` (⚠️ secret, garde-la confidentielle).
+À coller dans `SUPABASE_SERVICE_KEY` côté Vercel.
+
+### 4. Configurer Auth Email (magic link)
+
+Dashboard `ravito` → **Authentication** → **Providers** → **Email** :
+- Activer "Email"
+- Confirm email : ✅
+- Site URL : `https://k9-one.vercel.app`
+- Redirect URLs : ajouter `https://k9-one.vercel.app/*`
+
+⚠️ Auth est partagé entre K9 et ravito : un même email = un même
+`auth.users.id` partout. Mais chaque produit a son propre profil
+(`k9.profiles` vs `public.profiles` côté ravito), créés par triggers
+distincts (`_on_auth_user_created_k9` vs trigger ravito). Aucune
+collision possible.
+
+### 5. (Recommandé) Activer la protection mots de passe leakés
+
+Dashboard `ravito` → **Authentication** → **Settings** →
+"Leaked password protection" → ON.
+
+C'est la seule recommandation Supabase Advisors restante côté K9.
+
+---
+
+## Variables Web Push (VAPID) — local
+
+```bash
+# une fois, sur ta machine :
+npx web-push generate-vapid-keys
+```
+
+Copie `publicKey` → `VAPID_PUBLIC_KEY` et `privateKey` →
+`VAPID_PRIVATE_KEY` dans Vercel.
+
+---
+
+## Vérification finale
+
+Une fois les env vars posées et le redéploiement terminé :
+
+```bash
+# 1. config publique
+curl https://k9-one.vercel.app/api/config
+# → { "supabaseUrl": "https://kymhcdxcyrpwyxbtgrdt.supabase.co",
+#     "supabaseAnonKey": "...",
+#     "vapidPublicKey": "...",
+#     "cloudEnabled": true }
+
+# 2. Login magic link → ouvrir l'app, "Activer le cloud", mettre son
+# email, cliquer le lien reçu, retour app : ☁ Connecté
+
+# 3. Vérifier qu'une ligne k9.profiles a bien été créée :
+# Dashboard ravito → Table Editor → Schema selector → k9 → profiles
+```
+
+---
+
+## Notes architecture (schéma partagé)
+
+**Ce qui est isolé (zéro collision possible) :**
+- Toutes les tables → `k9.*`
+- Tous les indexes → préfixe `k9_`
+- Toutes les RLS policies → préfixe `k9_`
+- Tous les triggers updated_at → préfixe `_k9_touch_*`
+- Trigger sur `auth.users` → nom unique `_on_auth_user_created_k9`,
+  fonction `k9.handle_new_user()`
+- Tous les RPC → `k9.ai_quota_increment`, `k9.alerts_nearby`
+- Tous les buckets Storage → préfixe `k9-`
+
+**Ce qui est partagé (volontairement) :**
+- `auth.users` → 1 user = 1 user_id partout
+- `auth.sessions` → idem
+- Service role key → unique pour le projet entier
+
+**Si demain on veut migrer K9 vers son propre projet Supabase :**
+- Dump du schéma `k9` (`pg_dump --schema=k9`)
+- Créer nouveau projet, restore
+- Changer `SUPABASE_URL` + `SUPABASE_ANON_KEY` côté Vercel
+- Re-créer les 4 buckets `k9-*`
+- Migrer les users via Auth admin export/import (auth.users séparée)
+
+Migration coût : ~30 min côté ops.

@@ -19,6 +19,20 @@ const URL = process.env.SUPABASE_URL;
 const ANON = process.env.SUPABASE_ANON_KEY;
 const SERVICE = process.env.SUPABASE_SERVICE_KEY;
 
+// IMPORTANT : K9 partage la base Supabase avec un autre produit (ravito).
+// Tout vit dans le schéma `k9` — chaque client doit le déclarer pour que
+// l'header Accept-Profile / Content-Profile soit envoyé à PostgREST.
+// (Ce schéma DOIT être ajouté dans Dashboard → Settings → API → Exposed schemas)
+const K9_SCHEMA = "k9";
+
+// Storage buckets : namespace `k9-` pour isolation
+export const BUCKETS = {
+  DOG_PHOTOS:   "k9-dog-photos",
+  ALERT_PHOTOS: "k9-alert-photos",
+  POST_PHOTOS:  "k9-post-photos",
+  VET_SCANS:    "k9-vet-scans",
+};
+
 export const supabaseEnabled = !!(URL && SERVICE && ANON);
 
 let _admin = null;
@@ -27,6 +41,7 @@ export function createAdminClient() {
   if (!_admin) {
     _admin = createClient(URL, SERVICE, {
       auth: { autoRefreshToken: false, persistSession: false },
+      db: { schema: K9_SCHEMA },
     });
   }
   return _admin;
@@ -40,6 +55,7 @@ export function createUserClient(req) {
   return createClient(URL, ANON, {
     global: { headers: { Authorization: `Bearer ${token}` } },
     auth: { autoRefreshToken: false, persistSession: false },
+    db: { schema: K9_SCHEMA },
   });
 }
 
