@@ -55,43 +55,32 @@ ou pousser un nouveau commit.
 
 ## Étapes manuelles à faire (1 fois) côté Supabase
 
-Le MCP Supabase ne couvre pas tout. Voici ce qui reste à faire **dans le
-dashboard** pour terminer l'activation :
+> **Bonne nouvelle :** beaucoup d'étapes ont été automatisées via SQL/MCP.
+> Il ne reste que **3 actions dashboard** + les env vars Vercel.
 
-### 1. Exposer le schéma `k9` via l'API REST
+### ✅ Déjà fait automatiquement (via MCP)
 
-Sans ça, supabase-js ne pourra pas requêter `k9.*` depuis le navigateur.
+- ✅ Schéma `k9` créé, 16 tables, RLS, triggers, RPCs
+- ✅ Schéma `k9` exposé via PostgREST (`alter role authenticator set pgrst.db_schemas` + reload)
+- ✅ 4 Storage buckets créés (`k9-dog-photos`, `k9-alert-photos`, `k9-post-photos`, `k9-vet-scans`)
+- ✅ 13 RLS policies sur `storage.objects` (insert/update/delete par owner, lecture vet-scans owner-only)
+- ✅ `search_path` verrouillé sur les fonctions K9 (advisor lint = 0 warning)
 
-→ Dashboard `ravito` → **Settings** → **API** → **Exposed schemas** →
-ajouter `k9` à la liste (déjà : `public`, `storage`, `graphql_public`).
+### 🔴 Reste à faire (manuel, ~3 minutes)
 
-### 2. Créer les Storage buckets K9
-
-Dashboard `ravito` → **Storage** → **New bucket** :
-
-| Nom | Public ? | Usage |
-|-----|----------|-------|
-| `k9-dog-photos` | ✅ Oui | Avatars chiens |
-| `k9-alert-photos` | ✅ Oui | Photos perdus/trouvés |
-| `k9-post-photos` | ✅ Oui | Photos feed communauté |
-| `k9-vet-scans` | ❌ Non (privé) | Scans carnets de santé (OCR Claude) |
-
-Le namespace `k9-` garantit qu'on ne collisionne pas avec d'éventuels
-buckets ravito.
-
-### 3. Récupérer la Service Role Key
+#### 1. Récupérer la Service Role Key
 
 Dashboard `ravito` → **Settings** → **API** → **Project API Keys** →
 copier la valeur `service_role` (⚠️ secret, garde-la confidentielle).
 À coller dans `SUPABASE_SERVICE_KEY` côté Vercel.
 
-### 4. Configurer Auth Email (magic link)
+#### 2. Configurer Auth Email (magic link)
 
-Dashboard `ravito` → **Authentication** → **Providers** → **Email** :
-- Activer "Email"
-- Confirm email : ✅
+Dashboard `ravito` → **Authentication** → **URL Configuration** :
 - Site URL : `https://k9-one.vercel.app`
 - Redirect URLs : ajouter `https://k9-one.vercel.app/*`
+
+(Email magic link est activé par défaut ; pas besoin de toucher aux providers.)
 
 ⚠️ Auth est partagé entre K9 et ravito : un même email = un même
 `auth.users.id` partout. Mais chaque produit a son propre profil
@@ -99,9 +88,9 @@ Dashboard `ravito` → **Authentication** → **Providers** → **Email** :
 distincts (`_on_auth_user_created_k9` vs trigger ravito). Aucune
 collision possible.
 
-### 5. (Recommandé) Activer la protection mots de passe leakés
+#### 3. (Recommandé) Activer la protection mots de passe leakés
 
-Dashboard `ravito` → **Authentication** → **Settings** →
+Dashboard `ravito` → **Authentication** → **Sign In / Up** →
 "Leaked password protection" → ON.
 
 C'est la seule recommandation Supabase Advisors restante côté K9.

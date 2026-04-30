@@ -19,6 +19,16 @@ _Dernière mise à jour : 23 avril 2026_
 
 ---
 
+## 🚀 v2.2 — GPS temps réel + Community feed live (shipped)
+
+- **GPS tracking pendant les balades** : `navigator.geolocation.watchPosition` + Haversine côté client + filtre anti-bruit (>30 km/h ignoré). Distance exacte, badge `📡 GPS` dans l'historique. Fallback timer 4 km/h propre si géoloc refusée.
+- **Persistance `currentWalk`** : balade en cours sauvegardée dans `localStorage` (clé `k9.walk.live`). Si l'utilisateur refresh ou ferme l'app par accident, la balade reprend automatiquement au reload (avec timeout 8h pour éviter les zombies).
+- **Stockage `trackPoints`** : jusqu'à 1500 points GPS (~25 min à 1pt/s) attachés à chaque entrée walk pour usage futur (carte tracé, dénivelé).
+- **Bouton "+ Partager" sur le feed home** : modal de création de post (texte + photo + lieu), envoi via `/api/feed`. Auth requise → message guidé si pas connecté.
+- **`renderCommunityFeed()` dynamique** : charge les vrais posts via `K9Cloud.getFeed()`. État vide pédagogique avec 2 cards Exemple si aucun post.
+- **Buckets Storage automatisés via SQL/MCP** : plus besoin de passer par le dashboard pour les créer (4 buckets + 13 RLS policies appliqués via migration).
+- **Schéma `k9` exposé via SQL/MCP** : `alter role authenticator set pgrst.db_schemas = 'public,storage,graphql_public,k9'` + `notify pgrst, 'reload schema'`. PostgREST reconnaît `k9.*` sans toucher au dashboard.
+
 ## 🚀 v2.0 — Backend complet (shipped)
 
 Inspiré de l'architecture Adventurer (API découplée + Supabase-centric + RLS strict + bootstrap non-bloquant).

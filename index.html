@@ -2281,31 +2281,11 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       <div id="homeReminders"></div>
       <button id="notifActivate" class="notif-btn" onclick="requestNotifPermission()" style="margin: 4px 16px 0;" data-i18n="notif_activate">🔔 Activer les rappels</button>
 
-      <div class="section-title" data-i18n="sec_feed">Fil de la communauté <span class="mini-tag" data-i18n="mini_example">Exemple</span></div>
-      <div class="feed-card">
-        <div class="head">
-          <div class="avatar sm">🐕‍🦺</div>
-          <div style="flex:1;"><div class="name">Loki <span class="mini-tag" data-i18n="mini_example">Exemple</span></div><div class="when" data-i18n="feed_when1">Il y a 2h · Forêt de Fontainebleau</div></div>
-          <div>⋯</div>
-        </div>
-        <div class="img">🌲🐕‍🦺🌿</div>
-        <div class="caption" data-i18n="feed_cap1">Première rando de la saison ! On a rencontré plein de copains sur le chemin 🐾</div>
-        <div class="actions">
-          <span>❤️ 24</span><span>💬 6</span><span data-i18n="want_playdate">🎾 Proposer playdate</span>
-        </div>
+      <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
+        <span data-i18n="sec_feed">Fil de la communauté</span>
+        <button onclick="openComposePost()" style="background: var(--forest); color: white; border: none; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer;" data-i18n="feed_new">＋ Partager</button>
       </div>
-      <div class="feed-card">
-        <div class="head">
-          <div class="avatar sm green">🐩</div>
-          <div style="flex:1;"><div class="name">Charlie <span class="mini-tag" data-i18n="mini_example">Exemple</span></div><div class="when" data-i18n="feed_when2">Hier · Parc Monceau</div></div>
-          <div>⋯</div>
-        </div>
-        <div class="img" style="background: linear-gradient(135deg, #D7E4D9, #2D5A3D);">🌳🐩🎾</div>
-        <div class="caption" data-i18n="feed_cap2">Qui vient au parc demain matin 10h ? Charlie cherche des copains !</div>
-        <div class="actions">
-          <span>❤️ 18</span><span>💬 12</span><span data-i18n="join">✋ Rejoindre</span>
-        </div>
-      </div>
+      <div id="communityFeed"></div>
     </div>
 
     <!-- SANTÉ -->
@@ -3892,10 +3872,38 @@ const K9Cloud = (function() {
     return await r.blob();
   }
 
+  // --- Community feed ----------------------------------------------
+
+  async function getFeed(limit = 30) {
+    // Le feed est public en lecture (auth optionnelle)
+    try {
+      const r = await fetch(`/api/feed?limit=${limit}`);
+      const j = await r.json();
+      return j;
+    } catch (e) {
+      return { posts: [], error: String(e?.message || e) };
+    }
+  }
+
+  async function createPost(body) {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    try {
+      const r = await fetch("/api/feed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+        body: JSON.stringify(body),
+      });
+      return await r.json();
+    } catch (e) {
+      return { ok: false, error: String(e?.message || e) };
+    }
+  }
+
   return {
     init, isReady, isSignedIn, getUser, onAuthChange,
     signIn, signOut, push, pull, subscribePush,
     createShareLink, scanCarnet, exportPDF,
+    getFeed, createPost,
     config: () => _config,
   };
 })();
@@ -5030,15 +5038,154 @@ function addNewDog() {
     showStep(0);
   }
 }
-// ---------- Walk tracking (timer local, pas GPS) ----------
-let currentWalk = null; // { startedAt, intervalId }
+// ---------- Walk tracking (GPS temps réel + fallback timer) ----------
+// `currentWalk` est persisté via K9Store (clé localStorage `k9.walk.live`)
+// pour survivre au refresh / passage en arrière-plan.
+//
+// Si `navigator.geolocation` est dispo + l'utilisateur accepte la perm :
+//   → on stocke chaque point GPS, distance Haversine cumulée → distanceKm exact
+//   → source = "gps"
+// Sinon :
+//   → estimation 4 km/h sur la durée
+//   → source = "timer"
+let currentWalk = null;
+let _walkTimerId = null;
+let _walkGeoWatchId = null;
+
+function _haversineKm(a, b) {
+  const R = 6371;
+  const toRad = (x) => x * Math.PI / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLon = toRad(b.lon - a.lon);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+const WALK_LIVE_KEY = "k9.walk.live";
+function _saveLiveWalk() {
+  try {
+    if (currentWalk) {
+      // On ne persiste que les champs sérialisables (pas les watchId/intervalId)
+      const { intervalId, watchId, ...persistable } = currentWalk;
+      localStorage.setItem(WALK_LIVE_KEY, JSON.stringify(persistable));
+    } else {
+      localStorage.removeItem(WALK_LIVE_KEY);
+    }
+  } catch {}
+}
+function _loadLiveWalk() {
+  try {
+    const raw = localStorage.getItem(WALK_LIVE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+
+function _walkTickUI() {
+  if (!currentWalk) return;
+  const elapsed = Date.now() - currentWalk.startedAt;
+  const mins = Math.floor(elapsed / 60000);
+  const secs = Math.floor((elapsed % 60000) / 1000);
+  const stopLbl = currentLang === "fr" ? "Arrêter" : "Stop";
+  const distKm = (currentWalk.distanceKm || 0);
+  const unit = useImperial ? "mi" : "km";
+  const distDisp = useImperial ? (distKm * 0.621371).toFixed(2) : distKm.toFixed(2);
+  const gpsBadge = currentWalk.source === "gps" ? "📡 " : "";
+  const label = `${gpsBadge}⏱ ${mins}:${String(secs).padStart(2,"0")} · ${distDisp} ${unit} · ${stopLbl}`;
+  document.querySelectorAll("[data-walk-timer]").forEach(b => { b.textContent = label; });
+}
+
+function _startWalkGps() {
+  if (!navigator.geolocation || !currentWalk) return false;
+  try {
+    _walkGeoWatchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        if (!currentWalk) return;
+        const point = {
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          alt: pos.coords.altitude ?? null,
+          acc: pos.coords.accuracy ?? null,
+          ts:  Date.now(),
+        };
+        // On filtre les points avec une précision >50m (souvent le 1er fix indoor)
+        if (point.acc != null && point.acc > 50 && currentWalk.points.length === 0) {
+          // garder quand même le 1er point pour avoir une référence
+        }
+        const last = currentWalk.points[currentWalk.points.length - 1];
+        if (last) {
+          const seg = _haversineKm(last, point);
+          // ignore les jumps GPS suspects (>200m en <2s = fix bidon)
+          const dt = (point.ts - last.ts) / 1000;
+          const speedKmh = seg / (dt / 3600);
+          if (speedKmh < 30) { // <30 km/h pour une balade canine, plausible
+            currentWalk.distanceKm = (currentWalk.distanceKm || 0) + seg;
+          }
+        }
+        currentWalk.points.push(point);
+        currentWalk.source = "gps";
+        _saveLiveWalk();
+      },
+      (err) => {
+        console.warn("Walk GPS error:", err.message);
+        // On bascule en mode timer silencieusement — la balade continue
+        if (currentWalk && currentWalk.points.length === 0) {
+          currentWalk.source = "timer";
+          _saveLiveWalk();
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+    );
+    return true;
+  } catch (e) {
+    console.warn("Walk GPS unsupported:", e);
+    return false;
+  }
+}
+
+function _stopWalkGps() {
+  if (_walkGeoWatchId != null) {
+    try { navigator.geolocation.clearWatch(_walkGeoWatchId); } catch {}
+    _walkGeoWatchId = null;
+  }
+}
+
+function _resumeLiveWalk() {
+  // Reprend une balade en cours après un refresh
+  const live = _loadLiveWalk();
+  if (!live || !live.startedAt) return false;
+  // Si la balade est trop ancienne (>8h), on la considère abandonnée
+  if (Date.now() - live.startedAt > 8 * 3600 * 1000) {
+    localStorage.removeItem(WALK_LIVE_KEY);
+    return false;
+  }
+  currentWalk = {
+    ...live,
+    points: Array.isArray(live.points) ? live.points : [],
+    distanceKm: live.distanceKm || 0,
+    source: live.source || "timer",
+  };
+  // On relance le tick UI + le watch GPS si la balade était en mode gps
+  _walkTimerId = setInterval(_walkTickUI, 500);
+  if (currentWalk.source === "gps") _startWalkGps();
+  // Notifier l'utilisateur silencieusement (pas d'alert intrusive au resume)
+  return true;
+}
+
 function mockStartWalk() {
-  // Démarre/arrête un chrono local. Enregistre à la fin une entrée persistée.
+  // Bouton toggle : démarre ou arrête la balade
   if (currentWalk) {
-    // Stop
-    clearInterval(currentWalk.intervalId);
+    // ----- Stop -----
+    _stopWalkGps();
+    if (_walkTimerId) { clearInterval(_walkTimerId); _walkTimerId = null; }
     const endedAt = Date.now();
     const durationMin = Math.max(1, Math.round((endedAt - currentWalk.startedAt) / 60000));
+    const isGps = currentWalk.source === "gps" && currentWalk.points.length >= 2;
+    const distanceKm = isGps
+      ? +(currentWalk.distanceKm || 0).toFixed(2)
+      : +(durationMin / 60 * 4).toFixed(2);
     const entry = {
       id: "w" + endedAt,
       dogIdx: activeDogIdx,
@@ -5046,33 +5193,49 @@ function mockStartWalk() {
       startedAt: new Date(currentWalk.startedAt).toISOString(),
       endedAt: new Date(endedAt).toISOString(),
       durationMin,
-      // Distance estimée : 4 km/h en moyenne (sans GPS)
-      distanceKm: +(durationMin / 60 * 4).toFixed(2),
-      source: "timer",
+      distanceKm,
+      source: isGps ? "gps" : "timer",
+      // On stocke jusqu'à 1500 points (~25 min à 1pt/s) pour limiter le poids
+      trackPoints: isGps ? currentWalk.points.slice(-1500).map(p => ({
+        lat: +p.lat.toFixed(6), lon: +p.lon.toFixed(6),
+        alt: p.alt != null ? +p.alt.toFixed(1) : null,
+        ts:  p.ts,
+      })) : null,
     };
     walkHistory.unshift(entry);
     currentWalk = null;
+    _saveLiveWalk();
     K9Store.save();
     renderWalkHistory();
+    const sourceLbl = isGps
+      ? (currentLang === "fr" ? "📡 GPS" : "📡 GPS")
+      : (currentLang === "fr" ? "estimée" : "est.");
+    const distDisp = useImperial ? (distanceKm * 0.621371).toFixed(2) : distanceKm.toFixed(2);
+    const unit = useImperial ? "mi" : "km";
     const prompt = currentLang === "fr"
-      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · distance estimée ≈ ${entry.distanceKm} km\n\n(Calcul basé sur une allure moyenne de 4 km/h. GPS temps réel bientôt.)`
-      : `🐾 Walk logged!\n\n${entry.durationMin} min · estimated distance ≈ ${entry.distanceKm} km\n\n(Based on an average 4 km/h pace. Real-time GPS coming soon.)`;
+      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · ${distDisp} ${unit} (${sourceLbl})\n\n${isGps ? "Tracé GPS sauvegardé." : "Sans GPS : distance estimée à 4 km/h."}`
+      : `🐾 Walk logged!\n\n${entry.durationMin} min · ${distDisp} ${unit} (${sourceLbl})\n\n${isGps ? "GPS track saved." : "Without GPS: distance estimated at 4 km/h."}`;
     alert(prompt);
     return;
   }
-  // Start
+  // ----- Start -----
   currentWalk = {
     startedAt: Date.now(),
-    intervalId: setInterval(() => {
-      const mins = Math.floor((Date.now() - currentWalk.startedAt) / 60000);
-      const secs = Math.floor(((Date.now() - currentWalk.startedAt) % 60000) / 1000);
-      const btns = document.querySelectorAll("[data-walk-timer]");
-      btns.forEach(b => { b.textContent = `⏱ ${mins}:${String(secs).padStart(2,"0")} · ${currentLang === "fr" ? "Arrêter" : "Stop"}`; });
-    }, 500),
+    points: [],
+    distanceKm: 0,
+    source: "timer", // sera mis à "gps" au 1er fix
   };
+  _walkTimerId = setInterval(_walkTickUI, 500);
+  const gpsOn = _startWalkGps();
+  _saveLiveWalk();
+  _walkTickUI();
   const msg = currentLang === "fr"
-    ? "🗺️ Sortie démarrée !\n\nRe-tape sur \"Démarrer\" quand tu rentres pour enregistrer la balade."
-    : "🗺️ Walk started!\n\nTap \"Start\" again when you're back to log the walk.";
+    ? (gpsOn
+        ? "🗺️ Sortie démarrée — suivi GPS en cours.\n\nRe-tape sur \"Arrêter\" quand tu rentres."
+        : "🗺️ Sortie démarrée (sans GPS).\n\nRe-tape sur \"Arrêter\" quand tu rentres.")
+    : (gpsOn
+        ? "🗺️ Walk started — GPS tracking on.\n\nTap \"Stop\" when you're back."
+        : "🗺️ Walk started (no GPS).\n\nTap \"Stop\" when you're back.");
   alert(msg);
 }
 
@@ -5084,22 +5247,33 @@ function renderWalkHistory() {
     return;
   }
   const estLabel = currentLang === "fr" ? "estimée" : "est.";
-  const gpsHint = currentLang === "fr"
-    ? "Distances estimées à partir de la durée. GPS temps réel à venir."
-    : "Distances estimated from duration. Real-time GPS coming soon.";
-  el.innerHTML = `<div style="font-size: 11.5px; color: var(--ink-2); padding: 4px 2px 8px; line-height: 1.5;">ℹ️ ${gpsHint}</div>` + walkHistory.slice(0, 20).map(w => {
+  const gpsLabel = currentLang === "fr" ? "GPS" : "GPS";
+  // Hint contextuel : on n'affiche le rappel "GPS à venir" que si AUCUNE balade GPS encore
+  const hasGps = walkHistory.some(w => w.source === "gps");
+  const hint = hasGps
+    ? (currentLang === "fr"
+        ? "📡 Les balades avec GPS ont une distance exacte. Les autres sont estimées à 4 km/h."
+        : "📡 GPS walks show exact distance. Others are estimated at 4 km/h.")
+    : (currentLang === "fr"
+        ? "Active la géoloc au démarrage de ta prochaine balade pour avoir la distance exacte."
+        : "Allow geolocation when starting your next walk to get the exact distance.");
+  el.innerHTML = `<div style="font-size: 11.5px; color: var(--ink-2); padding: 4px 2px 8px; line-height: 1.5;">ℹ️ ${hint}</div>` + walkHistory.slice(0, 20).map(w => {
     const d = new Date(w.startedAt);
     const dateLbl = d.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US", { weekday: "short", day: "numeric", month: "short" });
     const timeLbl = d.toLocaleTimeString(currentLang === "fr" ? "fr-FR" : "en-US", { hour: "2-digit", minute: "2-digit" });
     const unit = useImperial ? "mi" : "km";
     const dist = useImperial ? (w.distanceKm * 0.621371).toFixed(2) : w.distanceKm;
-    const isEst = !w.source || w.source === "timer";
-    const distLabel = isEst ? `~${dist} ${unit} <small style="font-size:10px; color: var(--ink-2); font-weight: 500;">(${estLabel})</small>` : `${dist} ${unit}`;
+    const isGps = w.source === "gps";
+    const distLabel = isGps
+      ? `${dist} ${unit} <small style="font-size:10px; color: var(--forest); font-weight: 700;">📡 ${gpsLabel}</small>`
+      : `~${dist} ${unit} <small style="font-size:10px; color: var(--ink-2); font-weight: 500;">(${estLabel})</small>`;
+    const ptsCount = isGps && Array.isArray(w.trackPoints) ? w.trackPoints.length : 0;
+    const ptsHint = ptsCount > 1 ? ` · ${ptsCount} pts` : "";
     return `<div class="cal-event">
       <div class="ic vax">🗺️</div>
       <div class="body">
         <div class="title">${escapeHtml(w.dogName || "—")} · ${distLabel}</div>
-        <div class="sub">${w.durationMin} min · ${dateLbl} ${timeLbl}</div>
+        <div class="sub">${w.durationMin} min · ${dateLbl} ${timeLbl}${ptsHint}</div>
       </div>
     </div>`;
   }).join("");
@@ -5438,6 +5612,224 @@ function renderAlertsFeed() {
         </div>
       </div>`;
   }).join("");
+}
+
+// ====================================================================
+// Community feed — chargement /api/feed + création de post
+// ====================================================================
+async function renderCommunityFeed() {
+  const el = document.getElementById("communityFeed");
+  if (!el) return;
+  let posts = [];
+  // Si cloud actif, on tente de charger les vrais posts
+  if (typeof K9Cloud !== "undefined" && K9Cloud.isReady && K9Cloud.isReady()) {
+    try {
+      const j = await K9Cloud.getFeed(20);
+      posts = Array.isArray(j?.posts) ? j.posts : [];
+    } catch {}
+  }
+  if (posts.length === 0) {
+    // État vide pédagogique : exemples + invitation à partager
+    const emptyMsg = currentLang === "fr"
+      ? "Sois le premier à partager ! Ton post apparaîtra ici."
+      : "Be the first to share! Your post will appear here.";
+    const ex1cap = currentLang === "fr"
+      ? "Première rando de la saison ! On a rencontré plein de copains sur le chemin 🐾"
+      : "First hike of the season! We met lots of friends on the way 🐾";
+    const ex2cap = currentLang === "fr"
+      ? "Qui vient au parc demain matin 10h ? Charlie cherche des copains !"
+      : "Anyone up for the park tomorrow 10am? Charlie is looking for friends!";
+    const ex1when = currentLang === "fr" ? "Il y a 2h · Forêt de Fontainebleau" : "2h ago · Fontainebleau Forest";
+    const ex2when = currentLang === "fr" ? "Hier · Parc Monceau" : "Yesterday · Parc Monceau";
+    const exTag = currentLang === "fr" ? "Exemple" : "Example";
+    const playdate = currentLang === "fr" ? "🎾 Proposer playdate" : "🎾 Propose playdate";
+    const join = currentLang === "fr" ? "✋ Rejoindre" : "✋ Join";
+    el.innerHTML = `
+      <div style="background: var(--bg-2, #f7f9fa); border-radius: 14px; padding: 14px; margin: 0 16px 12px; font-size: 13px; color: var(--ink-2); text-align: center; line-height: 1.55;">
+        ${emptyMsg}
+      </div>
+      <div class="feed-card">
+        <div class="head">
+          <div class="avatar sm">🐕‍🦺</div>
+          <div style="flex:1;"><div class="name">Loki <span class="mini-tag">${exTag}</span></div><div class="when">${ex1when}</div></div>
+          <div>⋯</div>
+        </div>
+        <div class="img">🌲🐕‍🦺🌿</div>
+        <div class="caption">${ex1cap}</div>
+        <div class="actions"><span>❤️ 24</span><span>💬 6</span><span>${playdate}</span></div>
+      </div>
+      <div class="feed-card">
+        <div class="head">
+          <div class="avatar sm green">🐩</div>
+          <div style="flex:1;"><div class="name">Charlie <span class="mini-tag">${exTag}</span></div><div class="when">${ex2when}</div></div>
+          <div>⋯</div>
+        </div>
+        <div class="img" style="background: linear-gradient(135deg, #D7E4D9, #2D5A3D);">🌳🐩🎾</div>
+        <div class="caption">${ex2cap}</div>
+        <div class="actions"><span>❤️ 18</span><span>💬 12</span><span>${join}</span></div>
+      </div>`;
+    return;
+  }
+  // Rendu des vrais posts
+  const playdate = currentLang === "fr" ? "🎾 Playdate" : "🎾 Playdate";
+  el.innerHTML = posts.map(p => {
+    const author = escapeHtml(p.author || (currentLang === "fr" ? "Un propriétaire" : "An owner"));
+    const dogLine = p.dogName ? `${p.dogEmoji || "🐕"} ${escapeHtml(p.dogName)}` : "";
+    const when = p.createdAt ? fmtAlertAgo(p.createdAt) : "";
+    const place = p.place ? `📍 ${escapeHtml(p.place)}` : "";
+    const meta = [when, place].filter(Boolean).join(" · ");
+    const cover = p.photo
+      ? `<div class="img" style="padding:0;"><img src="${p.photo}" style="width:100%; height:100%; object-fit:cover;" alt="" /></div>`
+      : "";
+    const text = p.text ? `<div class="caption">${escapeHtml(p.text)}</div>` : "";
+    return `<div class="feed-card">
+      <div class="head">
+        <div class="avatar sm">${p.dogEmoji || "🐕"}</div>
+        <div style="flex:1;">
+          <div class="name">${dogLine || author}</div>
+          <div class="when">${meta}</div>
+        </div>
+      </div>
+      ${cover}
+      ${text}
+      <div class="actions"><span>❤️</span><span>💬</span><span>${playdate}</span></div>
+    </div>`;
+  }).join("");
+}
+
+function openComposePost() {
+  // Auth requise pour poster
+  const cloudOn = typeof K9Cloud !== "undefined" && K9Cloud.isReady && K9Cloud.isReady();
+  const signedIn = cloudOn && K9Cloud.isSignedIn();
+  if (!signedIn) {
+    const msg = currentLang === "fr"
+      ? "Pour partager dans la communauté, active K9 Cloud (Réglages → Activer le cloud)."
+      : "To share with the community, enable K9 Cloud (Settings → Enable cloud).";
+    alert(msg);
+    return;
+  }
+  // Construit le modal s'il n'existe pas
+  let modal = document.getElementById("composePostModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "composePostModal";
+    modal.innerHTML = `
+      <div class="cp-backdrop" onclick="closeComposePost()"></div>
+      <div class="cp-sheet">
+        <div class="cp-head">
+          <button class="cp-x" onclick="closeComposePost()">✕</button>
+          <div class="cp-title" data-cp-title>Partager</div>
+          <button class="cp-pub" onclick="submitComposePost()" data-cp-publish>Publier</button>
+        </div>
+        <textarea id="cpText" data-cp-placeholder rows="5" maxlength="500"></textarea>
+        <div class="cp-row">
+          <label class="cp-photo-btn">
+            <input type="file" accept="image/*" capture="environment" onchange="cpHandlePhoto(this)" style="display:none;" />
+            <span data-cp-photo>📷 Ajouter une photo</span>
+          </label>
+        </div>
+        <div id="cpPhotoPreview" class="cp-preview" style="display:none;"></div>
+        <input id="cpPlace" type="text" data-cp-place />
+        <div class="cp-hint" data-cp-hint></div>
+      </div>`;
+    modal.style.cssText = "position:fixed; inset:0; z-index:9999; display:flex; align-items:flex-end; justify-content:center;";
+    document.body.appendChild(modal);
+    // styles inline minimaux pour rester self-contained
+    const style = document.createElement("style");
+    style.textContent = `
+      #composePostModal .cp-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.45); }
+      #composePostModal .cp-sheet { position:relative; background:#fff; width:100%; max-width:520px; border-radius:18px 18px 0 0; padding:14px 16px 22px; max-height:90vh; overflow:auto; }
+      #composePostModal .cp-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+      #composePostModal .cp-x { background:none; border:none; font-size:22px; cursor:pointer; color:#666; padding:4px 8px; }
+      #composePostModal .cp-title { flex:1; font-weight:700; font-size:16px; }
+      #composePostModal .cp-pub { background:var(--forest); color:#fff; border:none; border-radius:999px; padding:7px 16px; font-weight:700; font-size:13px; cursor:pointer; }
+      #composePostModal .cp-pub:disabled { opacity:.5; cursor:not-allowed; }
+      #composePostModal textarea { width:100%; border:1px solid #e0e0e0; border-radius:12px; padding:12px; font:inherit; resize:vertical; outline:none; }
+      #composePostModal textarea:focus { border-color: var(--forest); }
+      #composePostModal .cp-row { margin-top:10px; }
+      #composePostModal .cp-photo-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#f3f5f7; border-radius:999px; cursor:pointer; font-size:13px; }
+      #composePostModal .cp-preview { margin-top:10px; border-radius:12px; overflow:hidden; max-height:240px; }
+      #composePostModal .cp-preview img { width:100%; display:block; }
+      #composePostModal #cpPlace { margin-top:10px; width:100%; border:1px solid #e0e0e0; border-radius:10px; padding:10px 12px; font:inherit; outline:none; }
+      #composePostModal #cpPlace:focus { border-color: var(--forest); }
+      #composePostModal .cp-hint { margin-top:8px; font-size:11.5px; color:var(--ink-2,#888); line-height:1.5; }
+    `;
+    document.head.appendChild(style);
+  }
+  // Localisation des labels
+  const isFr = currentLang === "fr";
+  modal.querySelector("[data-cp-title]").textContent = isFr ? "Partager avec la communauté" : "Share with the community";
+  modal.querySelector("[data-cp-publish]").textContent = isFr ? "Publier" : "Publish";
+  modal.querySelector("[data-cp-photo]").textContent = isFr ? "📷 Ajouter une photo" : "📷 Add a photo";
+  const ta = modal.querySelector("#cpText");
+  ta.placeholder = isFr ? "Quoi de neuf avec ton chien ?" : "What's new with your dog?";
+  ta.value = "";
+  modal.querySelector("#cpPlace").placeholder = isFr ? "Lieu (optionnel)" : "Place (optional)";
+  modal.querySelector("#cpPlace").value = "";
+  modal.querySelector("#cpPhotoPreview").style.display = "none";
+  modal.querySelector("#cpPhotoPreview").innerHTML = "";
+  modal.querySelector("[data-cp-hint]").textContent = isFr
+    ? "Ton post sera visible par toute la communauté K9. Pas d'infos perso, pas de spam."
+    : "Your post will be visible to the whole K9 community. No personal info, no spam.";
+  modal.style.display = "flex";
+  setTimeout(() => ta.focus(), 50);
+}
+
+function closeComposePost() {
+  const m = document.getElementById("composePostModal");
+  if (m) m.style.display = "none";
+}
+
+let _cpPhotoData = null;
+function cpHandlePhoto(input) {
+  const file = input?.files?.[0];
+  if (!file) { _cpPhotoData = null; return; }
+  if (file.size > 8 * 1024 * 1024) {
+    alert(currentLang === "fr" ? "Photo trop lourde (max 8 Mo)." : "Photo too large (max 8MB).");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _cpPhotoData = e.target.result;
+    const prev = document.getElementById("cpPhotoPreview");
+    if (prev) {
+      prev.innerHTML = `<img src="${_cpPhotoData}" alt="" />`;
+      prev.style.display = "block";
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitComposePost() {
+  const text = (document.getElementById("cpText")?.value || "").trim();
+  const place = (document.getElementById("cpPlace")?.value || "").trim();
+  if (!text && !_cpPhotoData) {
+    alert(currentLang === "fr" ? "Ajoute du texte ou une photo." : "Add text or a photo.");
+    return;
+  }
+  const btn = document.querySelector("#composePostModal [data-cp-publish]");
+  if (btn) { btn.disabled = true; btn.textContent = currentLang === "fr" ? "Envoi..." : "Posting..."; }
+  try {
+    const dogId = (typeof DOGS !== "undefined" && DOGS[activeDogIdx]?.cloudId) || null;
+    const r = await K9Cloud.createPost({
+      text: text || null,
+      photo: _cpPhotoData || null,
+      place: place || null,
+      dogId,
+    });
+    if (r?.error || r?.ok === false) {
+      alert((currentLang === "fr" ? "Erreur : " : "Error: ") + (r.error || "post failed"));
+      return;
+    }
+    _cpPhotoData = null;
+    closeComposePost();
+    await renderCommunityFeed();
+    alert(currentLang === "fr" ? "🎉 Post publié !" : "🎉 Post published!");
+  } catch (e) {
+    alert((currentLang === "fr" ? "Erreur : " : "Error: ") + String(e?.message || e));
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = currentLang === "fr" ? "Publier" : "Publish"; }
+  }
 }
 
 function buildAlertShareText(a) {
@@ -6691,6 +7083,16 @@ if (typeof renderWalkHistory === "function") renderWalkHistory();
 if (typeof renderRescueFeed === "function") renderRescueFeed();
 if (typeof renderAlertsFeed === "function") renderAlertsFeed();
 updateNotifButtons();
+
+// 5. Reprend une balade en cours si l'utilisateur a refresh / fermé l'app
+if (typeof _resumeLiveWalk === "function") {
+  try { _resumeLiveWalk(); } catch (e) { console.warn("walk resume failed:", e); }
+}
+
+// 6. Charge le feed communauté (mode dégradé : exemples si cloud off)
+if (typeof renderCommunityFeed === "function") {
+  renderCommunityFeed().catch(e => console.warn("community feed init failed:", e));
+}
 
 // 5. Fire due-today/3d notifications if permission already granted
 if ("Notification" in window && Notification.permission === "granted") {
