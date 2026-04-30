@@ -88,7 +88,20 @@ Dashboard `ravito` → **Authentication** → **URL Configuration** :
 distincts (`_on_auth_user_created_k9` vs trigger ravito). Aucune
 collision possible.
 
-#### 3. (Recommandé) Activer la protection mots de passe leakés
+#### 3. Personnaliser les templates email (recommandé ☆☆☆☆☆)
+
+Les emails par défaut Supabase sont génériques et donnent zéro envie
+("Confirm your signup. Follow this link..."). On a préparé des
+templates K9 chaleureux avec branding orange/vert et CTA explicite.
+
+→ Voir [`EMAIL-TEMPLATES-SUPABASE.md`](EMAIL-TEMPLATES-SUPABASE.md) :
+HTML prêt à coller pour magic link, confirm signup, reset password,
+change email, invite. Les templates utilisent une **détection
+conditionnelle** sur `{{ .RedirectTo }}` pour ne pas casser ravito.
+
+Dashboard `ravito` → **Authentication** → **Emails** → **Templates**.
+
+#### 4. (Recommandé) Activer la protection mots de passe leakés
 
 Dashboard `ravito` → **Authentication** → **Sign In / Up** →
 "Leaked password protection" → ON.
