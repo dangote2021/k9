@@ -2055,7 +2055,203 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 .mb-24 { margin-bottom: 24px; }
 .px-24 { padding-left: 24px; padding-right: 24px; }
 .flex-gap { display: flex; gap: 10px; }
+
+/* ===== Tracé GPS sur carte (modal Leaflet) ===== */
+.walk-map-modal {
+  position: fixed; inset: 0; background: rgba(20,16,12,0.85);
+  z-index: 9999; display: none; align-items: stretch; justify-content: center;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.walk-map-modal.show { display: flex; }
+.walk-map-card {
+  width: 100%; max-width: 680px; background: var(--cream); border-radius: 0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+@media (min-width: 720px) {
+  .walk-map-card { border-radius: 18px; margin: 28px; max-height: calc(100vh - 56px); }
+}
+.walk-map-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: var(--forest); color: white;
+}
+.walk-map-header h3 { margin: 0; font-size: 16px; font-weight: 800; }
+.walk-map-header .close {
+  background: rgba(255,255,255,0.18); border: none; color: white;
+  width: 34px; height: 34px; border-radius: 999px; cursor: pointer; font-size: 18px;
+}
+.walk-map-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--ink-3); padding: 0;
+}
+.walk-map-stats .stat {
+  background: white; padding: 10px 8px; text-align: center;
+}
+.walk-map-stats .stat .val { font-size: 16px; font-weight: 800; color: var(--forest); }
+.walk-map-stats .stat .lbl { font-size: 10px; color: var(--ink-2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+#walkMapCanvas { flex: 1; min-height: 360px; background: #e8ede6; }
+.walk-track-leaflet-marker { background: transparent; border: none; }
+.walk-track-leaflet-marker > div { width: 22px; height: 22px; border-radius: 999px; border: 3px solid white; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.3); }
+.walk-track-leaflet-marker.start > div { background: #2d6a4f; }
+.walk-track-leaflet-marker.end   > div { background: #e76f51; }
+.walk-map-cta-row {
+  background: white; padding: 8px; display: flex; justify-content: center;
+  border-top: 1px solid var(--ink-3);
+}
+.walk-map-cta-row .btn-track-share {
+  background: var(--terra); color: white; border: none; padding: 10px 20px;
+  border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.walk-map-row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.walk-map-row .pill-btn {
+  background: var(--cream); color: var(--forest); border: 1px solid var(--ink-3);
+  padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
+  cursor: pointer;
+}
+.walk-map-row .pill-btn:hover { background: white; }
+
+/* ===== Puppy onboarding (premier chien) ===== */
+.puppy-card {
+  margin: 0 0 12px 0;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe2c8 100%);
+  border: 1.5px solid #f4a261; border-radius: 16px;
+  padding: 14px 16px; cursor: pointer;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.puppy-card:active { transform: scale(0.99); }
+.puppy-card .ic { font-size: 28px; line-height: 1; }
+.puppy-card .body { flex: 1; min-width: 0; }
+.puppy-card .title { font-weight: 800; font-size: 14px; color: var(--forest); }
+.puppy-card .sub { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.45; }
+.puppy-card .progress-bar {
+  margin-top: 8px; height: 6px; background: rgba(0,0,0,0.08);
+  border-radius: 999px; overflow: hidden;
+}
+.puppy-card .progress-bar > div {
+  height: 100%; background: linear-gradient(90deg, #2d6a4f, #f4a261);
+  border-radius: 999px; transition: width 0.3s;
+}
+.puppy-card .arr { color: #e76f51; font-size: 22px; font-weight: 800; }
+
+.puppy-phase {
+  margin: 0 0 16px 0;
+  background: white; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+.puppy-phase .phase-head {
+  padding: 12px 14px; background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+  color: white; display: flex; align-items: center; gap: 10px;
+}
+.puppy-phase .phase-head .emoji { font-size: 22px; }
+.puppy-phase .phase-head .t { font-size: 14px; font-weight: 800; }
+.puppy-phase .phase-head .d { font-size: 11.5px; opacity: 0.85; margin-top: 1px; }
+.puppy-phase .phase-prog {
+  padding: 8px 14px; background: #f5fbf7;
+  font-size: 11.5px; color: var(--ink-2); font-weight: 600;
+  border-bottom: 1px solid var(--ink-3);
+}
+.puppy-item {
+  display: flex; gap: 12px; padding: 12px 14px;
+  border-bottom: 1px solid #f0f0ec; cursor: pointer;
+  transition: background 0.15s;
+}
+.puppy-item:last-child { border-bottom: none; }
+.puppy-item:active { background: #fafaf6; }
+.puppy-item .check {
+  width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--ink-3);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: white; transition: all 0.15s; margin-top: 1px;
+}
+.puppy-item.done .check {
+  background: var(--forest); border-color: var(--forest);
+}
+.puppy-item.done .check::before { content: "✓"; }
+.puppy-item .body { flex: 1; min-width: 0; }
+.puppy-item .it-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+.puppy-item.done .it-title { text-decoration: line-through; color: var(--ink-2); font-weight: 500; }
+.puppy-item .it-hint { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.45; }
+.puppy-item.done .it-hint { color: var(--ink-3); }
+.puppy-item .it-action {
+  margin-top: 6px; font-size: 11px; color: var(--terra); font-weight: 700;
+}
+.puppy-empty {
+  text-align: center; padding: 30px 20px; color: var(--ink-2);
+  background: white; border-radius: 14px;
+}
+.puppy-empty .emo { font-size: 38px; }
+.puppy-empty .t { font-size: 14px; font-weight: 700; margin-top: 10px; color: var(--ink); }
+.puppy-empty .d { font-size: 12.5px; margin-top: 6px; line-height: 1.55; }
+
+/* ===== Upsell modal (Plus / Pro) ===== */
+.upsell-modal {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, .55); backdrop-filter: blur(4px);
+  display: none; align-items: flex-end; justify-content: center;
+  z-index: 9999; padding: 0;
+}
+.upsell-modal.show { display: flex; animation: upsellFadeIn .18s ease-out; }
+@keyframes upsellFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.upsell-card {
+  width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
+  background: linear-gradient(180deg, #fff 0%, #fff8f0 100%);
+  border-top-left-radius: 24px; border-top-right-radius: 24px;
+  padding: 22px 22px 26px;
+  box-shadow: 0 -10px 50px rgba(0,0,0,.25);
+  animation: upsellSlideUp .26s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes upsellSlideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.upsell-grip { width: 38px; height: 4px; background: #e2e8f0; border-radius: 2px; margin: 0 auto 14px; }
+.upsell-emoji { font-size: 44px; text-align: center; margin-bottom: 6px; }
+.upsell-title { font-size: 19px; font-weight: 800; text-align: center; color: var(--ink); margin: 0 0 6px; }
+.upsell-sub { font-size: 13.5px; color: var(--ink-2); text-align: center; line-height: 1.55; margin: 0 0 18px; }
+.upsell-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; background: #fff; border: 1px solid #f1d8b4;
+  border-radius: 12px; margin-bottom: 8px;
+}
+.upsell-feature .ic { font-size: 18px; flex-shrink: 0; }
+.upsell-feature .txt { font-size: 13px; line-height: 1.5; color: var(--ink); }
+.upsell-feature .txt b { color: var(--brand, #e76f51); }
+.upsell-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.upsell-cta {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
+  color: #fff; border: 0; padding: 14px 18px;
+  border-radius: 14px; font-size: 14.5px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 6px 18px rgba(231,111,81,.32);
+  transition: transform .12s ease;
+}
+.upsell-cta:active { transform: scale(.98); }
+.upsell-cta.pro { background: linear-gradient(135deg, #FFE8B8 0%, #F5C451 100%); color: #5A4206; box-shadow: 0 6px 18px rgba(245,196,81,.4); }
+.upsell-skip {
+  background: transparent; border: 0; color: var(--ink-2);
+  padding: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  text-decoration: underline; opacity: .8;
+}
+.upsell-price { font-size: 12px; color: var(--ink-2); text-align: center; margin-top: 4px; opacity: .85; }
+
+/* AI quota chip */
+.ai-quota-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700;
+  background: #fff3e0; color: #b45309; border: 1px solid #f4a261;
+  padding: 3px 8px; border-radius: 999px;
+  margin-left: 6px;
+}
+.ai-quota-chip.low { background: #fee2e2; color: #b91c1c; border-color: #f87171; }
+.ai-quota-chip.unlimited { background: #ecfdf5; color: #047857; border-color: #10b981; }
+
+/* Paywall lock badge inline */
+.paywall-lock {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10.5px; font-weight: 800;
+  background: linear-gradient(135deg, #E4D7FB, #BBA0F2);
+  color: #3C2A6E; padding: 3px 8px; border-radius: 999px;
+  margin-left: 6px; vertical-align: middle;
+}
+.paywall-lock.pro { background: linear-gradient(135deg, #FFE8B8, #F5C451); color: #5A4206; }
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
 <div class="phone">
@@ -2205,6 +2401,8 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
 
       <div id="urgentBanner"></div>
+
+      <div id="puppyHomeCard"></div>
 
       <div class="alert-home-cta" onclick="openSub('sub-alerts')" role="button">
         <div class="ic">🚨</div>
@@ -2504,6 +2702,11 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div id="planBadgeDisp" class="plan-badge free">Gratuit</div>
         <div class="arr">›</div>
       </div>
+      <div class="menu-row" id="manageBillingRow" onclick="openBillingPortal()" style="display:none">
+        <div class="ic">💼</div>
+        <div class="label" data-i18n="menu_billing">Gérer mon abonnement</div>
+        <div class="arr">›</div>
+      </div>
 
       <div class="section-title" data-i18n="profile_badges">Mes badges</div>
       <div class="badges-grid">
@@ -2528,9 +2731,9 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div style="color: var(--ink-2); font-size: 12px; margin-right: 6px;" id="k9CloudStatus"></div>
         <div class="arr">›</div>
       </div>
-      <div class="menu-row" id="k9ScanRow" onclick="k9OpenScanCarnet()" style="display:none">
+      <div class="menu-row" id="k9ScanRow" onclick="k9TryScanCarnet()" style="display:none">
         <div class="ic">📸</div>
-        <div class="label" data-i18n="menu_scan_carnet">Scanner mon carnet véto</div>
+        <div class="label" data-i18n="menu_scan_carnet">Scanner mon carnet véto<span id="k9ScanLock" class="paywall-lock" style="display:none">🔒 Plus</span></div>
         <div class="arr">›</div>
       </div>
       <div class="menu-row" id="k9ShareVetRow" onclick="k9ShareVet()" style="display:none">
@@ -2538,9 +2741,9 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="label" data-i18n="menu_vet_share">Partager avec mon véto (24h)</div>
         <div class="arr">›</div>
       </div>
-      <div class="menu-row" id="k9ExportPdfRow" onclick="k9ExportPDF()" style="display:none">
+      <div class="menu-row" id="k9ExportPdfRow" onclick="k9TryExportPDF()" style="display:none">
         <div class="ic">📄</div>
-        <div class="label" data-i18n="menu_export_pdf">Exporter le carnet PDF</div>
+        <div class="label" data-i18n="menu_export_pdf">Exporter le carnet PDF<span id="k9PdfLock" class="paywall-lock pro" style="display:none">🔒 Pro</span></div>
         <div class="arr">›</div>
       </div>
 
@@ -2954,36 +3157,10 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   <div class="sub-screen" id="sub-puppy">
     <div class="sub-header">
       <button class="back" onclick="closeSub('sub-puppy')">‹</button>
-      <div class="sub-title" data-i18n="puppy_title">100 premiers jours</div>
+      <div class="sub-title" data-i18n="puppy_title">Mon premier chien</div>
     </div>
-    <div class="sub-body">
-      <div style="padding: 0 16px 14px;">
-        <div class="card" style="margin:0; background: linear-gradient(135deg, var(--terra), var(--terra-dark)); color: white;">
-          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .9;" data-i18n="puppy_day">Jour 15 / 100</div>
-          <div style="font-size: 18px; font-weight: 700; margin-top: 4px;" data-i18n="puppy_phase">Phase : exploration calme</div>
-          <div style="height: 6px; background: rgba(255,255,255,.25); border-radius: 3px; margin-top: 10px; overflow: hidden;"><div style="width: 15%; height: 100%; background: white; border-radius: 3px;"></div></div>
-          <div style="font-size: 12px; opacity: .92; margin-top: 8px; line-height: 1.5;" data-i18n="puppy_intro">Les 3 premiers mois sont la plus belle fenêtre de socialisation. Chaque bonne expérience aujourd'hui vaut 10 séances plus tard.</div>
-        </div>
-      </div>
-
-      <div class="today-task">
-        <div class="hd" data-i18n="puppy_today">Tâche du jour</div>
-        <h4 data-i18n="puppy_today_t">Socialisation : bruits du quotidien</h4>
-        <p data-i18n="puppy_today_d">Joue 3× 2 minutes avec la sonnette, l'aspirateur éteint puis allumé, un sac plastique. À chaque son : friandise. On crée des émotions positives.</p>
-        <button class="mark" onclick="markDone(this)" data-i18n="mark_done">✓ Marquer comme fait</button>
-      </div>
-
-      <div class="section-title" data-i18n="puppy_checklist">Checklist socialisation</div>
-      <div class="card">
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" checked /> <span data-i18n="puppy_ck_1">Rencontre 5 adultes différents</span></label>
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" checked /> <span data-i18n="puppy_ck_2">Rencontre 3 enfants calmes</span></label>
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_3">Balade en centre-ville</span></label>
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_4">Contact avec un chat sociable</span></label>
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_5">Trajet voiture positif</span></label>
-        <label style="display:flex; align-items:center; gap:10px; padding: 6px 0;"><input type="checkbox" /> <span data-i18n="puppy_ck_6">Manipulation pattes et oreilles</span></label>
-      </div>
-
-      <button class="ask-ai-cta" onclick="openAIWith('Comment aider un chiot de 4 mois qui pleure la nuit ?')"><span>✨</span> <span data-i18n="puppy_ask_ai">Demander à l'IA : SOS chiot la nuit</span></button>
+    <div class="sub-body" id="puppySubBody">
+      <!-- Rendu dynamique par renderPuppySub() -->
     </div>
   </div>
 
@@ -3551,6 +3728,23 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
   </div>
 
+  <!-- ================== Upsell modal (Plus / Pro paywall) ================== -->
+  <div class="upsell-modal" id="upsellModal" onclick="if(event.target===this) closeUpsell()">
+    <div class="upsell-card" id="upsellCard">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji" id="upsellEmoji">⭐</div>
+      <h3 class="upsell-title" id="upsellTitle">Passe en K9 Plus</h3>
+      <p class="upsell-sub" id="upsellSub">Pour libérer toutes les fonctionnalités IA de K9.</p>
+      <div id="upsellFeatures"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" id="upsellCta" onclick="upsellGoCheckout()">⭐ Choisir Plus — 5€/mois</button>
+        <button class="upsell-cta pro" id="upsellCtaPro" onclick="upsellGoCheckoutPro()" style="display:none;">👑 Choisir Pro — 12€/mois</button>
+        <div class="upsell-price" id="upsellPrice">Annulation à tout moment · paiement Stripe sécurisé</div>
+        <button class="upsell-skip" onclick="closeUpsell()">Plus tard</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================== Floating AI Button ================== -->
   <button class="fab" id="fabAI" onclick="openAI()" aria-label="Demander à l'IA">
     <span>✨</span>
@@ -3634,6 +3828,8 @@ const K9Store = (function() {
         notifEnabled: (typeof Notification !== "undefined") ? Notification.permission === "granted" : false,
       },
       onboardingDone: (typeof onboardingDone !== "undefined") ? onboardingDone : ((typeof DOGS !== "undefined") && DOGS.length > 0),
+      puppyChecklist: (typeof puppyChecklist !== "undefined") ? puppyChecklist : {},
+      puppyMode: (typeof puppyMode !== "undefined") ? puppyMode : "auto",
     };
   }
 
@@ -3945,6 +4141,12 @@ function k9ApplySnapshot(data) {
     if (typeof data.onboardingDone === "boolean") {
       onboardingDone = data.onboardingDone;
     }
+    if (data.puppyChecklist && typeof data.puppyChecklist === "object") {
+      puppyChecklist = data.puppyChecklist;
+    }
+    if (typeof data.puppyMode === "string") {
+      puppyMode = data.puppyMode;
+    }
   } catch (e) {
     console.warn("k9ApplySnapshot error:", e);
   }
@@ -4102,6 +4304,7 @@ const I18N = {
     profile_idcard: "Carte d'identité",
     profile_plan: "Mon abonnement",
     menu_plan: "Plan K9",
+    menu_billing: "Gérer mon abonnement",
     idc_title: "Carte d'identité",
     idc_bday: "Anniversaire",
     idc_bday_empty: "À renseigner",
@@ -4513,6 +4716,7 @@ const I18N = {
     profile_idcard: "ID card",
     profile_plan: "My plan",
     menu_plan: "K9 Plan",
+    menu_billing: "Manage subscription",
     idc_title: "ID card",
     idc_bday: "Birthday",
     idc_bday_empty: "Not set",
@@ -5023,6 +5227,8 @@ function selectDog(i) {
   if (typeof renderPlanBadge === "function") renderPlanBadge();
 }
 function addNewDog() {
+  // Paywall : free limité à 2 chiens
+  if (typeof k9TryAddDog === "function" && !k9TryAddDog()) return;
   // Réinitialise dogState et ouvre l'onboarding en sautant la page de bienvenue
   Object.assign(dogState, { name: "", breed: null, years: 2, months: 0, sex: null, weight: 15, emoji: "🐕", coat: "golden" });
   activeDogIdx = DOGS.length;
@@ -5268,15 +5474,386 @@ function renderWalkHistory() {
       ? `${dist} ${unit} <small style="font-size:10px; color: var(--forest); font-weight: 700;">📡 ${gpsLabel}</small>`
       : `~${dist} ${unit} <small style="font-size:10px; color: var(--ink-2); font-weight: 500;">(${estLabel})</small>`;
     const ptsCount = isGps && Array.isArray(w.trackPoints) ? w.trackPoints.length : 0;
+    const hasMappable = ptsCount > 1;
     const ptsHint = ptsCount > 1 ? ` · ${ptsCount} pts` : "";
+    const trackBtnLbl = currentLang === "fr" ? "Voir le tracé" : "View track";
+    const trackBtn = hasMappable
+      ? `<div class="walk-map-row"><button class="pill-btn" onclick="openWalkTrackMap('${w.id}')">📍 ${trackBtnLbl}</button></div>`
+      : "";
     return `<div class="cal-event">
       <div class="ic vax">🗺️</div>
       <div class="body">
         <div class="title">${escapeHtml(w.dogName || "—")} · ${distLabel}</div>
         <div class="sub">${w.durationMin} min · ${dateLbl} ${timeLbl}${ptsHint}</div>
+        ${trackBtn}
       </div>
     </div>`;
   }).join("");
+}
+
+// ====================================================================
+// Walk Track Map — visualisation Leaflet du tracé GPS d'une balade
+// ====================================================================
+let _walkMap = null;
+let _walkMapPoly = null;
+
+function openWalkTrackMap(walkId) {
+  const w = walkHistory.find(x => x.id === walkId);
+  if (!w || !Array.isArray(w.trackPoints) || w.trackPoints.length < 2) {
+    alert(currentLang === "fr"
+      ? "Pas de tracé GPS disponible pour cette balade."
+      : "No GPS track available for this walk.");
+    return;
+  }
+  // Construit le modal s'il n'existe pas encore
+  let modal = document.getElementById("walkMapModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "walkMapModal";
+    modal.className = "walk-map-modal";
+    modal.innerHTML = `
+      <div class="walk-map-card">
+        <div class="walk-map-header">
+          <h3 id="walkMapTitle">🗺️ Tracé</h3>
+          <button class="close" onclick="closeWalkTrackMap()" aria-label="close">✕</button>
+        </div>
+        <div class="walk-map-stats" id="walkMapStats"></div>
+        <div id="walkMapCanvas"></div>
+        <div class="walk-map-cta-row">
+          <button class="btn-track-share" onclick="shareWalkTrack()" id="walkTrackShareBtn">📤 ${currentLang === "fr" ? "Partager le tracé" : "Share track"}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    // Click outside the card → close
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeWalkTrackMap();
+    });
+  }
+  // Rappels stats
+  const startedAt = new Date(w.startedAt);
+  const dateLbl = startedAt.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US",
+    { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  document.getElementById("walkMapTitle").textContent =
+    `🗺️ ${escapeHtml(w.dogName || "—")} · ${dateLbl}`;
+  const unit = useImperial ? "mi" : "km";
+  const dist = useImperial ? (w.distanceKm * 0.621371) : w.distanceKm;
+  // allure : minutes par km/mile
+  const paceTotal = w.durationMin / dist;
+  const paceMin = Math.floor(paceTotal);
+  const paceSec = Math.round((paceTotal - paceMin) * 60);
+  const pace = isFinite(paceTotal) && paceTotal > 0 && paceTotal < 600
+    ? `${paceMin}:${String(paceSec).padStart(2, "0")}/${unit}`
+    : "—";
+  // Dénivelé positif estimé à partir des points (alt)
+  let dPos = 0;
+  let lastAlt = null;
+  for (const p of w.trackPoints) {
+    if (p.alt == null) continue;
+    if (lastAlt != null) {
+      const diff = p.alt - lastAlt;
+      // filtre bruit altimétrie GPS : ignore changements < 1m
+      if (diff > 1) dPos += diff;
+    }
+    lastAlt = p.alt;
+  }
+  const dposLbl = w.trackPoints.some(p => p.alt != null)
+    ? `${Math.round(dPos)} m`
+    : "—";
+  document.getElementById("walkMapStats").innerHTML = `
+    <div class="stat"><div class="val">${dist.toFixed(2)}</div><div class="lbl">${unit}</div></div>
+    <div class="stat"><div class="val">${w.durationMin}</div><div class="lbl">min</div></div>
+    <div class="stat"><div class="val">${pace}</div><div class="lbl">${currentLang === "fr" ? "Allure" : "Pace"}</div></div>
+    <div class="stat"><div class="val">${dposLbl}</div><div class="lbl">${currentLang === "fr" ? "D+" : "Asc."}</div></div>
+  `;
+  modal.classList.add("show");
+  // Init carte avec un léger délai (laisser le DOM se peindre)
+  setTimeout(() => {
+    if (typeof L === "undefined") {
+      console.warn("Leaflet not loaded yet");
+      return;
+    }
+    const canvas = document.getElementById("walkMapCanvas");
+    canvas.innerHTML = "";  // reset si on rouvre
+    if (_walkMap) {
+      try { _walkMap.remove(); } catch {}
+      _walkMap = null;
+    }
+    _walkMap = L.map(canvas, { zoomControl: true, attributionControl: true });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(_walkMap);
+    const latlngs = w.trackPoints.map(p => [p.lat, p.lon]);
+    _walkMapPoly = L.polyline(latlngs, {
+      color: "#e76f51",
+      weight: 5,
+      opacity: 0.92,
+      lineCap: "round",
+      lineJoin: "round",
+    }).addTo(_walkMap);
+    // Marqueurs début / fin
+    L.marker(latlngs[0], {
+      icon: L.divIcon({ className: "walk-track-leaflet-marker start", html: "<div></div>", iconSize: [22, 22] }),
+    }).addTo(_walkMap);
+    L.marker(latlngs[latlngs.length - 1], {
+      icon: L.divIcon({ className: "walk-track-leaflet-marker end", html: "<div></div>", iconSize: [22, 22] }),
+    }).addTo(_walkMap);
+    _walkMap.fitBounds(_walkMapPoly.getBounds(), { padding: [40, 40] });
+    // Stocke pour partage
+    _walkMap._k9WalkId = walkId;
+  }, 50);
+}
+
+function closeWalkTrackMap() {
+  const m = document.getElementById("walkMapModal");
+  if (m) m.classList.remove("show");
+  if (_walkMap) {
+    try { _walkMap.remove(); } catch {}
+    _walkMap = null;
+  }
+}
+
+async function shareWalkTrack() {
+  const walkId = _walkMap?._k9WalkId;
+  if (!walkId) return;
+  const w = walkHistory.find(x => x.id === walkId);
+  if (!w) return;
+  const unit = useImperial ? "mi" : "km";
+  const dist = (useImperial ? w.distanceKm * 0.621371 : w.distanceKm).toFixed(2);
+  const text = currentLang === "fr"
+    ? `🐾 Balade avec ${w.dogName || "mon chien"} : ${dist} ${unit} en ${w.durationMin} min — via K9 https://k9-one.vercel.app`
+    : `🐾 Walk with ${w.dogName || "my dog"}: ${dist} ${unit} in ${w.durationMin} min — via K9 https://k9-one.vercel.app`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      alert(currentLang === "fr" ? "Copié dans le presse-papier ✓" : "Copied to clipboard ✓");
+    }
+  } catch {}
+}
+
+// ====================================================================
+// Puppy onboarding — checklist 7j / 3 mois / 1 an pour les nouveaux propriétaires
+// ====================================================================
+let puppyChecklist = {};   // { dogIdx: { itemId: true } }
+let puppyMode = "auto";    // "auto" (visible si chien <1 an) | "on" (forcé) | "off" (masqué)
+
+const PUPPY_CONTENT = {
+  fr: {
+    hero: { t: "Premier chien ?", sub: "Une checklist progressive pour les 100 premiers jours et au-delà.", arr: "Voir →" },
+    sub_intro: "Ton compagnon arrive ou il est arrivé récemment ? Voici tout ce qu'il faut faire dans l'ordre, sans rien oublier. Coche les items au fur et à mesure.",
+    p1: { emoji: "🏠", t: "7 premiers jours — l'arrivée", d: "Acclimatation et premières règles. Pas de promenade publique avant la primo-vaccination." },
+    p2: { emoji: "🐶", t: "1 semaine → 3 mois — la fenêtre socialisation", d: "Période la plus précieuse. Chaque bonne expérience vaut 10 séances plus tard." },
+    p3: { emoji: "🦴", t: "3 mois → 1 an — éducation et autonomie", d: "On installe les bases pour toute la vie : rappel, marche en laisse, propreté, autonomie." },
+    encore: "À faire",
+    fait: "fait",
+    sur: "sur",
+    cta_ai: "Demander à l'IA un conseil",
+    cta_disable: "Masquer cette section",
+    cta_show_again: "Toujours afficher la checklist",
+    empty_t: "Bravo, tout est coché !",
+    empty_d: "Tu as parcouru toute la checklist. Tu peux la masquer dans les paramètres si tu le souhaites.",
+    confirm_disable: "Masquer la checklist 'Mon premier chien' sur la page d'accueil ?",
+  },
+  en: {
+    hero: { t: "First dog?", sub: "A progressive checklist for the first 100 days and beyond.", arr: "See →" },
+    sub_intro: "Your companion just arrived or arrived recently? Here's everything to do in order, with nothing forgotten. Check items as you go.",
+    p1: { emoji: "🏠", t: "First 7 days — arrival", d: "Acclimation and first rules. No public walks until full primo-vaccination." },
+    p2: { emoji: "🐶", t: "1 week → 3 months — socialization window", d: "The most precious period. Each positive experience is worth 10 later sessions." },
+    p3: { emoji: "🦴", t: "3 months → 1 year — training & independence", d: "Lay the foundations for life: recall, leash walking, housetraining, alone time." },
+    encore: "To do",
+    fait: "done",
+    sur: "of",
+    cta_ai: "Ask AI for advice",
+    cta_disable: "Hide this section",
+    cta_show_again: "Always show checklist",
+    empty_t: "Well done, all checked off!",
+    empty_d: "You've completed the entire checklist. You can hide it in settings if you wish.",
+    confirm_disable: "Hide 'My first dog' checklist on the home page?",
+  },
+};
+
+const PUPPY_ITEMS = {
+  p1: [
+    { id: "p1_vet_visit",    fr: { t: "Visite véto dans les 48h", d: "Bilan complet, vérification des papiers, calendrier vaccinal." }, en: { t: "Vet visit within 48h", d: "Full check-up, paper verification, vaccination schedule." } },
+    { id: "p1_chip",         fr: { t: "Vérifier l'identification (puce/tatouage)", d: "Si pas encore identifié → obligatoire avant 4 mois en France." }, en: { t: "Check ID (microchip/tattoo)", d: "If not yet identified → mandatory in many countries." } },
+    { id: "p1_safe_space",   fr: { t: "Aménager son coin à lui", d: "Panier, gamelles eau et croquettes, jouets : un endroit calme à lui." }, en: { t: "Set up his own corner", d: "Bed, water and food bowls, toys: a calm place that's his." } },
+    { id: "p1_food_keep",    fr: { t: "Continuer la même nourriture 7-10 jours", d: "Transition progressive après. Changement brutal = troubles digestifs." }, en: { t: "Same food for 7-10 days", d: "Gradual transition afterwards. Sudden change = digestive issues." } },
+    { id: "p1_routine",      fr: { t: "Mettre en place une routine", d: "Repas, sorties pipi, jeux, dodo : mêmes horaires chaque jour rassurent." }, en: { t: "Set up a routine", d: "Meals, potty breaks, play, sleep: same schedule every day brings security." } },
+    { id: "p1_house_basics", fr: { t: "Apprendre où il fait pipi", d: "Sortir toutes les 1-2h, après chaque repas et sieste. Récompenser dehors." }, en: { t: "Teach potty location", d: "Out every 1-2h, after each meal and nap. Reward outside." } },
+    { id: "p1_no_walks",     fr: { t: "Pas de balade publique avant primo-vacc", d: "Risque parvovirose. Sortir bras / voiture / jardin sécurisé OK." }, en: { t: "No public walks before primo-vacc", d: "Parvo risk. Carrying / car / safe yard is OK." } },
+    { id: "p1_insurance",    fr: { t: "Comparer les assurances santé", d: "Une visite véto urgente peut coûter 500-2000 €. Souscrire jeune = moins cher." }, en: { t: "Compare pet insurance", d: "An ER vet visit can cost €500-2000. Subscribing young = cheaper." } },
+  ],
+  p2: [
+    { id: "p2_vacc_full",    fr: { t: "Compléter primo-vaccination (CHPPiL+R)", d: "Maladies de Carré, hépatite, parvo, parainfluenza, leptospirose + rage." }, en: { t: "Complete primo-vaccination", d: "Distemper, hepatitis, parvo, parainfluenza, lepto + rabies." } },
+    { id: "p2_socio_humans", fr: { t: "Rencontre 20 personnes différentes", d: "Adultes, enfants, personnes âgées, casquettes, barbes, fauteuils roulants. À chaque rencontre : friandise." }, en: { t: "Meet 20 different people", d: "Adults, kids, elders, hats, beards, wheelchairs. Each meeting: treat." } },
+    { id: "p2_socio_dogs",   fr: { t: "Rencontre 5+ chiens sociables", d: "Adultes calmes équilibrés, pas de chiens stressés. Cours chiot fortement recommandé." }, en: { t: "Meet 5+ friendly dogs", d: "Calm balanced adults, no stressed dogs. Puppy class strongly recommended." } },
+    { id: "p2_socio_sounds", fr: { t: "Habituer aux bruits du quotidien", d: "Aspirateur, sèche-cheveux, voiture, ambulance, feu d'artifice (en bas volume puis monter)." }, en: { t: "Habituate to everyday sounds", d: "Vacuum, hairdryer, cars, sirens, fireworks (start low and increase)." } },
+    { id: "p2_socio_places", fr: { t: "Découvrir 5+ environnements", d: "Centre-ville, marché, gare, café accueillant chiens, parc public." }, en: { t: "Discover 5+ environments", d: "Downtown, market, station, dog-friendly cafe, public park." } },
+    { id: "p2_handling",     fr: { t: "Manipulation pattes/oreilles/dents", d: "Chaque jour 30 sec : touche pattes, regarde oreilles et dents. Friandise. Évite les drames véto futurs." }, en: { t: "Handling paws/ears/teeth", d: "Each day 30 sec: touch paws, check ears and teeth. Treat. Avoids future vet drama." } },
+    { id: "p2_alone",        fr: { t: "Apprendre à rester seul (5 min → 1h)", d: "Démarrer 30 sec, augmenter par paliers. Pas de drame au départ ni au retour." }, en: { t: "Learn to be alone (5 min → 1h)", d: "Start 30 sec, increase gradually. No drama on leaving/returning." } },
+    { id: "p2_basic_cmds",   fr: { t: "Apprendre 3 ordres : assis, viens, regarde", d: "Sessions 2-3 min, plusieurs fois par jour, en jouant. Renforcement positif uniquement." }, en: { t: "Learn 3 commands: sit, come, look", d: "2-3 min sessions, several times a day, playing. Positive reinforcement only." } },
+  ],
+  p3: [
+    { id: "p3_recall_solid", fr: { t: "Rappel fiable même avec distractions", d: "Travail progressif : champ vide → champ avec odeurs → parc avec autres chiens." }, en: { t: "Solid recall with distractions", d: "Progressive: empty field → field with smells → park with other dogs." } },
+    { id: "p3_leash",        fr: { t: "Marche en laisse détendue", d: "Stop & go, demi-tours, récompense dès que la laisse est lâche. Pas de collier étrangleur." }, en: { t: "Loose leash walking", d: "Stop & go, U-turns, reward when leash is loose. No choke collar." } },
+    { id: "p3_house_solid",  fr: { t: "Propreté complète (intérieur)", d: "0 accident depuis 2 mois consécutifs. Si rechute : retour aux sorties fréquentes." }, en: { t: "Full housetraining (indoor)", d: "0 accidents for 2 consecutive months. If relapse: back to frequent breaks." } },
+    { id: "p3_alone_4h",     fr: { t: "Capable de rester seul 4-6h", d: "Sans aboiement constant, sans destruction, en sécurité." }, en: { t: "Can stay alone 4-6h", d: "Without constant barking, without destruction, safely." } },
+    { id: "p3_neuter",       fr: { t: "Décider stérilisation/castration", d: "À discuter avec le véto : âge optimal, bénéfices et risques selon race et sexe." }, en: { t: "Decide neutering/spaying", d: "Discuss with vet: optimal age, benefits and risks by breed and sex." } },
+    { id: "p3_diet_adult",   fr: { t: "Transition vers alimentation adulte", d: "Race petite : ~10 mois. Race moyenne : ~12 mois. Grande/géante : 18-24 mois." }, en: { t: "Switch to adult diet", d: "Small breed: ~10mo. Medium: ~12mo. Large/giant: 18-24mo." } },
+    { id: "p3_health_check", fr: { t: "Bilan adulte (1 an)", d: "Visite véto complète, vermifuge, vaccination annuelle. Premier vrai bilan." }, en: { t: "1-year adult check-up", d: "Full vet visit, deworming, yearly booster. First real check-up." } },
+    { id: "p3_dental",       fr: { t: "Démarrer le brossage des dents", d: "2-3× semaine avec dentifrice canin. Sinon détartrage tous les 2-3 ans (sous AG)." }, en: { t: "Start tooth brushing", d: "2-3× weekly with dog toothpaste. Otherwise scaling every 2-3 years (under GA)." } },
+  ],
+};
+
+function _activeDogPuppyKey() {
+  // Clé stable basée sur l'index actif
+  return `dog_${activeDogIdx}`;
+}
+
+function getPuppyState() {
+  const k = _activeDogPuppyKey();
+  if (!puppyChecklist[k]) puppyChecklist[k] = {};
+  return puppyChecklist[k];
+}
+
+function isPuppyVisible() {
+  if (puppyMode === "off") return false;
+  if (puppyMode === "on")  return true;
+  // auto : visible si chien actif a un âge < 1 an ou onboardingDone récent
+  const d = getActiveDog();
+  if (!d) return false;
+  // dogState.ageY = âge en années si présent
+  const ageY = (typeof d.ageY === "number") ? d.ageY : (typeof d.age === "number" ? d.age : null);
+  if (ageY != null && ageY <= 1) return true;
+  // sinon : on regarde si la checklist a au moins 1 item coché → on continue à montrer
+  const state = getPuppyState();
+  const total = PUPPY_ITEMS.p1.length + PUPPY_ITEMS.p2.length + PUPPY_ITEMS.p3.length;
+  const done = Object.keys(state).filter(k => state[k]).length;
+  if (done > 0 && done < total) return true;
+  return false;
+}
+
+function _puppyCounts() {
+  const state = getPuppyState();
+  const total = PUPPY_ITEMS.p1.length + PUPPY_ITEMS.p2.length + PUPPY_ITEMS.p3.length;
+  const done = Object.keys(state).filter(k => state[k]).length;
+  return { total, done, pct: Math.round((done / total) * 100) };
+}
+
+function renderPuppyHomeCard() {
+  const el = document.getElementById("puppyHomeCard");
+  if (!el) return;
+  if (!isPuppyVisible()) {
+    el.innerHTML = "";
+    return;
+  }
+  const txt = PUPPY_CONTENT[currentLang] || PUPPY_CONTENT.fr;
+  const { total, done, pct } = _puppyCounts();
+  el.innerHTML = `
+    <div class="puppy-card" onclick="openSub('sub-puppy'); renderPuppySub();" role="button">
+      <div class="ic">🐕</div>
+      <div class="body">
+        <div class="title">${escapeHtml(txt.hero.t)}</div>
+        <div class="sub">${escapeHtml(txt.hero.sub)}</div>
+        <div class="progress-bar"><div style="width:${pct}%"></div></div>
+        <div style="font-size: 11px; color: var(--ink-2); margin-top: 5px; font-weight: 600;">${done} ${escapeHtml(txt.sur)} ${total} ${escapeHtml(txt.fait)} · ${pct}%</div>
+      </div>
+      <div class="arr">›</div>
+    </div>`;
+}
+
+function renderPuppyPhase(phaseKey, txt) {
+  const items = PUPPY_ITEMS[phaseKey];
+  const state = getPuppyState();
+  const phaseDone = items.filter(it => state[it.id]).length;
+  const phaseTotal = items.length;
+  const phaseCfg = txt[phaseKey];
+  return `
+    <div class="puppy-phase">
+      <div class="phase-head">
+        <div class="emoji">${phaseCfg.emoji}</div>
+        <div>
+          <div class="t">${escapeHtml(phaseCfg.t)}</div>
+          <div class="d">${escapeHtml(phaseCfg.d)}</div>
+        </div>
+      </div>
+      <div class="phase-prog">${phaseDone} / ${phaseTotal} ${escapeHtml(txt.fait)}</div>
+      ${items.map(it => {
+        const isDone = !!state[it.id];
+        const lang = it[currentLang] || it.fr;
+        return `<div class="puppy-item ${isDone ? 'done' : ''}" onclick="togglePuppyItem('${it.id}')">
+          <div class="check"></div>
+          <div class="body">
+            <div class="it-title">${escapeHtml(lang.t)}</div>
+            <div class="it-hint">${escapeHtml(lang.d)}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderPuppySub() {
+  const body = document.getElementById("puppySubBody");
+  if (!body) return;
+  const txt = PUPPY_CONTENT[currentLang] || PUPPY_CONTENT.fr;
+  const { total, done, pct } = _puppyCounts();
+  if (done >= total) {
+    body.innerHTML = `
+      <div style="padding: 20px 16px;">
+        <div class="puppy-empty">
+          <div class="emo">🎉</div>
+          <div class="t">${escapeHtml(txt.empty_t)}</div>
+          <div class="d">${escapeHtml(txt.empty_d)}</div>
+        </div>
+        <div style="margin-top: 16px; text-align: center;">
+          <button onclick="disablePuppyMode()" style="background: transparent; color: var(--ink-2); border: 1px solid var(--ink-3); padding: 8px 16px; border-radius: 999px; font-size: 12px; cursor: pointer;">${escapeHtml(txt.cta_disable)}</button>
+        </div>
+      </div>`;
+    return;
+  }
+  body.innerHTML = `
+    <div style="padding: 0 16px 14px;">
+      <div class="card" style="margin: 0; background: linear-gradient(135deg, var(--terra), var(--terra-dark)); color: white;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .9;">${done} / ${total} ${escapeHtml(txt.fait)}</div>
+        <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">${pct}%</div>
+        <div style="height: 6px; background: rgba(255,255,255,.25); border-radius: 3px; margin-top: 10px; overflow: hidden;"><div style="width: ${pct}%; height: 100%; background: white; border-radius: 3px;"></div></div>
+        <div style="font-size: 12px; opacity: .92; margin-top: 8px; line-height: 1.5;">${escapeHtml(txt.sub_intro)}</div>
+      </div>
+    </div>
+    <div style="padding: 0 12px;">
+      ${renderPuppyPhase("p1", txt)}
+      ${renderPuppyPhase("p2", txt)}
+      ${renderPuppyPhase("p3", txt)}
+      <button class="ask-ai-cta" onclick="openAIWith('${currentLang === 'fr' ? "Donne-moi un conseil pratique pour mon premier chien sur la phase actuelle." : "Give me practical advice for my first dog on the current phase."}')"><span>✨</span> ${escapeHtml(txt.cta_ai)}</button>
+      <div style="text-align: center; padding: 16px 0 8px;">
+        <button onclick="disablePuppyMode()" style="background: transparent; color: var(--ink-2); border: 1px solid var(--ink-3); padding: 8px 16px; border-radius: 999px; font-size: 12px; cursor: pointer;">${escapeHtml(txt.cta_disable)}</button>
+      </div>
+    </div>`;
+}
+
+function togglePuppyItem(itemId) {
+  const state = getPuppyState();
+  state[itemId] = !state[itemId];
+  if (typeof K9Store !== "undefined") K9Store.save();
+  renderPuppySub();
+  renderPuppyHomeCard();
+}
+
+function disablePuppyMode() {
+  const txt = PUPPY_CONTENT[currentLang] || PUPPY_CONTENT.fr;
+  if (!confirm(txt.confirm_disable)) return;
+  puppyMode = "off";
+  if (typeof K9Store !== "undefined") K9Store.save();
+  renderPuppyHomeCard();
+  closeSub("sub-puppy");
+}
+
+function enablePuppyMode() {
+  puppyMode = "on";
+  if (typeof K9Store !== "undefined") K9Store.save();
+  renderPuppyHomeCard();
 }
 
 // ---------- Accessibility toggle ----------
@@ -5899,6 +6476,7 @@ function switchTab(name) {
 // ---------- AI Overlay ----------
 function openAI() {
   document.getElementById("aiOverlay").classList.add("show");
+  if (typeof renderAIQuotaChip === "function") renderAIQuotaChip();
 }
 function closeAI() {
   document.getElementById("aiOverlay").classList.remove("show");
@@ -6002,6 +6580,7 @@ function setLang(lang) {
     applyUnits();
   }
   if (typeof renderWalkHistory === "function") renderWalkHistory();
+  if (typeof renderPuppyHomeCard === "function") renderPuppyHomeCard();
   K9Store.save();
 }
 function toggleLang() { setLang(currentLang === "fr" ? "en" : "fr"); }
@@ -6021,12 +6600,13 @@ async function sendAI() {
   // Freemium quota check
   const quota = checkAIQuota();
   if (!quota.ok) {
+    // Petit message inline + ouverture du modal upsell riche
     const paywall = document.createElement("div");
     paywall.className = "msg ai";
-    paywall.innerHTML = `${quota.msg}<br><br>
-      <button onclick="closeAI(); openSub('sub-plan');" style="background: var(--brand); color: #fff; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer;">⭐ ${currentLang === "fr" ? "Voir les plans" : "See plans"}</button>`;
+    paywall.innerHTML = `${quota.msg}`;
     body.appendChild(paywall);
     body.scrollTop = body.scrollHeight;
+    setTimeout(() => { if (typeof openUpsell === "function") openUpsell("quota"); }, 250);
     return;
   }
   // User message
@@ -6881,6 +7461,29 @@ function renderPlanBadge() {
       }
     }
   });
+  // Update inline lock badges in profile rows
+  const scanLock = document.getElementById("k9ScanLock");
+  if (scanLock) {
+    scanLock.style.display = (userPlan === "free") ? "" : "none";
+    scanLock.textContent = currentLang === "fr" ? "🔒 Plus" : "🔒 Plus";
+  }
+  const pdfLock = document.getElementById("k9PdfLock");
+  if (pdfLock) {
+    pdfLock.style.display = (userPlan === "pro") ? "none" : "";
+    pdfLock.textContent = currentLang === "fr" ? "🔒 Pro" : "🔒 Pro";
+  }
+  // Refresh quota chip in AI overlay
+  if (typeof renderAIQuotaChip === "function") renderAIQuotaChip();
+  // Refresh subscription status row in settings
+  if (typeof renderSubscriptionRow === "function") renderSubscriptionRow();
+}
+
+function renderSubscriptionRow() {
+  const row = document.getElementById("manageBillingRow");
+  if (!row) return;
+  // Affiche "Gérer mon abonnement" uniquement si plan payant
+  const hasCustomer = !!localStorage.getItem("k9_stripe_customer");
+  row.style.display = (userPlan !== "free" || hasCustomer) ? "" : "none";
 }
 async function setPlan(p) {
   // Free downgrade: direct
@@ -7012,6 +7615,260 @@ function consumeAIQuota() {
   if (userPlan !== "free") return;
   aiQuota.used = (aiQuota.used || 0) + 1;
   saveQuota();
+  if (typeof renderAIQuotaChip === "function") renderAIQuotaChip();
+}
+
+// ==================== UPSELL MODAL & PAYWALLS ====================
+// Mapping fonctionnalité → plan minimum
+const FEATURE_TIER = {
+  ai_chat:     "plus",   // au-delà du quota gratuit
+  scan_carnet: "plus",
+  export_pdf:  "pro",
+  multi_dog:   "plus",   // illimité (gratuit limité à 2)
+};
+
+const UPSELL_COPY = {
+  fr: {
+    quota: {
+      emoji: "🎯",
+      title: "Tu as utilisé tes 10 questions gratuites",
+      sub: "Continue à coacher {dog} sans limite avec K9 Plus.",
+      features: [
+        { ic: "💬", txt: "<b>Coach IA illimité</b> · pose autant de questions que tu veux" },
+        { ic: "📋", txt: "<b>Scan carnet santé</b> · l'IA extrait tes vaccins en 1 photo" },
+        { ic: "🐕", txt: "<b>Multi-chiens</b> · gère toute ta meute" },
+      ],
+      cta: "⭐ Continuer avec Plus",
+      price: "5€/mois · annulation à tout moment",
+    },
+    scan: {
+      emoji: "📋",
+      title: "Scan carnet santé — K9 Plus",
+      sub: "L'IA détecte tes vaccins, vermifuges et rappels en 1 photo et les ajoute au calendrier.",
+      features: [
+        { ic: "✨", txt: "<b>Scan illimité</b> · prends en photo, l'IA fait le reste" },
+        { ic: "📅", txt: "<b>Auto-ajout calendrier</b> · plus jamais de rappel oublié" },
+        { ic: "💬", txt: "<b>Coach IA illimité</b> · inclus dans Plus" },
+      ],
+      cta: "⭐ Débloquer avec Plus",
+      price: "5€/mois · annulation à tout moment",
+    },
+    export: {
+      emoji: "📄",
+      title: "Export PDF — K9 Pro",
+      sub: "Génère un dossier complet de {dog} (vaccins, balades, photos) à donner à ton véto ou pet-sitter.",
+      features: [
+        { ic: "📑", txt: "<b>PDF illimité</b> · profil complet en 1 clic" },
+        { ic: "🏥", txt: "<b>Format véto-friendly</b> · vaccins, traitements, alertes" },
+        { ic: "👥", txt: "<b>Multi-profils Pro</b> · idéal éleveurs / pet-sitters" },
+      ],
+      cta: "👑 Débloquer avec Pro",
+      ctaAlt: "⭐ Voir K9 Plus",
+      price: "12€/mois · annulation à tout moment",
+    },
+    multi_dog: {
+      emoji: "🐕‍🦺",
+      title: "Plus de 2 chiens — K9 Plus",
+      sub: "Le plan gratuit permet de gérer 2 chiens. Plus pour ta meute entière.",
+      features: [
+        { ic: "🐶", txt: "<b>Chiens illimités</b> · toute ta meute en un compte" },
+        { ic: "💬", txt: "<b>Coach IA illimité</b> par chien" },
+        { ic: "📋", txt: "<b>Scan carnet santé</b> inclus" },
+      ],
+      cta: "⭐ Débloquer avec Plus",
+      price: "5€/mois · annulation à tout moment",
+    },
+  },
+  en: {
+    quota: {
+      emoji: "🎯",
+      title: "You've used your 10 free questions",
+      sub: "Keep coaching {dog} without limits with K9 Plus.",
+      features: [
+        { ic: "💬", txt: "<b>Unlimited AI Coach</b> · ask as many questions as you want" },
+        { ic: "📋", txt: "<b>Vaccine record scan</b> · AI extracts your vaccines from 1 photo" },
+        { ic: "🐕", txt: "<b>Multi-dog</b> · manage your whole pack" },
+      ],
+      cta: "⭐ Continue with Plus",
+      price: "5€/month · cancel anytime",
+    },
+    scan: {
+      emoji: "📋",
+      title: "Vaccine record scan — K9 Plus",
+      sub: "AI detects your vaccines, dewormers and boosters from 1 photo and adds them to the calendar.",
+      features: [
+        { ic: "✨", txt: "<b>Unlimited scans</b> · take a photo, AI does the rest" },
+        { ic: "📅", txt: "<b>Auto-calendar</b> · never miss a reminder again" },
+        { ic: "💬", txt: "<b>Unlimited AI Coach</b> · included in Plus" },
+      ],
+      cta: "⭐ Unlock with Plus",
+      price: "5€/month · cancel anytime",
+    },
+    export: {
+      emoji: "📄",
+      title: "PDF export — K9 Pro",
+      sub: "Generate a full record of {dog} (vaccines, walks, photos) to share with your vet or pet-sitter.",
+      features: [
+        { ic: "📑", txt: "<b>Unlimited PDF</b> · complete profile in 1 click" },
+        { ic: "🏥", txt: "<b>Vet-friendly format</b> · vaccines, treatments, alerts" },
+        { ic: "👥", txt: "<b>Pro multi-profiles</b> · ideal for breeders / pet-sitters" },
+      ],
+      cta: "👑 Unlock with Pro",
+      ctaAlt: "⭐ See K9 Plus",
+      price: "12€/month · cancel anytime",
+    },
+    multi_dog: {
+      emoji: "🐕‍🦺",
+      title: "More than 2 dogs — K9 Plus",
+      sub: "The free plan supports 2 dogs. Upgrade for your whole pack.",
+      features: [
+        { ic: "🐶", txt: "<b>Unlimited dogs</b> · whole pack in one account" },
+        { ic: "💬", txt: "<b>Unlimited AI Coach</b> per dog" },
+        { ic: "📋", txt: "<b>Vaccine scan</b> included" },
+      ],
+      cta: "⭐ Unlock with Plus",
+      price: "5€/month · cancel anytime",
+    },
+  },
+};
+
+let _upsellContext = "quota"; // current context: quota | scan | export | multi_dog
+
+function _replaceDogToken(s) {
+  const dog = (typeof DOGS !== "undefined" && DOGS[activeDogIdx]) || null;
+  return (s || "").replace(/\{dog\}/g, dog?.name || (currentLang === "fr" ? "ton chien" : "your dog"));
+}
+
+function openUpsell(context = "quota") {
+  _upsellContext = context;
+  const lang = currentLang === "en" ? "en" : "fr";
+  const copy = (UPSELL_COPY[lang] && UPSELL_COPY[lang][context]) || UPSELL_COPY[lang].quota;
+  const emoji = document.getElementById("upsellEmoji");
+  const title = document.getElementById("upsellTitle");
+  const sub   = document.getElementById("upsellSub");
+  const list  = document.getElementById("upsellFeatures");
+  const cta   = document.getElementById("upsellCta");
+  const ctaPro = document.getElementById("upsellCtaPro");
+  const price = document.getElementById("upsellPrice");
+  if (emoji) emoji.textContent = copy.emoji;
+  if (title) title.textContent = _replaceDogToken(copy.title);
+  if (sub) sub.textContent = _replaceDogToken(copy.sub);
+  if (list) {
+    list.innerHTML = (copy.features || []).map(f => `
+      <div class="upsell-feature">
+        <div class="ic">${f.ic}</div>
+        <div class="txt">${f.txt}</div>
+      </div>`).join("");
+  }
+  // Bouton principal selon le tier visé
+  if (context === "export") {
+    // Pro = bouton or, et bouton secondaire vers Plus
+    if (cta) {
+      cta.style.background = "linear-gradient(135deg, #FFE8B8 0%, #F5C451 100%)";
+      cta.style.color = "#5A4206";
+      cta.style.boxShadow = "0 6px 18px rgba(245,196,81,.4)";
+      cta.textContent = copy.cta;
+      cta.onclick = upsellGoCheckoutPro;
+    }
+    if (ctaPro) ctaPro.style.display = "none";
+  } else {
+    if (cta) {
+      cta.style.background = "linear-gradient(135deg, #f4a261 0%, #e76f51 100%)";
+      cta.style.color = "#fff";
+      cta.style.boxShadow = "0 6px 18px rgba(231,111,81,.32)";
+      cta.textContent = copy.cta;
+      cta.onclick = upsellGoCheckout;
+    }
+    if (ctaPro) ctaPro.style.display = "none";
+  }
+  if (price) price.textContent = copy.price;
+  document.getElementById("upsellModal").classList.add("show");
+}
+
+function closeUpsell() {
+  document.getElementById("upsellModal").classList.remove("show");
+}
+
+async function upsellGoCheckout() {
+  closeUpsell();
+  if (typeof setPlan === "function") await setPlan("plus");
+}
+async function upsellGoCheckoutPro() {
+  closeUpsell();
+  if (typeof setPlan === "function") await setPlan("pro");
+}
+
+// ----- Helpers : feature gates -----
+function canUseFeature(feat) {
+  if (userPlan === "pro") return true;
+  if (userPlan === "plus") return feat !== "export_pdf";
+  // free
+  if (feat === "ai_chat") {
+    const q = checkAIQuota();
+    return !!q.ok;
+  }
+  return false;
+}
+
+// Wrap scan carnet : exige Plus+
+function k9TryScanCarnet() {
+  if (canUseFeature("scan_carnet")) {
+    if (typeof k9OpenScanCarnet === "function") k9OpenScanCarnet();
+    return;
+  }
+  openUpsell("scan");
+}
+
+// Wrap export PDF : exige Pro
+function k9TryExportPDF() {
+  if (canUseFeature("export_pdf")) {
+    if (typeof k9ExportPDF === "function") k9ExportPDF();
+    return;
+  }
+  openUpsell("export");
+}
+
+// Wrap ajout chien : free limité à 2
+function k9TryAddDog() {
+  if (userPlan === "free" && typeof DOGS !== "undefined" && DOGS.length >= 2) {
+    openUpsell("multi_dog");
+    return false;
+  }
+  return true;
+}
+
+// ----- Quota chip dans le header IA -----
+function renderAIQuotaChip() {
+  const header = document.querySelector("#aiOverlay .chat-header");
+  if (!header) return;
+  let chip = header.querySelector(".ai-quota-chip");
+  if (!chip) {
+    chip = document.createElement("div");
+    chip.className = "ai-quota-chip";
+    chip.id = "aiQuotaChip";
+    chip.style.cursor = "pointer";
+    chip.onclick = () => openUpsell("quota");
+    // Insère après le bloc title (avant le bouton fermer)
+    const closeBtn = header.querySelector(".back");
+    if (closeBtn) header.insertBefore(chip, closeBtn);
+    else header.appendChild(chip);
+  }
+  if (userPlan !== "free") {
+    chip.className = "ai-quota-chip unlimited";
+    chip.textContent = currentLang === "fr" ? "✨ Illimité" : "✨ Unlimited";
+    chip.style.cursor = "default";
+    chip.onclick = null;
+    return;
+  }
+  loadPlan();
+  const limit = 10;
+  const left = Math.max(0, limit - (aiQuota.used || 0));
+  chip.className = "ai-quota-chip" + (left <= 2 ? " low" : "");
+  chip.textContent = currentLang === "fr"
+    ? `${left}/${limit} restantes`
+    : `${left}/${limit} left`;
+  chip.style.cursor = "pointer";
+  chip.onclick = () => openUpsell("quota");
 }
 
 // ==================== EMPTY STATES ====================
@@ -7092,6 +7949,11 @@ if (typeof _resumeLiveWalk === "function") {
 // 6. Charge le feed communauté (mode dégradé : exemples si cloud off)
 if (typeof renderCommunityFeed === "function") {
   renderCommunityFeed().catch(e => console.warn("community feed init failed:", e));
+}
+
+// 7. Affiche la carte "Premier chien ?" sur home si applicable
+if (typeof renderPuppyHomeCard === "function") {
+  try { renderPuppyHomeCard(); } catch (e) { console.warn("puppy home card init failed:", e); }
 }
 
 // 5. Fire due-today/3d notifications if permission already granted

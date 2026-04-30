@@ -1,8 +1,8 @@
 # K9 — Backlog produit
 
-_Dernière mise à jour : 23 avril 2026_
+_Dernière mise à jour : 30 avril 2026_
 
-État actuel : **v2.0 en cours de déploiement** (backend complet prêt sur Vercel — `https://k9-one.vercel.app`).
+État actuel : **v2.5 en cours de déploiement** sur Vercel — `https://k9-one.vercel.app`.
 
 ---
 
@@ -16,8 +16,36 @@ _Dernière mise à jour : 23 avril 2026_
 - **v1.9** : **persistance localStorage complète** (profil, chiens, calendrier, balades, rescue, paramètres), export/import/reset JSON, enregistrement balade chrono, squelette backend Supabase + cron rappels
 - **v1.9.5–1.9.8** : panel post-déploiement (10 items), lost/found alerts + carte géoloc
 - **v2.0** : **backend complet opérationnel** (voir section ci-dessous)
+- **v2.2** : GPS temps réel pendant les balades + Community feed live + setup Supabase auto
+- **v2.3** : Tracé GPS de balade affiché sur carte Leaflet
+- **v2.4** : Onboarding "premier chien" avec checklist 7j/3mois/1an (24 items)
+- **v2.5** : Monétisation Plus/Pro complète (modal upsell, paywalls, quota chip, gestion abonnement)
 
 ---
+
+## 🚀 v2.5 — Monétisation Plus/Pro complète (shipped)
+
+- **Modal upsell riche** : design slide-up depuis le bas, 3 contextes (`quota`, `scan`, `export`, `multi_dog`), copy adaptée, CTA Stripe direct via `setPlan()`
+- **Paywalls inline** : badges 🔒 Plus / 🔒 Pro sur les rows "Scan carnet" et "Export PDF" du Profil. `k9TryScanCarnet()` et `k9TryExportPDF()` vérifient `canUseFeature()` avant d'ouvrir
+- **Quota chip dans le header IA** : indicateur visible "X/10 restantes" en orange, vire en rouge quand ≤ 2, "✨ Illimité" en vert pour Plus/Pro. Tap → ouvre l'upsell
+- **Multi-chiens gating** : free limité à 2 chiens, modal `multi_dog` au 3e ajout
+- **Row "Gérer mon abonnement"** dans le Profil : visible uniquement si plan payant ou customer Stripe en localStorage
+- **i18n FR + EN complet** : tous les textes upsell traduits, prénom du chien interpolé via token `{dog}`
+
+## 🚀 v2.4 — Onboarding "premier chien" (shipped)
+
+- **Checklist progressive 3 phases** : 7 jours (8 items : véto 48h, ID, espace sûr, alimentation, routine, propreté, no walks pré-vacc, assurance), 3 mois (8 items : socialisation 20 humains, 5+ chiens, sons, environnements, manipulation, solitude, ordres), 1 an (8 items : rappel solide, laisse détendue, propreté full, 4-6h seul, neuter, alimentation adulte, checkup, dentaire)
+- **Affichage conditionnel intelligent** : auto-affiché si âge ≤ 1 an OU si l'utilisateur a déjà progressé. Disable / re-enable manuel dispo
+- **Card progression sur home** : pourcentage + barre orange/dorée, encart sous l'urgent banner
+- **Persistance par chien** : `puppyChecklist[dog_${idx}]` dans le snapshot K9Store
+
+## 🚀 v2.3 — Tracé GPS de balade sur carte (shipped)
+
+- **Modal carte Leaflet 1.9.4** (CDN avec SRI) full-screen avec stats (distance, durée, allure, dénivelé+)
+- **Polyline orange #e76f51** sur fond OSM, marqueurs custom (start vert, end rouge), `fitBounds` auto avec padding
+- **Bouton "📍 Voir le tracé"** dans l'historique des balades, visible uniquement si ≥ 2 points GPS
+- **Calcul dénivelé positif** avec filtre anti-bruit < 1m (élimine les imprécisions GPS)
+- **Partage natif** via `navigator.share` ou clipboard fallback
 
 ## 🚀 v2.2 — GPS temps réel + Community feed live (shipped)
 
