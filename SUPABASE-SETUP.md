@@ -36,7 +36,7 @@ RESEND_API_KEY=re_...                # pour /api/cron-reminders (emails)
 RESEND_FROM=K9 <noreply@k9-one.vercel.app>
 VAPID_PUBLIC_KEY=...                 # web push (cf. plus bas)
 VAPID_PRIVATE_KEY=...
-VAPID_SUBJECT=mailto:guillaumecoulon1@gmail.com
+VAPID_SUBJECT=mailto:adventurer.app.outdoor@gmail.com
 CRON_SECRET=<long-random-string>     # protège /api/cron-reminders
 
 # Stripe (optionnel — Plus/Pro)
