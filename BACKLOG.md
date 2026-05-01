@@ -1,8 +1,8 @@
 # K9 — Backlog produit
 
-_Dernière mise à jour : 30 avril 2026_
+_Dernière mise à jour : 1er mai 2026_
 
-État actuel : **v2.5 en cours de déploiement** sur Vercel — `https://k9-one.vercel.app`.
+État actuel : **v3.0 en cours de déploiement** sur Vercel — `https://k9-one.vercel.app`.
 
 ---
 
@@ -20,8 +20,51 @@ _Dernière mise à jour : 30 avril 2026_
 - **v2.3** : Tracé GPS de balade affiché sur carte Leaflet
 - **v2.4** : Onboarding "premier chien" avec checklist 7j/3mois/1an (24 items)
 - **v2.5** : Monétisation Plus/Pro complète (modal upsell, paywalls, quota chip, gestion abonnement)
+- **v3.0** : Templates email Auth bilingues (FR/EN routés selon la langue de l'utilisateur)
+- **v3.1** : Carte Leaflet **temps réel** pendant la balade (suivi GPS live + stats)
+- **v3.2** : Friends + Playdates fonctionnels (ajout par email, création RDV, RSVP)
+- **v3.3** : Reverse-search lost & found via Claude Vision (matching IA des chiens)
 
 ---
+
+## 🚀 v3.0 — Templates email bilingues FR/EN (shipped)
+
+- **5 templates Supabase Auth** (Magic link, Confirm signup, Reset password, Change email, Invite) déclinés en FR ET EN
+- **Routing automatique** par langue : le client K9 ajoute `?lang=fr|en` dans le `redirectTo`, et le template Go détecte ça pour servir la bonne version
+- **Cohabitation préservée** avec ravito : la cascade conditionnelle protège les emails ravito existants
+- Doc complète + PDF de validation visuelle à fournir à Guillaume avant collage manuel dans le dashboard
+
+## 🚀 v3.1 — Carte balades temps réel (shipped)
+
+- **Bouton "🗺️ Voir la carte live"** apparaît sur le bouton de balade dès que le tracking commence
+- **Modal Leaflet plein écran** avec polyline orange dessinée en temps réel + marqueur bleu pulsant à la position courante
+- **Stats live mises à jour toutes les 1.5s** : distance, durée, allure courante (calculée sur les 6 derniers points), nombre de points GPS
+- **Auto-center intelligent** : la carte suit la position, mais si l'utilisateur drag manuellement, l'auto-center se désactive jusqu'au tap "Recentrer"
+- **Bouton "Arrêter la balade"** intégré au modal pour finaliser sans revenir sur l'écran principal
+- Le modal se ferme automatiquement quand la balade s'arrête
+
+## 🚀 v3.2 — Friends + Playdates (shipped)
+
+- **Onglet Amis** : ajouter par email (recherche le profil K9 correspondant), accepter / refuser les demandes reçues, retirer un ami
+- **3 sections** : demandes reçues, mes amis acceptés, en attente de réponse
+- **Onglet Playdates** : créer (lieu + date/heure + max chiens + notes), rejoindre, annuler ma venue, supprimer (host only)
+- **Visibilité** : les playdates créés par moi ou mes amis acceptés (pas de spam des inconnus)
+- **Pré-remplissage** : "Proposer playdate avec X" depuis la liste d'amis injecte directement la note "Avec Marie" dans le modal
+- **i18n FR + EN complet**
+- Côté backend : `/api/feed.js` étendu avec `?action=friends|friend-request|friend-accept|friend|playdates|playdate-create|playdate-join|playdate-leave|playdate-cancel` (multiplexage pour rester ≤ 12 lambdas Hobby)
+
+## 🚀 v3.3 — Reverse-search lost & found via IA (shipped)
+
+- **Recherche IA automatique** au moment où l'utilisateur publie un signalement avec photo
+- **Sync cloud** transparente : quand le cloud est activé, l'alert local est aussi posté dans Supabase
+- **Algorithme** :
+  1. Récupère les alertes opposées (lost ↔ found) géographiquement proches (50 km) et < 60 jours
+  2. Limite à 8 candidats max
+  3. Pour chaque candidat, appel Claude Vision avec les 2 photos pour scoring 0-100
+  4. Garde les scores ≥ 30, trie décroissant
+- **Modal "matches potentiels"** avec photo, nom, race, lieu, score IA + raisonnement, bouton contact direct (mailto: ou tel: selon le format)
+- Affiché uniquement si au moins 1 score ≥ 50 (évite spam)
+- Côté backend : `/api/alerts.js` étendu avec `?action=match&id=X&lang=fr|en`
 
 ## 🚀 v2.5 — Monétisation Plus/Pro complète (shipped)
 

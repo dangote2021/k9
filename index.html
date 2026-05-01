@@ -2093,6 +2093,14 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 .walk-track-leaflet-marker > div { width: 22px; height: 22px; border-radius: 999px; border: 3px solid white; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.3); }
 .walk-track-leaflet-marker.start > div { background: #2d6a4f; }
 .walk-track-leaflet-marker.end   > div { background: #e76f51; }
+.walk-track-leaflet-marker.me    > div { background: #3b82f6; animation: liveMePulse 1.4s ease-out infinite; }
+@keyframes liveMePulse {
+  0%   { box-shadow: 0 0 0 1.5px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.3), 0 0 0 0 rgba(59,130,246,0.55); }
+  70%  { box-shadow: 0 0 0 1.5px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.3), 0 0 0 14px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 1.5px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.3), 0 0 0 0 rgba(59,130,246,0); }
+}
+#liveMapCanvas { flex: 1; min-height: 380px; background: #e8ede6; }
+.walk-map-cta-row { gap: 8px; }
 .walk-map-cta-row {
   background: white; padding: 8px; display: flex; justify-content: center;
   border-top: 1px solid var(--ink-3);
@@ -2565,69 +2573,16 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
 
       <div id="social-friends">
-        <div class="friend-card">
-          <div class="avatar">🐕‍🦺</div>
-          <div class="info"><div class="name">Loki</div><div class="meta" data-i18n="friend_loki">Berger Australien · 3 ans · Paris 11e</div></div>
-          <button class="action" data-i18n="propose_play">Playdate</button>
+        <div style="padding: 10px 16px 4px;">
+          <button class="btn" style="width:100%;" onclick="openAddFriendModal()">➕ <span data-i18n="add_friend_cta">Ajouter un ami</span></button>
         </div>
-        <div class="friend-card">
-          <div class="avatar green">🐩</div>
-          <div class="info"><div class="name">Charlie</div><div class="meta" data-i18n="friend_charlie">Caniche · 4 ans · Paris 17e</div></div>
-          <button class="action" data-i18n="propose_play">Playdate</button>
-        </div>
-        <div class="friend-card">
-          <div class="avatar">🦮</div>
-          <div class="info"><div class="name">Biscotte</div><div class="meta" data-i18n="friend_biscotte">Golden Retriever · 1 an · Vincennes</div></div>
-          <button class="action" data-i18n="propose_play">Playdate</button>
-        </div>
-        <div class="friend-card">
-          <div class="avatar green">🐶</div>
-          <div class="info"><div class="name">Maya</div><div class="meta" data-i18n="friend_maya">Border Collie · 6 mois · Paris 20e</div></div>
-          <button class="action outline" data-i18n="add_friend">Devenir amis</button>
-        </div>
-        <div class="friend-card">
-          <div class="avatar">🐕</div>
-          <div class="info"><div class="name">Gustave</div><div class="meta" data-i18n="friend_gustave">Beagle · 5 ans · Montreuil</div></div>
-          <button class="action outline" data-i18n="add_friend">Devenir amis</button>
-        </div>
+        <div id="friendsList"><!-- Rendu dynamique via renderFriends() --></div>
       </div>
 
       <div id="social-playdates" style="display:none;">
-        <div class="playdate-card">
-          <div class="banner">
-            <div class="when" data-i18n="pd_sat">Samedi 25 avril · 10h</div>
-            <div class="title" data-i18n="pd_title1">Rando au Bois de Vincennes</div>
-          </div>
-          <div class="body">
-            <div class="loc">📍 Porte Dorée · 3,5 km de toi</div>
-            <div class="attendees">
-              <div class="avatars">
-                <div class="avatar sm">🐕‍🦺</div>
-                <div class="avatar sm green">🐩</div>
-                <div class="avatar sm">🦮</div>
-              </div>
-              <div class="count" data-i18n="attending1">+ 5 chiens inscrits</div>
-            </div>
-          </div>
-        </div>
-        <div class="playdate-card">
-          <div class="banner" style="background: linear-gradient(135deg, var(--brand-soft), var(--brand));">
-            <div class="when" data-i18n="pd_sun">Dimanche 26 avril · 16h</div>
-            <div class="title" data-i18n="pd_title2">Goûter au parc des Buttes-Chaumont</div>
-          </div>
-          <div class="body">
-            <div class="loc">📍 Buttes-Chaumont · 4,2 km de toi</div>
-            <div class="attendees">
-              <div class="avatars">
-                <div class="avatar sm green">🐶</div>
-                <div class="avatar sm">🐕</div>
-              </div>
-              <div class="count" data-i18n="attending2">+ 2 chiens inscrits</div>
-            </div>
-          </div>
-        </div>
+        <div id="playdatesList"><!-- Rendu dynamique via renderPlaydates() --></div>
         <div style="padding: 10px 16px;">
-          <button class="btn forest" data-i18n="create_pd">+ Créer un playdate</button>
+          <button class="btn forest" onclick="openCreatePlaydateModal()" data-i18n="create_pd">+ Créer un playdate</button>
         </div>
       </div>
 
@@ -3070,8 +3025,8 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
           <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: .85; margin-bottom: 6px;" data-i18n="walks_this_week">Cette semaine</div>
           <div style="font-size: 30px; font-weight: 800;" id="weekKm">0 <span style="font-size: 16px; opacity: .8;">km</span></div>
           <div style="font-size: 12px; opacity: .9; margin-top: 4px;" id="weekDetail" data-i18n="walks_this_week_empty">Aucune sortie enregistrée cette semaine</div>
-          <button style="margin-top: 14px; background: white; color: var(--forest); padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 13px; border: none; cursor: pointer;" onclick="mockStartWalk()" data-i18n="walk_start_now">▶ Démarrer une sortie</button>
-          <div style="font-size: 11px; opacity: .85; margin-top: 8px;" data-i18n="walk_soon_gps_2">🔜 GPS temps réel arrive bientôt</div>
+          <button style="margin-top: 14px; background: white; color: var(--forest); padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 13px; border: none; cursor: pointer;" onclick="mockStartWalk()" data-i18n="walk_start_now" data-walk-timer>▶ Démarrer une sortie</button>
+          <button id="walkLiveMapBtn" style="display:none; margin-top: 8px; background: rgba(255,255,255,0.16); color: white; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 12px; border: 1px solid rgba(255,255,255,0.4); cursor: pointer;" onclick="openWalkLiveMap()">🗺️ <span data-i18n="walk_live_map">Voir la carte live</span></button>
         </div>
       </div>
       <div class="section-title" data-i18n="walks_history">Historique <span class="mini-tag" data-i18n="mini_example">Exemple</span></div>
@@ -3939,7 +3894,10 @@ const K9Cloud = (function() {
 
   async function signIn(email) {
     if (!isReady()) throw new Error("Cloud not configured");
-    const redirectTo = window.location.origin + "/";
+    // On encode la langue de l'utilisateur dans le redirectTo pour que le
+    // template Supabase détecte FR vs EN (cf. EMAIL-TEMPLATES-SUPABASE.md).
+    const lang = (typeof currentLang !== "undefined" && currentLang === "en") ? "en" : "fr";
+    const redirectTo = window.location.origin + "/?lang=" + lang;
     const { error } = await _client.auth.signInWithOtp({
       email, options: { emailRedirectTo: redirectTo },
     });
@@ -4095,11 +4053,73 @@ const K9Cloud = (function() {
     }
   }
 
+  // --- Lost/Found Alerts (v3.3) -----------------------------------------
+  async function createAlert(body) {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    try {
+      const r = await fetch("/api/alerts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+        body: JSON.stringify(body),
+      });
+      return await r.json();
+    } catch (e) {
+      return { ok: false, error: String(e?.message || e) };
+    }
+  }
+  async function findAlertMatches(alertId, lang) {
+    const t = await token(); if (!t) return { matches: [], error: "no-auth" };
+    try {
+      const r = await fetch(`/api/alerts?action=match&id=${encodeURIComponent(alertId)}&lang=${lang || "fr"}`, {
+        headers: { "Authorization": `Bearer ${t}` },
+      });
+      return await r.json();
+    } catch (e) {
+      return { matches: [], error: String(e?.message || e) };
+    }
+  }
+
+  // --- Helper générique pour les actions feed.js (?action=...) ----------
+  async function feedAction(action, method, body) {
+    const t = await token(); if (!t) return { ok: false, reason: "no-auth" };
+    try {
+      const opts = {
+        method,
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+      };
+      if (body && method !== "GET") opts.body = JSON.stringify(body);
+      const r = await fetch(`/api/feed?action=${encodeURIComponent(action)}`, opts);
+      return await r.json();
+    } catch (e) {
+      return { ok: false, error: String(e?.message || e) };
+    }
+  }
+
+  // --- Friends (v3.2) -----------------------------------------------------
+  const listFriends   = () => feedAction("friends", "GET");
+  const addFriend     = (email) => feedAction("friend-request", "POST", { email });
+  const acceptFriend  = (friendId) => feedAction("friend-accept", "POST", { friendId });
+  const removeFriend  = (friendId) => feedAction("friend", "DELETE", { friendId });
+
+  // --- Playdates (v3.2) ---------------------------------------------------
+  const listPlaydates = (upcomingOnly = true) =>
+    feedAction(`playdates&upcoming=${upcomingOnly ? 1 : 0}`, "GET");
+  const createPlaydate = (body) => feedAction("playdate-create", "POST", body);
+  const joinPlaydate   = (playdateId, dogId) =>
+    feedAction("playdate-join", "POST", { playdateId, dogId });
+  const leavePlaydate  = (playdateId) =>
+    feedAction("playdate-leave", "DELETE", { playdateId });
+  const cancelPlaydate = (playdateId) =>
+    feedAction("playdate-cancel", "DELETE", { playdateId });
+
   return {
     init, isReady, isSignedIn, getUser, onAuthChange,
     signIn, signOut, push, pull, subscribePush,
     createShareLink, scanCarnet, exportPDF,
     getFeed, createPost,
+    listFriends, addFriend, acceptFriend, removeFriend,
+    listPlaydates, createPlaydate, joinPlaydate, leavePlaydate, cancelPlaydate,
+    createAlert, findAlertMatches,
     config: () => _config,
   };
 })();
@@ -4281,6 +4301,8 @@ const I18N = {
     friend_gustave: "Beagle · 5 ans · Montreuil",
     propose_play: "Playdate",
     add_friend: "Devenir amis",
+    add_friend_cta: "Ajouter un ami",
+    walk_live_map: "Voir la carte live",
     pd_sat: "Samedi 25 avril · 10h",
     pd_title1: "Rando au Bois de Vincennes",
     attending1: "+ 5 chiens inscrits",
@@ -4693,6 +4715,8 @@ const I18N = {
     friend_gustave: "Beagle · 5 yrs · Montreuil",
     propose_play: "Playdate",
     add_friend: "Add friend",
+    add_friend_cta: "Add a friend",
+    walk_live_map: "Live map",
     pd_sat: "Saturday April 25 · 10am",
     pd_title1: "Hike in Bois de Vincennes",
     attending1: "+ 5 dogs signed up",
@@ -5376,6 +5400,7 @@ function _resumeLiveWalk() {
   // On relance le tick UI + le watch GPS si la balade était en mode gps
   _walkTimerId = setInterval(_walkTickUI, 500);
   if (currentWalk.source === "gps") _startWalkGps();
+  if (typeof _updateWalkLiveBtn === "function") _updateWalkLiveBtn();
   // Notifier l'utilisateur silencieusement (pas d'alert intrusive au resume)
   return true;
 }
@@ -5413,6 +5438,8 @@ function mockStartWalk() {
     _saveLiveWalk();
     K9Store.save();
     renderWalkHistory();
+    if (typeof _updateWalkLiveBtn === "function") _updateWalkLiveBtn();
+    if (typeof closeWalkLiveMap === "function") closeWalkLiveMap();
     const sourceLbl = isGps
       ? (currentLang === "fr" ? "📡 GPS" : "📡 GPS")
       : (currentLang === "fr" ? "estimée" : "est.");
@@ -5435,6 +5462,7 @@ function mockStartWalk() {
   const gpsOn = _startWalkGps();
   _saveLiveWalk();
   _walkTickUI();
+  if (typeof _updateWalkLiveBtn === "function") _updateWalkLiveBtn();
   const msg = currentLang === "fr"
     ? (gpsOn
         ? "🗺️ Sortie démarrée — suivi GPS en cours.\n\nRe-tape sur \"Arrêter\" quand tu rentres."
@@ -5611,6 +5639,165 @@ function closeWalkTrackMap() {
     try { _walkMap.remove(); } catch {}
     _walkMap = null;
   }
+}
+
+// ============== Live walk map (v3.1) ==============
+// Affiche la carte Leaflet en temps réel pendant la balade. La polyline et
+// le marqueur "ma position" sont mis à jour à chaque nouveau point GPS.
+let _liveMap = null;
+let _liveMapPoly = null;
+let _liveMapMeMarker = null;
+let _liveMapTickId = null;
+let _liveMapAutoCenter = true;
+
+function _updateWalkLiveBtn() {
+  // Toggle le bouton selon l'état de la balade
+  const btn = document.getElementById("walkLiveMapBtn");
+  if (!btn) return;
+  btn.style.display = currentWalk ? "" : "none";
+}
+
+function openWalkLiveMap() {
+  if (!currentWalk) {
+    alert(currentLang === "fr"
+      ? "Lance une balade d'abord."
+      : "Start a walk first.");
+    return;
+  }
+  let modal = document.getElementById("liveMapModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "liveMapModal";
+    modal.className = "walk-map-modal";
+    modal.innerHTML = `
+      <div class="walk-map-card">
+        <div class="walk-map-header">
+          <h3 id="liveMapTitle">🗺️ ${currentLang === "fr" ? "Balade en cours" : "Walk in progress"}</h3>
+          <button class="close" onclick="closeWalkLiveMap()" aria-label="close">✕</button>
+        </div>
+        <div class="walk-map-stats" id="liveMapStats"></div>
+        <div id="liveMapCanvas" style="position:relative"></div>
+        <div class="walk-map-cta-row">
+          <button class="btn-track-share" id="liveCenterBtn" onclick="_liveMapCenterMe()">📍 ${currentLang === "fr" ? "Recentrer" : "Recenter"}</button>
+          <button class="btn-track-share" style="background:#e76f51;color:#fff;" onclick="_stopWalkFromLive()">⏹️ ${currentLang === "fr" ? "Arrêter la balade" : "Stop walk"}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeWalkLiveMap();
+    });
+  }
+  modal.classList.add("show");
+  // Init Leaflet en différé pour laisser le DOM se peindre
+  setTimeout(() => {
+    if (typeof L === "undefined") {
+      console.warn("Leaflet not loaded");
+      return;
+    }
+    const canvas = document.getElementById("liveMapCanvas");
+    canvas.innerHTML = "";
+    if (_liveMap) { try { _liveMap.remove(); } catch {} _liveMap = null; }
+    _liveMap = L.map(canvas, { zoomControl: true, attributionControl: true });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(_liveMap);
+    _liveMapPoly = L.polyline([], {
+      color: "#e76f51",
+      weight: 5,
+      opacity: 0.9,
+      lineCap: "round",
+    }).addTo(_liveMap);
+    _liveMapMeMarker = L.marker([0, 0], {
+      icon: L.divIcon({
+        className: "walk-track-leaflet-marker me",
+        html: '<div></div>',
+        iconSize: [22, 22],
+      }),
+    });
+    // Auto-center disabled when user manually drags the map
+    _liveMap.on("dragstart", () => { _liveMapAutoCenter = false; });
+    _refreshLiveMap();
+    // Tick toutes les 1.5s pour mettre à jour stats + polyline
+    if (_liveMapTickId) clearInterval(_liveMapTickId);
+    _liveMapTickId = setInterval(_refreshLiveMap, 1500);
+  }, 50);
+}
+
+function _refreshLiveMap() {
+  if (!_liveMap || !currentWalk) return;
+  // Stats
+  const elapsedMs = Date.now() - currentWalk.startedAt;
+  const mins = Math.floor(elapsedMs / 60000);
+  const secs = Math.floor((elapsedMs % 60000) / 1000);
+  const distKm = currentWalk.distanceKm || 0;
+  const unit = useImperial ? "mi" : "km";
+  const distDisp = (useImperial ? distKm * 0.621371 : distKm).toFixed(2);
+  // Allure courante (sur les 3 derniers points si possible)
+  let paceLbl = "—";
+  const pts = currentWalk.points || [];
+  if (pts.length >= 4 && distKm > 0.05) {
+    const last = pts[pts.length - 1];
+    const ref = pts[Math.max(0, pts.length - 6)];
+    const segDist = _haversineKm(ref, last);
+    const segMin = (last.ts - ref.ts) / 60000;
+    if (segDist > 0 && segMin > 0) {
+      const paceTotal = segMin / (useImperial ? segDist * 0.621371 : segDist);
+      if (isFinite(paceTotal) && paceTotal > 0 && paceTotal < 600) {
+        const pm = Math.floor(paceTotal);
+        const ps = Math.round((paceTotal - pm) * 60);
+        paceLbl = `${pm}:${String(ps).padStart(2, "0")}/${unit}`;
+      }
+    }
+  }
+  const stats = document.getElementById("liveMapStats");
+  if (stats) {
+    stats.innerHTML = `
+      <div class="stat"><div class="val">${distDisp}</div><div class="lbl">${unit}</div></div>
+      <div class="stat"><div class="val">${mins}:${String(secs).padStart(2,"0")}</div><div class="lbl">${currentLang === "fr" ? "Durée" : "Time"}</div></div>
+      <div class="stat"><div class="val">${paceLbl}</div><div class="lbl">${currentLang === "fr" ? "Allure" : "Pace"}</div></div>
+      <div class="stat"><div class="val">${pts.length}</div><div class="lbl">${currentLang === "fr" ? "Points" : "Points"}</div></div>`;
+  }
+  // Polyline + marqueur de position courante
+  const latlngs = pts.map(p => [p.lat, p.lon]);
+  if (latlngs.length === 0) return;
+  _liveMapPoly.setLatLngs(latlngs);
+  const last = latlngs[latlngs.length - 1];
+  _liveMapMeMarker.setLatLng(last);
+  if (!_liveMap.hasLayer(_liveMapMeMarker)) {
+    _liveMapMeMarker.addTo(_liveMap);
+  }
+  // Auto-center sur la position courante (sauf si user a déjà bougé la carte)
+  if (_liveMapAutoCenter) {
+    if (latlngs.length === 1) {
+      _liveMap.setView(last, 17);
+    } else {
+      _liveMap.panTo(last, { animate: true });
+    }
+  }
+}
+
+function _liveMapCenterMe() {
+  _liveMapAutoCenter = true;
+  if (_liveMap && currentWalk?.points?.length) {
+    const last = currentWalk.points[currentWalk.points.length - 1];
+    _liveMap.setView([last.lat, last.lon], 17);
+  }
+}
+
+function _stopWalkFromLive() {
+  closeWalkLiveMap();
+  if (typeof mockStartWalk === "function" && currentWalk) mockStartWalk();
+}
+
+function closeWalkLiveMap() {
+  const m = document.getElementById("liveMapModal");
+  if (m) m.classList.remove("show");
+  if (_liveMapTickId) { clearInterval(_liveMapTickId); _liveMapTickId = null; }
+  if (_liveMap) { try { _liveMap.remove(); } catch {} _liveMap = null; }
+  _liveMapPoly = null;
+  _liveMapMeMarker = null;
+  _liveMapAutoCenter = true;
 }
 
 async function shareWalkTrack() {
@@ -6079,7 +6266,7 @@ function handleAlertPhoto(ev) {
   reader.readAsDataURL(file);
 }
 
-function submitAlert() {
+async function submitAlert() {
   if (!alertDraft.type) {
     alert(t("alert_need_type"));
     return;
@@ -6114,9 +6301,103 @@ function submitAlert() {
   setTimeout(() => {
     const sa = document.getElementById("sub-alerts");
     if (!sa || !sa.classList.contains("active")) openSub("sub-alerts");
-    // Toast
     showAlertToast(t("alert_saved"));
   }, 100);
+
+  // v3.3 — Sync cloud + cherche des matches IA si une photo existe
+  if (record.photo && typeof K9Cloud !== "undefined" && K9Cloud.isReady() && K9Cloud.isSignedIn()) {
+    try {
+      const cloudResp = await K9Cloud.createAlert({
+        type: record.type,
+        dogName: record.name,
+        breed: record.breed,
+        place: record.place,
+        photo: record.photo,
+        description: record.desc,
+        contact: record.contact,
+      });
+      if (cloudResp?.alert?.id) {
+        // Stocke le cloud id pour future référence
+        record.cloudId = cloudResp.alert.id;
+        K9Store.save();
+        // Lance la recherche de matches en arrière-plan (≈ 5-15s)
+        setTimeout(() => searchAlertMatches(cloudResp.alert.id), 1200);
+      }
+    } catch (e) {
+      console.warn("Cloud alert sync failed:", e);
+    }
+  }
+}
+
+// v3.3 — Cherche des matches IA et affiche un modal si pertinent
+async function searchAlertMatches(cloudAlertId) {
+  if (!cloudAlertId) return;
+  // Toast non-bloquant pendant la recherche
+  showAlertToast(currentLang === "fr"
+    ? "🔍 Recherche IA de chiens correspondants…"
+    : "🔍 AI searching for matching dogs…");
+  const r = await K9Cloud.findAlertMatches(cloudAlertId, currentLang);
+  if (!r || r.error) return;
+  const matches = r.matches || [];
+  if (matches.length === 0) return;
+  // Garde uniquement les scores >= 50 pour ne pas spammer
+  const strong = matches.filter(m => m.score >= 50);
+  if (strong.length === 0) return;
+  openMatchesModal(strong);
+}
+
+function openMatchesModal(matches) {
+  let m = document.getElementById("matchesModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "matchesModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  const title = currentLang === "fr"
+    ? `🐾 ${matches.length} match${matches.length > 1 ? "s" : ""} potentiel${matches.length > 1 ? "s" : ""} !`
+    : `🐾 ${matches.length} potential match${matches.length > 1 ? "es" : ""}!`;
+  const sub = currentLang === "fr"
+    ? "L'IA a identifié des chiens qui pourraient correspondre. Contacte les propriétaires si tu reconnais le tien."
+    : "AI identified dogs that could match. Contact the owners if you recognize yours.";
+  const cards = matches.map(mt => {
+    const scoreColor = mt.score >= 75 ? "#047857" : mt.score >= 50 ? "#b45309" : "#7a7570";
+    const scoreLabel = mt.score >= 75
+      ? (currentLang === "fr" ? "Très probable" : "Very likely")
+      : mt.score >= 50
+        ? (currentLang === "fr" ? "Possible" : "Possible")
+        : (currentLang === "fr" ? "À vérifier" : "Worth checking");
+    const photo = mt.photoUrl
+      ? `<img src="${mt.photoUrl}" alt="" style="width:80px; height:80px; object-fit:cover; border-radius:10px; flex-shrink:0;">`
+      : `<div style="width:80px; height:80px; background:#f0e6db; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:32px;">🐶</div>`;
+    return `
+      <div style="display:flex; gap:12px; padding:12px; background:#fff; border:1px solid var(--border); border-radius:14px; margin-bottom:8px;">
+        ${photo}
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
+            <div style="font-weight:700; color:var(--ink);">${escapeHtml(mt.dogName || (currentLang === "fr" ? "Sans nom" : "Unnamed"))}</div>
+            <div style="font-size:11px; font-weight:800; color:${scoreColor}; background:${scoreColor}15; padding:3px 8px; border-radius:999px; white-space:nowrap;">${mt.score}% · ${scoreLabel}</div>
+          </div>
+          ${mt.breed ? `<div style="font-size:12px; color:var(--ink-2); margin-top:2px;">${escapeHtml(mt.breed)}</div>` : ""}
+          <div style="font-size:11.5px; color:var(--ink-2); margin-top:4px;">📍 ${escapeHtml(mt.place || "")}</div>
+          <div style="font-size:11px; color:var(--ink-2); margin-top:4px; font-style:italic;">"${escapeHtml(mt.reasoning || "")}"</div>
+          <a href="${mt.contact?.startsWith("http") ? mt.contact : (mt.contact?.includes("@") ? "mailto:" + mt.contact : "tel:" + mt.contact)}" style="display:inline-block; margin-top:8px; background:#e76f51; color:#fff; padding:7px 14px; border-radius:999px; font-size:12px; font-weight:700; text-decoration:none;">📞 ${currentLang === "fr" ? "Contacter" : "Contact"}</a>
+        </div>
+      </div>`;
+  }).join("");
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">🐾</div>
+      <h3 class="upsell-title">${title}</h3>
+      <p class="upsell-sub">${sub}</p>
+      <div style="max-height:60vh; overflow-y:auto;">${cards}</div>
+      <div class="upsell-actions">
+        <button class="upsell-skip" onclick="document.getElementById('matchesModal').classList.remove('show')">${currentLang === "fr" ? "Fermer" : "Close"}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
 }
 
 function showAlertToast(msg) {
@@ -6495,6 +6776,364 @@ function switchSocialTab(btn, id) {
   ["friends", "playdates", "discover", "messages"].forEach(x => {
     document.getElementById("social-" + x).style.display = x === id ? "" : "none";
   });
+  // Lazy-load au tap d'onglet (v3.2)
+  if (id === "friends" && typeof renderFriends === "function") renderFriends();
+  if (id === "playdates" && typeof renderPlaydates === "function") renderPlaydates();
+}
+
+// ============== v3.2 Friends + Playdates ==============
+const SOCIAL_COPY = {
+  fr: {
+    no_cloud: "Active le cloud pour gérer tes amis et playdates.",
+    friends_empty: "Tu n'as pas encore d'amis K9. Invite-les par email !",
+    pending_in: "Demandes reçues",
+    pending_out: "En attente de réponse",
+    accept: "Accepter",
+    decline: "Refuser",
+    remove: "Retirer",
+    propose_pd: "Proposer un playdate",
+    add_friend_title: "Ajouter un ami",
+    add_friend_hint: "Entre l'email de la personne à ajouter. Elle doit déjà avoir un compte K9.",
+    add_friend_send: "Envoyer la demande",
+    add_friend_cancel: "Annuler",
+    add_friend_no_user: "Aucun compte K9 avec cet email.",
+    add_friend_self: "Tu ne peux pas t'ajouter toi-même.",
+    add_friend_sent: "Demande envoyée !",
+    pd_empty: "Aucun playdate à venir. Crée-en un !",
+    pd_create_title: "Créer un playdate",
+    pd_place: "Lieu (parc, plage…)",
+    pd_when: "Date et heure",
+    pd_notes: "Notes (optionnel)",
+    pd_max: "Nombre max de chiens",
+    pd_create_btn: "Créer",
+    pd_cancel_btn: "Annuler",
+    pd_join: "Je viens",
+    pd_leave: "Annuler ma venue",
+    pd_cancel: "Supprimer",
+    pd_attendees: "chiens inscrits",
+    pd_host: "organisé par",
+    confirm_remove: "Retirer cet ami ?",
+    confirm_cancel_pd: "Supprimer ce playdate ?",
+  },
+  en: {
+    no_cloud: "Activate cloud to manage friends and playdates.",
+    friends_empty: "No K9 friends yet. Invite them by email!",
+    pending_in: "Pending invites",
+    pending_out: "Awaiting reply",
+    accept: "Accept",
+    decline: "Decline",
+    remove: "Remove",
+    propose_pd: "Suggest a playdate",
+    add_friend_title: "Add a friend",
+    add_friend_hint: "Enter their email. They need to have a K9 account already.",
+    add_friend_send: "Send invite",
+    add_friend_cancel: "Cancel",
+    add_friend_no_user: "No K9 account with this email.",
+    add_friend_self: "You can't add yourself.",
+    add_friend_sent: "Invite sent!",
+    pd_empty: "No upcoming playdates. Create one!",
+    pd_create_title: "Create a playdate",
+    pd_place: "Place (park, beach…)",
+    pd_when: "Date and time",
+    pd_notes: "Notes (optional)",
+    pd_max: "Max dogs",
+    pd_create_btn: "Create",
+    pd_cancel_btn: "Cancel",
+    pd_join: "I'm in",
+    pd_leave: "Cancel my RSVP",
+    pd_cancel: "Delete",
+    pd_attendees: "dogs joined",
+    pd_host: "organized by",
+    confirm_remove: "Remove this friend?",
+    confirm_cancel_pd: "Delete this playdate?",
+  },
+};
+
+function _socialT() { return SOCIAL_COPY[currentLang === "en" ? "en" : "fr"]; }
+
+function _socialNoCloudHTML(t) {
+  return `<div class="empty-state" style="padding:24px 16px;">
+    <div class="emoji">☁️</div>
+    <div class="title">${t.no_cloud}</div>
+    <button class="btn" style="margin-top:12px;" onclick="closeSub && openSub('sub-cloud-signin')">${currentLang==='fr'?'Activer le cloud':'Activate cloud'}</button>
+  </div>`;
+}
+
+async function renderFriends() {
+  const el = document.getElementById("friendsList");
+  if (!el) return;
+  const t = _socialT();
+  if (typeof K9Cloud === "undefined" || !K9Cloud.isReady() || !K9Cloud.isSignedIn()) {
+    el.innerHTML = _socialNoCloudHTML(t);
+    return;
+  }
+  el.innerHTML = `<div class="cal-empty">${currentLang === "fr" ? "Chargement…" : "Loading…"}</div>`;
+  const r = await K9Cloud.listFriends();
+  if (r.error) {
+    el.innerHTML = `<div class="cal-empty">⚠️ ${r.error}</div>`;
+    return;
+  }
+  const sections = [];
+
+  // Demandes reçues (pending in)
+  if ((r.pendingIn || []).length) {
+    sections.push(`<div class="section-title" style="padding-top:8px;">${t.pending_in}</div>`);
+    sections.push(...r.pendingIn.map(f => `
+      <div class="friend-card">
+        <div class="avatar">🐾</div>
+        <div class="info">
+          <div class="name">${escapeHtml(f.name || "K9er")}</div>
+          <div class="meta">${escapeHtml(f.email || "")}</div>
+        </div>
+        <button class="action" onclick="acceptFriend('${f.id}')">✓ ${t.accept}</button>
+        <button class="action outline" onclick="declineFriend('${f.id}')">✕ ${t.decline}</button>
+      </div>`));
+  }
+
+  // Amis acceptés
+  if ((r.accepted || []).length) {
+    sections.push(`<div class="section-title" style="padding-top:8px;">${currentLang==='fr'?'Mes amis':'My friends'} (${r.accepted.length})</div>`);
+    sections.push(...r.accepted.map(f => `
+      <div class="friend-card">
+        <div class="avatar green">🐶</div>
+        <div class="info">
+          <div class="name">${escapeHtml(f.name || "K9er")}</div>
+          <div class="meta">${escapeHtml(f.email || "")}</div>
+        </div>
+        <button class="action" onclick="proposePlaydateWith('${f.id}', '${escapeHtml(f.name || '').replace(/'/g, "&#39;")}')">${t.propose_pd}</button>
+        <button class="action outline" onclick="removeFriend('${f.id}')">${t.remove}</button>
+      </div>`));
+  }
+
+  // En attente de réponse (pending out)
+  if ((r.pendingOut || []).length) {
+    sections.push(`<div class="section-title" style="padding-top:8px;">${t.pending_out}</div>`);
+    sections.push(...r.pendingOut.map(f => `
+      <div class="friend-card">
+        <div class="avatar">⏳</div>
+        <div class="info">
+          <div class="name">${escapeHtml(f.name || f.email || "K9er")}</div>
+          <div class="meta">${escapeHtml(f.email || "")}</div>
+        </div>
+      </div>`));
+  }
+
+  if (sections.length === 0) {
+    el.innerHTML = `<div class="cal-empty">${t.friends_empty}</div>`;
+    return;
+  }
+  el.innerHTML = sections.join("");
+}
+
+async function acceptFriend(id) {
+  const r = await K9Cloud.acceptFriend(id);
+  if (r.error) { alert(r.error); return; }
+  renderFriends();
+}
+async function declineFriend(id) {
+  await K9Cloud.removeFriend(id);
+  renderFriends();
+}
+async function removeFriend(id) {
+  const t = _socialT();
+  if (!confirm(t.confirm_remove)) return;
+  await K9Cloud.removeFriend(id);
+  renderFriends();
+}
+
+function openAddFriendModal() {
+  const t = _socialT();
+  let m = document.getElementById("addFriendModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "addFriendModal";
+    m.className = "upsell-modal";
+    m.innerHTML = `
+      <div class="upsell-card">
+        <div class="upsell-grip"></div>
+        <div class="upsell-emoji">🐾</div>
+        <h3 class="upsell-title" id="addFriendTitle">${t.add_friend_title}</h3>
+        <p class="upsell-sub" id="addFriendSub">${t.add_friend_hint}</p>
+        <input id="addFriendEmail" type="email" placeholder="ami@example.com" style="width:100%; padding:14px 16px; border:1px solid var(--border); border-radius:12px; font-size:15px; margin-bottom:6px;" />
+        <div id="addFriendErr" style="font-size:12.5px; color:#b91c1c; min-height:18px; margin-bottom:8px;"></div>
+        <div class="upsell-actions">
+          <button class="upsell-cta" onclick="submitAddFriend()" id="addFriendBtn">${t.add_friend_send}</button>
+          <button class="upsell-skip" onclick="closeAddFriendModal()">${t.add_friend_cancel}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) closeAddFriendModal(); });
+  } else {
+    document.getElementById("addFriendTitle").textContent = t.add_friend_title;
+    document.getElementById("addFriendSub").textContent = t.add_friend_hint;
+    document.getElementById("addFriendBtn").textContent = t.add_friend_send;
+    document.getElementById("addFriendEmail").value = "";
+    document.getElementById("addFriendErr").textContent = "";
+  }
+  m.classList.add("show");
+  setTimeout(() => document.getElementById("addFriendEmail").focus(), 100);
+}
+
+function closeAddFriendModal() {
+  const m = document.getElementById("addFriendModal");
+  if (m) m.classList.remove("show");
+}
+
+async function submitAddFriend() {
+  const t = _socialT();
+  const email = document.getElementById("addFriendEmail").value.trim();
+  const errEl = document.getElementById("addFriendErr");
+  errEl.textContent = "";
+  if (!email || !email.includes("@")) { errEl.textContent = "Email ?"; return; }
+  const btn = document.getElementById("addFriendBtn");
+  btn.disabled = true;
+  const r = await K9Cloud.addFriend(email);
+  btn.disabled = false;
+  if (r.error === "no_user") { errEl.textContent = t.add_friend_no_user; return; }
+  if (r.error === "self") { errEl.textContent = t.add_friend_self; return; }
+  if (r.error) { errEl.textContent = r.error; return; }
+  closeAddFriendModal();
+  alert(t.add_friend_sent);
+  renderFriends();
+}
+
+function proposePlaydateWith(friendId, friendName) {
+  // Pré-remplit le modal create-playdate avec une note "avec X"
+  openCreatePlaydateModal();
+  const notes = document.getElementById("pdNotes");
+  if (notes) {
+    const tag = currentLang === "fr" ? `Avec ${friendName}` : `With ${friendName}`;
+    notes.value = tag;
+  }
+}
+
+// ---- Playdates ----
+async function renderPlaydates() {
+  const el = document.getElementById("playdatesList");
+  if (!el) return;
+  const t = _socialT();
+  if (typeof K9Cloud === "undefined" || !K9Cloud.isReady() || !K9Cloud.isSignedIn()) {
+    el.innerHTML = _socialNoCloudHTML(t);
+    return;
+  }
+  el.innerHTML = `<div class="cal-empty">${currentLang === "fr" ? "Chargement…" : "Loading…"}</div>`;
+  const r = await K9Cloud.listPlaydates(true);
+  if (r.error) {
+    el.innerHTML = `<div class="cal-empty">⚠️ ${r.error}</div>`;
+    return;
+  }
+  const list = r.playdates || [];
+  if (list.length === 0) {
+    el.innerHTML = `<div class="cal-empty">${t.pd_empty}</div>`;
+    return;
+  }
+  const dateFmt = (iso) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US",
+      { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  };
+  el.innerHTML = list.map(pd => {
+    const attCount = (pd.attendees || []).length;
+    const attEmojis = (pd.attendees || []).slice(0, 4).map(a => `<div class="avatar sm">${a.dogEmoji || "🐕"}</div>`).join("");
+    const ctaBtn = pd.isHost
+      ? `<button class="btn ghost" style="margin-top:10px; color:#b91c1c;" onclick="cancelPlaydateUI('${pd.id}')">🗑️ ${t.pd_cancel}</button>`
+      : pd.iAttend
+        ? `<button class="btn ghost" style="margin-top:10px;" onclick="leavePlaydateUI('${pd.id}')">${t.pd_leave}</button>`
+        : `<button class="btn forest" style="margin-top:10px;" onclick="joinPlaydateUI('${pd.id}')">✓ ${t.pd_join}</button>`;
+    return `
+      <div class="playdate-card">
+        <div class="banner">
+          <div class="when">${dateFmt(pd.scheduledAt)}</div>
+          <div class="title">${escapeHtml(pd.place)}</div>
+        </div>
+        <div class="body">
+          <div class="loc">${pd.host?.name ? `🐾 ${t.pd_host} ${escapeHtml(pd.host.name)}` : ""}</div>
+          ${pd.notes ? `<div class="meta" style="margin:6px 0; color:var(--ink-2); font-size:13px;">${escapeHtml(pd.notes)}</div>` : ""}
+          <div class="attendees">
+            <div class="avatars">${attEmojis}</div>
+            <div class="count">${attCount}/${pd.maxDogs} ${t.pd_attendees}</div>
+          </div>
+          ${ctaBtn}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+async function joinPlaydateUI(pdId) {
+  const dog = (typeof DOGS !== "undefined" && DOGS[activeDogIdx]) || null;
+  const r = await K9Cloud.joinPlaydate(pdId, dog?.id || null);
+  if (r.error) { alert(r.error); return; }
+  renderPlaydates();
+}
+async function leavePlaydateUI(pdId) {
+  await K9Cloud.leavePlaydate(pdId);
+  renderPlaydates();
+}
+async function cancelPlaydateUI(pdId) {
+  const t = _socialT();
+  if (!confirm(t.confirm_cancel_pd)) return;
+  await K9Cloud.cancelPlaydate(pdId);
+  renderPlaydates();
+}
+
+function openCreatePlaydateModal() {
+  const t = _socialT();
+  let m = document.getElementById("createPdModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "createPdModal";
+    m.className = "upsell-modal";
+    m.innerHTML = `
+      <div class="upsell-card">
+        <div class="upsell-grip"></div>
+        <div class="upsell-emoji">🎾</div>
+        <h3 class="upsell-title">${t.pd_create_title}</h3>
+        <input id="pdPlace" type="text" placeholder="${t.pd_place}" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14.5px; margin-bottom:8px;" />
+        <input id="pdWhen" type="datetime-local" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14.5px; margin-bottom:8px;" />
+        <input id="pdMax" type="number" min="2" max="10" value="4" placeholder="${t.pd_max}" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14.5px; margin-bottom:8px;" />
+        <textarea id="pdNotes" placeholder="${t.pd_notes}" rows="2" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14px; margin-bottom:8px; font-family:inherit;"></textarea>
+        <div id="pdErr" style="font-size:12.5px; color:#b91c1c; min-height:18px; margin-bottom:6px;"></div>
+        <div class="upsell-actions">
+          <button class="upsell-cta" onclick="submitCreatePlaydate()">${t.pd_create_btn}</button>
+          <button class="upsell-skip" onclick="closeCreatePdModal()">${t.pd_cancel_btn}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) closeCreatePdModal(); });
+  }
+  // Default scheduled = demain 10h
+  const tmrw = new Date();
+  tmrw.setDate(tmrw.getDate() + 1);
+  tmrw.setHours(10, 0, 0, 0);
+  const iso = tmrw.toISOString().slice(0, 16);
+  document.getElementById("pdWhen").value = iso;
+  document.getElementById("pdErr").textContent = "";
+  m.classList.add("show");
+}
+
+function closeCreatePdModal() {
+  const m = document.getElementById("createPdModal");
+  if (m) m.classList.remove("show");
+}
+
+async function submitCreatePlaydate() {
+  const t = _socialT();
+  const place = document.getElementById("pdPlace").value.trim();
+  const when = document.getElementById("pdWhen").value;
+  const max = parseInt(document.getElementById("pdMax").value, 10) || 4;
+  const notes = document.getElementById("pdNotes").value.trim();
+  const errEl = document.getElementById("pdErr");
+  errEl.textContent = "";
+  if (!place) { errEl.textContent = t.pd_place + " ?"; return; }
+  if (!when) { errEl.textContent = t.pd_when + " ?"; return; }
+  const dog = DOGS[activeDogIdx];
+  const r = await K9Cloud.createPlaydate({
+    place, scheduledAt: new Date(when).toISOString(), notes,
+    maxDogs: max, dogId: dog?.id || null,
+  });
+  if (r.error) { errEl.textContent = r.error; return; }
+  closeCreatePdModal();
+  renderPlaydates();
 }
 
 // ---------- Sub-screens ----------
