@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4a261"/>
+      <stop offset="1" stop-color="#e76f51"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1024" height="500" fill="url(#bg)"/>
+
+  <ellipse cx="100" cy="180" rx="22" ry="30" fill="#ffffff" opacity="0.15"/>
+  <ellipse cx="140" cy="135" rx="22" ry="30" fill="#ffffff" opacity="0.15"/>
+  <ellipse cx="195" cy="135" rx="22" ry="30" fill="#ffffff" opacity="0.15"/>
+  <ellipse cx="235" cy="180" rx="22" ry="30" fill="#ffffff" opacity="0.15"/>
+  <path d="M120 235 C 120 200, 215 200, 215 235 C 240 270, 225 320, 167 320 C 109 320, 95 270, 120 235 Z" fill="#ffffff" opacity="0.15"/>
+
+  <ellipse cx="850" cy="380" rx="18" ry="24" fill="#ffffff" opacity="0.10"/>
+  <ellipse cx="880" cy="350" rx="18" ry="24" fill="#ffffff" opacity="0.10"/>
+  <ellipse cx="915" cy="350" rx="18" ry="24" fill="#ffffff" opacity="0.10"/>
+  <ellipse cx="945" cy="380" rx="18" ry="24" fill="#ffffff" opacity="0.10"/>
+
+  <ellipse cx="450" cy="195" rx="22" ry="30" fill="#ffffff"/>
+  <ellipse cx="490" cy="160" rx="22" ry="30" fill="#ffffff"/>
+  <ellipse cx="540" cy="160" rx="22" ry="30" fill="#ffffff"/>
+  <ellipse cx="580" cy="195" rx="22" ry="30" fill="#ffffff"/>
+  <path d="M468 240 C 468 205, 562 205, 562 240 C 595 275, 575 330, 515 330 C 455 330, 435 275, 468 240 Z" fill="#ffffff"/>
+
+  <text x="650" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"
+        font-size="92" font-weight="800" fill="#ffffff" letter-spacing="-3">K9</text>
+  <text x="650" y="275"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"
+        font-size="22" font-weight="500" fill="#ffffff" opacity="0.9" letter-spacing="0.3">Companions de chiens</text>
+
+  <rect x="380" y="395" width="280" height="50" rx="25" fill="#ffffff" opacity="0.95"/>
+  <text x="520" y="427" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"
+        font-size="20" font-weight="800" fill="#e76f51">Carnet · IA · GPS · Communauté</text>
+</svg>

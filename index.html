@@ -3,7 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>K9 — L'app des amoureux des chiens</title>
+<title>K9 — L'app pour les compagnons de chiens</title>
+<meta name="description" content="K9 — Carnet santé, coach IA K9 Companion, balades GPS temps réel, alertes chien perdu/trouvé avec IA, communauté. L'app tout-en-un, gratuite, qui marche hors-ligne." />
+<meta name="keywords" content="application chien, carnet santé chien, vaccins chien, balade chien GPS, coach IA chien, chien perdu, communauté chiens, app vétérinaire" />
+<meta name="author" content="Guillaume Coulon" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://k9-one.vercel.app/" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://k9-one.vercel.app/" />
+<meta property="og:title" content="K9 — L'app pour les compagnons de chiens" />
+<meta property="og:description" content="Carnet santé, coach IA, balades GPS, alertes chien perdu, communauté. Gratuit, sans pub, fonctionne hors-ligne." />
+<meta property="og:image" content="https://k9-one.vercel.app/branding/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="K9 — Logo patte sur fond orange" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:site_name" content="K9" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="K9 — L'app pour les compagnons de chiens" />
+<meta name="twitter:description" content="Carnet santé, coach IA, balades GPS, alertes lost/found. Gratuit." />
+<meta name="twitter:image" content="https://k9-one.vercel.app/branding/og-image.png" />
+
 <link rel="icon" type="image/x-icon" href="/branding/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/branding/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/branding/favicon-16.png" />
@@ -2776,6 +2801,27 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       <div style="padding: 14px 16px 8px; text-align: center; font-size: 11px; color: var(--ink-2); line-height: 1.55;" data-i18n="data_footer">
         Tes données sont stockées localement sur cet appareil. Exporte-les régulièrement pour les sauvegarder.
       </div>
+
+      <!-- Légal (v3.6) -->
+      <div class="section-title" data-i18n="profile_legal">Mentions & confidentialité</div>
+      <div class="menu-row" onclick="window.open('/legal/mentions-legales.html','_blank')">
+        <div class="ic">⚖️</div>
+        <div class="label" data-i18n="menu_legal_mentions">Mentions légales</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" onclick="window.open('/legal/cgu.html','_blank')">
+        <div class="ic">📜</div>
+        <div class="label" data-i18n="menu_legal_cgu">Conditions d'utilisation</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="menu-row" onclick="window.open('/legal/privacy.html','_blank')">
+        <div class="ic">🔒</div>
+        <div class="label" data-i18n="menu_legal_privacy">Politique de confidentialité</div>
+        <div class="arr">›</div>
+      </div>
+      <div style="padding: 14px 16px 18px; text-align: center; font-size: 10.5px; color: var(--ink-2);">
+        K9 v3.6 · <span data-i18n="made_with">Fait avec</span> 🐾
+      </div>
     </div>
 
   </div>
@@ -4646,6 +4692,11 @@ const I18N = {
     menu_export: "Exporter mes données",
     menu_import: "Importer une sauvegarde",
     menu_reset: "Réinitialiser mes données",
+    profile_legal: "Mentions & confidentialité",
+    menu_legal_mentions: "Mentions légales",
+    menu_legal_cgu: "Conditions d'utilisation",
+    menu_legal_privacy: "Politique de confidentialité",
+    made_with: "Fait avec",
     data_footer: "Tes données sont stockées localement sur cet appareil. Exporte-les régulièrement pour les sauvegarder.",
   },
   en: {
@@ -5060,6 +5111,11 @@ const I18N = {
     menu_export: "Export my data",
     menu_import: "Import a backup",
     menu_reset: "Reset my data",
+    profile_legal: "Legal & privacy",
+    menu_legal_mentions: "Legal notice",
+    menu_legal_cgu: "Terms of use",
+    menu_legal_privacy: "Privacy policy",
+    made_with: "Made with",
     data_footer: "Your data is stored locally on this device. Export regularly to back it up.",
   }
 };

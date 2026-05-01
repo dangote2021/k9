@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# API endpoints not for crawling
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://k9-one.vercel.app/sitemap.xml

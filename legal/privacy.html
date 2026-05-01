@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Politique de confidentialité — K9</title>
+  <link rel="icon" type="image/x-icon" href="/branding/favicon.ico" />
+  <meta name="theme-color" content="#e76f51" />
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff8f0;color:#2e2a26;line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+    .legal-wrap{max-width:720px;margin:0 auto;padding:32px 20px 64px}
+    .legal-header{background:linear-gradient(135deg,#f4a261 0%,#e76f51 100%);padding:32px 20px;text-align:center;border-radius:0 0 18px 18px;color:#fff;margin:-32px -20px 28px -20px}
+    .legal-header img{width:56px;height:56px}
+    .legal-header h1{margin:12px 0 4px;font-size:24px;font-weight:800;letter-spacing:-0.3px}
+    .legal-header .tag{font-size:13px;opacity:0.92}
+    .legal-back{display:inline-flex;align-items:center;gap:6px;color:#e76f51;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:16px}
+    h2{font-size:20px;font-weight:800;color:#2e2a26;margin:32px 0 8px;letter-spacing:-0.2px}
+    h3{font-size:16px;font-weight:700;color:#2e2a26;margin:20px 0 6px}
+    p{margin:8px 0}ul{padding-left:20px;margin:8px 0}li{margin:4px 0}a{color:#e76f51}
+    .legal-meta{font-size:13px;color:#7a7570;background:#fff;border:1px solid #f0e6db;padding:12px 16px;border-radius:10px;margin:8px 0 24px}
+    .lang-switch{text-align:right;margin:-8px 0 16px;font-size:13px}
+    .lang-switch a{color:#7a7570;text-decoration:none;padding:4px 8px;border-radius:6px}
+    .lang-switch a.active{background:#fff8f0;color:#e76f51;font-weight:700;border:1px solid #f0e6db}
+    .info{background:#eff6ff;border-left:3px solid #3b82f6;padding:12px 16px;margin:12px 0;font-size:14px;border-radius:0 6px 6px 0}
+    .info b{color:#1e40af}
+    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+    th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #f0e6db;vertical-align:top}
+    th{background:#fff8f0;font-weight:700}
+    footer{margin-top:48px;padding-top:20px;border-top:1px solid #f0e6db;font-size:12px;color:#9a948e;text-align:center}
+  </style>
+</head>
+<body>
+<div class="legal-wrap">
+  <div class="legal-header">
+    <img src="/branding/logo-email-white.png" alt="K9" />
+    <h1>Politique de confidentialité</h1>
+    <div class="tag">Privacy Policy — RGPD compliant</div>
+  </div>
+
+  <a class="legal-back" href="/">‹ Retour à l'app</a>
+
+  <div class="lang-switch">
+    <a href="#fr" class="active" onclick="switchLang('fr')">FR</a>
+    <a href="#en" onclick="switchLang('en')">EN</a>
+  </div>
+
+  <div class="legal-meta">Dernière mise à jour / Last updated: 1<sup>er</sup> mai 2026</div>
+
+  <!-- ============================ FR ============================ -->
+  <div id="lang-fr">
+    <div class="info">
+      <b>En résumé :</b> K9 fonctionne par défaut en local sur ton appareil (zéro donnée envoyée). Tu peux activer un cloud chiffré pour synchroniser. Aucune donnée vendue ni partagée avec des tiers à des fins publicitaires.
+    </div>
+
+    <h2>1. Responsable du traitement</h2>
+    <p>Guillaume Coulon — guillaumecoulon1@gmail.com</p>
+
+    <h2>2. Données collectées</h2>
+
+    <h3>2.1 Mode local (par défaut)</h3>
+    <p>L'App utilise <code>localStorage</code> de ton navigateur pour conserver :</p>
+    <ul>
+      <li>Profil de ton chien (nom, race, âge, poids, photo, allergies, vétérinaire)</li>
+      <li>Historique de balades (durée, distance, GPS si autorisé)</li>
+      <li>Calendrier de rappels (vaccins, vermifuge, etc.)</li>
+      <li>Préférences (langue, unités, mode d'accessibilité)</li>
+    </ul>
+    <p><strong>Ces données ne quittent jamais ton appareil tant que tu n'actives pas le cloud.</strong></p>
+
+    <h3>2.2 Mode cloud (optionnel — activable depuis les Réglages)</h3>
+    <p>Si tu actives le cloud (« Activer le cloud » → email magic link), les données ci-dessus sont synchronisées avec notre fournisseur Supabase pour permettre la synchronisation multi-appareils. S'ajoutent :</p>
+    <ul>
+      <li>Adresse email (pour l'authentification uniquement)</li>
+      <li>Posts communauté que tu publies volontairement</li>
+      <li>Alertes chien perdu/trouvé que tu publies (avec photo, lieu, contact)</li>
+      <li>Demandes d'amis et playdates</li>
+      <li>Tokens d'abonnement Stripe (si tu souscris à K9 Plus/Pro)</li>
+    </ul>
+
+    <h3>2.3 Données vétérinaires (sensibles)</h3>
+    <p>Les informations de santé de ton chien (vaccins, traitements) sont stockées localement et, si le cloud est activé, dans Supabase avec chiffrement au repos (AES-256) et en transit (TLS 1.3). Elles ne sont jamais analysées à des fins commerciales.</p>
+
+    <h2>3. Finalités du traitement</h2>
+    <table>
+      <tr><th>Finalité</th><th>Base légale</th><th>Durée</th></tr>
+      <tr><td>Fournir le service K9</td><td>Exécution du contrat (CGU)</td><td>Tant que ton compte est actif</td></tr>
+      <tr><td>Sync multi-appareils</td><td>Consentement (activation cloud)</td><td>Jusqu'à désactivation</td></tr>
+      <tr><td>Coach IA (Claude)</td><td>Consentement implicite (usage)</td><td>Pas de stockage des prompts</td></tr>
+      <tr><td>Sécurité (anti-abus)</td><td>Intérêt légitime</td><td>30 jours (logs)</td></tr>
+    </table>
+
+    <h2>4. Sous-traitants</h2>
+    <ul>
+      <li><strong>Vercel</strong> (hébergement) — USA, certifié ISO 27001 / SOC 2</li>
+      <li><strong>Supabase</strong> (base de données, auth) — Singapour / EU regions</li>
+      <li><strong>Anthropic</strong> (API Claude pour le Coach IA) — USA — ne stocke pas tes prompts</li>
+      <li><strong>Resend</strong> (envoi email) — USA — uniquement pour les emails techniques</li>
+      <li><strong>Stripe</strong> (paiements) — USA / Irlande, PCI-DSS Level 1 — si tu souscris à un plan payant</li>
+    </ul>
+
+    <h2>5. Tes droits (RGPD)</h2>
+    <p>Tu disposes des droits suivants à tout moment :</p>
+    <ul>
+      <li><strong>Accès</strong> : consulter toutes tes données (Réglages → Exporter)</li>
+      <li><strong>Rectification</strong> : modifier directement dans l'App</li>
+      <li><strong>Effacement</strong> : Réglages → Réinitialiser, ou suppression de compte</li>
+      <li><strong>Portabilité</strong> : Réglages → Exporter en JSON</li>
+      <li><strong>Opposition</strong> : désactiver le cloud à tout moment</li>
+      <li><strong>Réclamation</strong> auprès de la CNIL (cnil.fr)</li>
+    </ul>
+    <p>Pour exercer ces droits : <a href="mailto:guillaumecoulon1@gmail.com">guillaumecoulon1@gmail.com</a> — réponse sous 30 jours max.</p>
+
+    <h2>6. Cookies & traceurs</h2>
+    <p>K9 n'utilise <strong>aucun cookie publicitaire ni traceur tiers</strong>. Seul le <code>localStorage</code> du navigateur est utilisé pour stocker tes données et préférences. Pas de Google Analytics, pas de Facebook Pixel.</p>
+
+    <h2>7. Sécurité</h2>
+    <ul>
+      <li>Données chiffrées en transit (TLS 1.3)</li>
+      <li>Données chiffrées au repos (AES-256, géré par Supabase)</li>
+      <li>Authentification par lien magique (pas de mot de passe à perdre)</li>
+      <li>Row Level Security (RLS) : chaque utilisateur ne voit que ses propres données</li>
+    </ul>
+
+    <h2>8. Mineurs</h2>
+    <p>L'App n'est pas destinée aux moins de 15 ans. Si tu es mineur(e), demande à un parent ou tuteur d'accepter les présentes conditions.</p>
+
+    <h2>9. Modifications</h2>
+    <p>Cette politique peut évoluer. Les modifications majeures seront annoncées dans l'App.</p>
+
+    <h2>10. Contact DPO informel</h2>
+    <p>Pour toute question relative à tes données : <a href="mailto:guillaumecoulon1@gmail.com">guillaumecoulon1@gmail.com</a></p>
+  </div>
+
+  <!-- ============================ EN ============================ -->
+  <div id="lang-en" style="display:none;">
+    <div class="info">
+      <b>TL;DR:</b> K9 works locally on your device by default (zero data sent). You can opt into encrypted cloud sync. No data is sold or shared with third parties for advertising.
+    </div>
+
+    <h2>1. Data controller</h2>
+    <p>Guillaume Coulon — guillaumecoulon1@gmail.com</p>
+
+    <h2>2. Data collected</h2>
+
+    <h3>2.1 Local mode (default)</h3>
+    <p>The App uses your browser's <code>localStorage</code> to store:</p>
+    <ul>
+      <li>Your dog's profile (name, breed, age, weight, photo, allergies, vet info)</li>
+      <li>Walk history (duration, distance, GPS if allowed)</li>
+      <li>Reminders calendar (vaccines, dewormer, etc.)</li>
+      <li>Preferences (language, units, accessibility)</li>
+    </ul>
+    <p><strong>This data never leaves your device until you enable the cloud.</strong></p>
+
+    <h3>2.2 Cloud mode (optional)</h3>
+    <p>If you activate the cloud (« Activate cloud » → email magic link), the data above is synced via our provider Supabase for multi-device sync. Additionally:</p>
+    <ul>
+      <li>Email address (authentication only)</li>
+      <li>Community posts you voluntarily publish</li>
+      <li>Lost/found alerts you publish (with photo, location, contact)</li>
+      <li>Friend requests and playdates</li>
+      <li>Stripe subscription tokens (if you subscribe to K9 Plus/Pro)</li>
+    </ul>
+
+    <h3>2.3 Veterinary data (sensitive)</h3>
+    <p>Your dog's health data (vaccines, treatments) is stored locally and, if cloud is enabled, in Supabase with encryption at rest (AES-256) and in transit (TLS 1.3). Never used for commercial purposes.</p>
+
+    <h2>3. Processing purposes</h2>
+    <table>
+      <tr><th>Purpose</th><th>Legal basis</th><th>Duration</th></tr>
+      <tr><td>Provide K9 service</td><td>Contract performance (Terms)</td><td>While account is active</td></tr>
+      <tr><td>Multi-device sync</td><td>Consent (cloud activation)</td><td>Until disabled</td></tr>
+      <tr><td>AI Coach (Claude)</td><td>Implicit consent (usage)</td><td>No prompt storage</td></tr>
+      <tr><td>Security (anti-abuse)</td><td>Legitimate interest</td><td>30 days (logs)</td></tr>
+    </table>
+
+    <h2>4. Subprocessors</h2>
+    <ul>
+      <li><strong>Vercel</strong> (hosting) — USA, ISO 27001 / SOC 2 certified</li>
+      <li><strong>Supabase</strong> (database, auth) — Singapore / EU regions</li>
+      <li><strong>Anthropic</strong> (Claude API for AI Companion) — USA — does not store your prompts</li>
+      <li><strong>Resend</strong> (transactional email) — USA — for technical emails only</li>
+      <li><strong>Stripe</strong> (payments) — USA / Ireland, PCI-DSS Level 1 — only if you subscribe</li>
+    </ul>
+
+    <h2>5. Your rights (GDPR)</h2>
+    <p>You have the following rights at any time:</p>
+    <ul>
+      <li><strong>Access</strong>: view all your data (Settings → Export)</li>
+      <li><strong>Rectification</strong>: modify directly in the App</li>
+      <li><strong>Erasure</strong>: Settings → Reset, or account deletion</li>
+      <li><strong>Portability</strong>: Settings → Export to JSON</li>
+      <li><strong>Objection</strong>: disable the cloud at any time</li>
+      <li><strong>Complaint</strong> to the CNIL (cnil.fr) or your local data authority</li>
+    </ul>
+    <p>To exercise these rights: <a href="mailto:guillaumecoulon1@gmail.com">guillaumecoulon1@gmail.com</a> — response within 30 days max.</p>
+
+    <h2>6. Cookies & trackers</h2>
+    <p>K9 uses <strong>no advertising cookies, no third-party trackers</strong>. Only browser <code>localStorage</code> is used to store your data and preferences. No Google Analytics, no Facebook Pixel.</p>
+
+    <h2>7. Security</h2>
+    <ul>
+      <li>Data encrypted in transit (TLS 1.3)</li>
+      <li>Data encrypted at rest (AES-256, managed by Supabase)</li>
+      <li>Magic link authentication (no password to lose)</li>
+      <li>Row Level Security (RLS): each user only sees their own data</li>
+    </ul>
+
+    <h2>8. Minors</h2>
+    <p>The App is not intended for users under 15. If you are a minor, ask a parent or guardian to accept these terms.</p>
+
+    <h2>9. Changes</h2>
+    <p>This policy may evolve. Major changes will be announced in the App.</p>
+
+    <h2>10. Contact</h2>
+    <p>For any data-related question: <a href="mailto:guillaumecoulon1@gmail.com">guillaumecoulon1@gmail.com</a></p>
+  </div>
+
+  <footer>K9 © 2026 · <a href="/">Retour à l'app</a> · <a href="/legal/mentions-legales.html">Mentions légales</a> · <a href="/legal/cgu.html">CGU</a></footer>
+</div>
+
+<script>
+  function switchLang(l) {
+    document.getElementById("lang-fr").style.display = l === "fr" ? "" : "none";
+    document.getElementById("lang-en").style.display = l === "en" ? "" : "none";
+    document.querySelectorAll(".lang-switch a").forEach(a => a.classList.remove("active"));
+    event.target.classList.add("active");
+    return false;
+  }
+  if (location.hash === "#en" || (navigator.language || "").toLowerCase().startsWith("en")) {
+    document.getElementById("lang-fr").style.display = "none";
+    document.getElementById("lang-en").style.display = "";
+    document.querySelectorAll(".lang-switch a").forEach(a => {
+      a.classList.toggle("active", a.getAttribute("href") === "#en");
+    });
+  }
+</script>
+</body>
+</html>
