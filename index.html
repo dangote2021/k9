@@ -3665,7 +3665,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       <div class="chat-header">
         <div class="ic">✨</div>
         <div style="flex:1;">
-          <div class="name">K9 Coach</div>
+          <div class="name">K9 Companion</div>
           <div class="status" data-i18n="ai_status">Compagnon IA · Santé, éducation, comportement</div>
         </div>
         <button class="back" onclick="closeAI()" style="background: var(--cream-2); border: 0; width: 36px; height: 36px; border-radius: 12px; font-size: 20px; cursor: pointer; font-family: inherit;">×</button>
@@ -4440,7 +4440,7 @@ const I18N = {
     menu_lang: "Langue", menu_notif: "Notifications", menu_geo: "Géolocalisation",
     menu_a11y: "Grande police & haut contraste",
     menu_units: "Unités",
-    menu_ai_soft: "Coach minimaliste — moins de suggestions",
+    menu_ai_soft: "Compagnon minimaliste — moins de suggestions",
     menu_priv: "Confidentialité", menu_help: "Aide & support", menu_logout: "Se déconnecter",
     tab_home: "Accueil", tab_health: "Santé", tab_social: "Social", tab_profile: "Profil",
     sub_edu: "Éducation positive",
@@ -4854,7 +4854,7 @@ const I18N = {
     menu_lang: "Language", menu_notif: "Notifications", menu_geo: "Location",
     menu_a11y: "Larger text & high contrast",
     menu_units: "Units",
-    menu_ai_soft: "Minimalist coach — fewer prompts",
+    menu_ai_soft: "Minimalist companion — fewer prompts",
     menu_priv: "Privacy", menu_help: "Help & support", menu_logout: "Log out",
     tab_home: "Home", tab_health: "Health", tab_social: "Social", tab_profile: "Profile",
     sub_edu: "Positive training",
@@ -5449,15 +5449,10 @@ function mockStartWalk() {
     renderWalkHistory();
     if (typeof _updateWalkLiveBtn === "function") _updateWalkLiveBtn();
     if (typeof closeWalkLiveMap === "function") closeWalkLiveMap();
-    const sourceLbl = isGps
-      ? (currentLang === "fr" ? "📡 GPS" : "📡 GPS")
-      : (currentLang === "fr" ? "estimée" : "est.");
-    const distDisp = useImperial ? (distanceKm * 0.621371).toFixed(2) : distanceKm.toFixed(2);
-    const unit = useImperial ? "mi" : "km";
-    const prompt = currentLang === "fr"
-      ? `🐾 Balade enregistrée !\n\n${entry.durationMin} min · ${distDisp} ${unit} (${sourceLbl})\n\n${isGps ? "Tracé GPS sauvegardé." : "Sans GPS : distance estimée à 4 km/h."}`
-      : `🐾 Walk logged!\n\n${entry.durationMin} min · ${distDisp} ${unit} (${sourceLbl})\n\n${isGps ? "GPS track saved." : "Without GPS: distance estimated at 4 km/h."}`;
-    alert(prompt);
+    // v3.5 — Modal gamification au lieu d'un alert basique
+    if (typeof showWalkRewardModal === "function") {
+      showWalkRewardModal(entry);
+    }
     return;
   }
   // ----- Start -----
@@ -5648,6 +5643,160 @@ function closeWalkTrackMap() {
     try { _walkMap.remove(); } catch {}
     _walkMap = null;
   }
+}
+
+// ============== Walk reward modal (v3.5 gamification) ==============
+// Affiche un message de félicitations après chaque balade enregistrée,
+// avec stats du jour (nb balades, min total, distance) et progression vers
+// l'objectif quotidien. Encourage si pas atteint, célèbre si atteint.
+
+function _todayWalksFor(dogIdx) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return (walkHistory || []).filter(w =>
+    w.dogIdx === dogIdx && new Date(w.startedAt).getTime() >= today.getTime()
+  );
+}
+
+function _dailyWalkGoalMin(dog) {
+  // Objectif activité quotidienne selon l'âge — recommandations vétérinaires standards
+  if (!dog) return 60;
+  const age = (dog.years || 0) + (dog.months || 0) / 12;
+  if (age < 1) return 30;     // chiot : éviter sur-sollicitation
+  if (age >= 8) return 30;    // senior : modéré
+  return 60;                   // adulte : ~1h
+}
+
+function showWalkRewardModal(entry) {
+  const lang = currentLang === "en" ? "en" : "fr";
+  const dog = (typeof DOGS !== "undefined" && DOGS[activeDogIdx]) || null;
+  const dogName = dog?.name || (lang === "fr" ? "ton chien" : "your dog");
+
+  const todayWalks = _todayWalksFor(activeDogIdx);
+  const totalMinToday = todayWalks.reduce((s, w) => s + (w.durationMin || 0), 0);
+  const totalKmToday = todayWalks.reduce((s, w) => s + (w.distanceKm || 0), 0);
+  const goal = _dailyWalkGoalMin(dog);
+  const pct = Math.min(100, Math.round(totalMinToday / goal * 100));
+  const goalReached = totalMinToday >= goal;
+
+  // Distance affichage
+  const useImp = typeof useImperial !== "undefined" && useImperial;
+  const unit = useImp ? "mi" : "km";
+  const distDisp = (useImp ? totalKmToday * 0.621371 : totalKmToday).toFixed(2);
+
+  // Pool de phrases de félicitations (rotation pour ne pas lasser)
+  const PRAISES = {
+    fr: {
+      goal_reached: [
+        `🎉 Bravo ! ${dogName} a fait toutes ses sorties du jour — il est bien dans ses patounes !`,
+        `🌟 Mission accomplie ! ${dogName} est un chien comblé aujourd'hui.`,
+        `🦴 ${dogName} a eu sa dose d'aventures du jour. Belle journée canine !`,
+        `✨ Parfait ! ${dogName} se sent bien, dans son corps et dans sa tête.`,
+        `🏆 Objectif activité atteint pour ${dogName} — bravo à vous deux !`,
+      ],
+      half_way: [
+        `🐾 Belle sortie ! ${dogName} apprécie ces moments avec toi.`,
+        `💪 Bien joué ! Encore un peu et ${dogName} aura fait sa journée idéale.`,
+        `🌳 ${dogName} a aimé cette balade. Une autre tout à l'heure ?`,
+      ],
+      first_walk: [
+        `🐾 Première sortie du jour enregistrée — ${dogName} est ravi !`,
+        `🌅 Belle façon de commencer la journée avec ${dogName}.`,
+        `🦴 C'est parti ! ${dogName} est content de bouger avec toi.`,
+      ],
+    },
+    en: {
+      goal_reached: [
+        `🎉 Bravo! ${dogName} got all the activity needed today — happy paws all around!`,
+        `🌟 Mission accomplished! ${dogName} is one fulfilled pup today.`,
+        `🦴 ${dogName} had their full dose of adventures. Beautiful dog day!`,
+        `✨ Perfect! ${dogName} is feeling great, body and mind.`,
+        `🏆 Daily activity goal reached for ${dogName} — well done both of you!`,
+      ],
+      half_way: [
+        `🐾 Nice walk! ${dogName} loves these moments with you.`,
+        `💪 Well done! A bit more and ${dogName} will have had their ideal day.`,
+        `🌳 ${dogName} enjoyed this walk. Another one later?`,
+      ],
+      first_walk: [
+        `🐾 First walk of the day logged — ${dogName} is delighted!`,
+        `🌅 Beautiful way to start the day with ${dogName}.`,
+        `🦴 Let's go! ${dogName} is happy to move with you.`,
+      ],
+    },
+  };
+  const pool = PRAISES[lang];
+  let bucket;
+  if (goalReached) bucket = pool.goal_reached;
+  else if (todayWalks.length === 1) bucket = pool.first_walk;
+  else bucket = pool.half_way;
+  const message = bucket[Math.floor(Math.random() * bucket.length)];
+
+  // Sub-line selon état
+  const subLine = goalReached
+    ? (lang === "fr"
+        ? `Objectif quotidien : ${goal} min — atteint avec ${totalMinToday} min ✓`
+        : `Daily goal: ${goal} min — reached with ${totalMinToday} min ✓`)
+    : (lang === "fr"
+        ? `${totalMinToday} / ${goal} min · ${goal - totalMinToday} min restantes`
+        : `${totalMinToday} / ${goal} min · ${goal - totalMinToday} min to go`);
+
+  const walkCountLbl = lang === "fr"
+    ? `${todayWalks.length} balade${todayWalks.length > 1 ? "s" : ""}`
+    : `${todayWalks.length} walk${todayWalks.length > 1 ? "s" : ""}`;
+
+  // Bigger emoji selon réussite
+  const emoji = goalReached ? "🏆" : (todayWalks.length === 1 ? "🐾" : "💪");
+
+  let m = document.getElementById("walkRewardModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "walkRewardModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+
+  // Couleur barre de progression
+  const barColor = goalReached
+    ? "linear-gradient(90deg,#10b981,#059669)"
+    : pct >= 50
+      ? "linear-gradient(90deg,#f4a261,#e76f51)"
+      : "linear-gradient(90deg,#fbbf24,#f59e0b)";
+
+  m.innerHTML = `
+    <div class="upsell-card" style="${goalReached ? "background:linear-gradient(180deg,#fff 0%,#ecfdf5 100%);" : ""}">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji" style="font-size:54px;">${emoji}</div>
+      <h3 class="upsell-title" style="font-size:17.5px;line-height:1.4;">${message}</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 10px;">
+        <div style="background:#fff;border:1px solid #f0e6db;border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#e76f51;">${entry.durationMin}</div>
+          <div style="font-size:10px;color:#7a7570;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">${lang === "fr" ? "min" : "min"}</div>
+        </div>
+        <div style="background:#fff;border:1px solid #f0e6db;border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#e76f51;">${(useImp ? entry.distanceKm * 0.621371 : entry.distanceKm).toFixed(2)}</div>
+          <div style="font-size:10px;color:#7a7570;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">${unit}</div>
+        </div>
+        <div style="background:#fff;border:1px solid #f0e6db;border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#e76f51;">${todayWalks.length}</div>
+          <div style="font-size:10px;color:#7a7570;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">${lang === "fr" ? "balade" + (todayWalks.length > 1 ? "s" : "") : "walk" + (todayWalks.length > 1 ? "s" : "")}</div>
+        </div>
+      </div>
+      <div style="margin:12px 0 6px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-2);font-weight:600;margin-bottom:5px;">
+          <span>${lang === "fr" ? "Objectif du jour" : "Daily goal"}</span>
+          <span>${pct}%</span>
+        </div>
+        <div style="background:#f0e6db;height:9px;border-radius:999px;overflow:hidden;">
+          <div style="background:${barColor};height:100%;width:${pct}%;transition:width .6s ease;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--ink-2);margin-top:6px;text-align:center;">${subLine}</div>
+      </div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="document.getElementById('walkRewardModal').classList.remove('show')">${lang === "fr" ? "Super, continuer" : "Awesome, continue"}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
 }
 
 // ============== Live walk map (v3.1) ==============
@@ -8282,7 +8431,7 @@ const UPSELL_COPY = {
       title: "Tu as utilisé tes 10 questions gratuites",
       sub: "Continue à coacher {dog} sans limite avec K9 Plus.",
       features: [
-        { ic: "💬", txt: "<b>Coach IA illimité</b> · pose autant de questions que tu veux" },
+        { ic: "💬", txt: "<b>K9 Companion illimité</b> · pose autant de questions que tu veux" },
         { ic: "📋", txt: "<b>Scan carnet santé</b> · l'IA extrait tes vaccins en 1 photo" },
         { ic: "🐕", txt: "<b>Multi-chiens</b> · gère toute ta meute" },
       ],
@@ -8296,7 +8445,7 @@ const UPSELL_COPY = {
       features: [
         { ic: "✨", txt: "<b>Scan illimité</b> · prends en photo, l'IA fait le reste" },
         { ic: "📅", txt: "<b>Auto-ajout calendrier</b> · plus jamais de rappel oublié" },
-        { ic: "💬", txt: "<b>Coach IA illimité</b> · inclus dans Plus" },
+        { ic: "💬", txt: "<b>K9 Companion illimité</b> · inclus dans Plus" },
       ],
       cta: "⭐ Débloquer avec Plus",
       price: "5€/mois · annulation à tout moment",
@@ -8320,7 +8469,7 @@ const UPSELL_COPY = {
       sub: "Le plan gratuit permet de gérer 2 chiens. Plus pour ta meute entière.",
       features: [
         { ic: "🐶", txt: "<b>Chiens illimités</b> · toute ta meute en un compte" },
-        { ic: "💬", txt: "<b>Coach IA illimité</b> par chien" },
+        { ic: "💬", txt: "<b>K9 Companion illimité</b> par chien" },
         { ic: "📋", txt: "<b>Scan carnet santé</b> inclus" },
       ],
       cta: "⭐ Débloquer avec Plus",
@@ -8333,7 +8482,7 @@ const UPSELL_COPY = {
       title: "You've used your 10 free questions",
       sub: "Keep coaching {dog} without limits with K9 Plus.",
       features: [
-        { ic: "💬", txt: "<b>Unlimited AI Coach</b> · ask as many questions as you want" },
+        { ic: "💬", txt: "<b>Unlimited K9 Companion</b> · ask as many questions as you want" },
         { ic: "📋", txt: "<b>Vaccine record scan</b> · AI extracts your vaccines from 1 photo" },
         { ic: "🐕", txt: "<b>Multi-dog</b> · manage your whole pack" },
       ],
@@ -8347,7 +8496,7 @@ const UPSELL_COPY = {
       features: [
         { ic: "✨", txt: "<b>Unlimited scans</b> · take a photo, AI does the rest" },
         { ic: "📅", txt: "<b>Auto-calendar</b> · never miss a reminder again" },
-        { ic: "💬", txt: "<b>Unlimited AI Coach</b> · included in Plus" },
+        { ic: "💬", txt: "<b>Unlimited K9 Companion</b> · included in Plus" },
       ],
       cta: "⭐ Unlock with Plus",
       price: "5€/month · cancel anytime",
@@ -8371,7 +8520,7 @@ const UPSELL_COPY = {
       sub: "The free plan supports 2 dogs. Upgrade for your whole pack.",
       features: [
         { ic: "🐶", txt: "<b>Unlimited dogs</b> · whole pack in one account" },
-        { ic: "💬", txt: "<b>Unlimited AI Coach</b> per dog" },
+        { ic: "💬", txt: "<b>Unlimited K9 Companion</b> per dog" },
         { ic: "📋", txt: "<b>Vaccine scan</b> included" },
       ],
       cta: "⭐ Unlock with Plus",
