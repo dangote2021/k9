@@ -76,7 +76,7 @@ C'est l'email envoyé quand un utilisateur K9 active "Activer le cloud".
           <table width="100%" style="max-width:520px; background:#ffffff; border-radius:18px; overflow:hidden; box-shadow:0 4px 20px rgba(244,162,97,0.12);" cellpadding="0" cellspacing="0">
             <tr>
               <td style="background:linear-gradient(135deg, #f4a261 0%, #e76f51 100%); padding:32px 24px; text-align:center;">
-                <div style="font-size:48px; line-height:1;">🐾</div>
+                <img src="https://k9-one.vercel.app/branding/logo-email-white.png" alt="K9" width="64" height="64" style="display:block;margin:0 auto;border:0;" />
                 <h1 style="margin:12px 0 0 0; color:#fff; font-size:24px; font-weight:800; letter-spacing:-0.3px;">
                   Welcome to K9
                 </h1>
@@ -145,7 +145,7 @@ C'est l'email envoyé quand un utilisateur K9 active "Activer le cloud".
           <table width="100%" style="max-width:520px; background:#ffffff; border-radius:18px; overflow:hidden; box-shadow:0 4px 20px rgba(244,162,97,0.12);" cellpadding="0" cellspacing="0">
             <tr>
               <td style="background:linear-gradient(135deg, #f4a261 0%, #e76f51 100%); padding:32px 24px; text-align:center;">
-                <div style="font-size:48px; line-height:1;">🐾</div>
+                <img src="https://k9-one.vercel.app/branding/logo-email-white.png" alt="K9" width="64" height="64" style="display:block;margin:0 auto;border:0;" />
                 <h1 style="margin:12px 0 0 0; color:#fff; font-size:24px; font-weight:800; letter-spacing:-0.3px;">
                   Bienvenue chez K9
                 </h1>
