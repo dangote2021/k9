@@ -2228,6 +2228,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 .prog-card.puppy { background: linear-gradient(135deg, #FFF4E3, #FDD9BC); border-color: #F4C9B5; }
 .prog-card.rescue { background: linear-gradient(135deg, #E8F0E5, #D7E4D9); border-color: #B5D3C4; }
 .prog-card.senior { background: linear-gradient(135deg, #F1EBE0, #E8E1D4); border-color: #D8CFC0; }
+.prog-card.baby   { background: linear-gradient(135deg, #FFF4F8, #FCDDE6); border-color: #F5BFD0; }
 
 /* ===== Video cards ===== */
 .video-card {
@@ -2877,6 +2878,12 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
           <div class="emo">🐾</div>
           <h4 data-i18n="prog_senior_t">Grandir ensemble</h4>
           <p data-i18n="prog_senior_d">Accompagner ton chien, avec tendresse et lucidité.</p>
+          <div class="prog-bar"><div style="width: 0%;"></div></div>
+        </div>
+        <div class="prog-card baby" onclick="openSub('sub-baby')">
+          <div class="emo">👶</div>
+          <h4 data-i18n="prog_baby_t">Chien & bébé</h4>
+          <p data-i18n="prog_baby_d">Préparer ton chien à l'arrivée d'un bébé, en douceur.</p>
           <div class="prog-bar"><div style="width: 0%;"></div></div>
         </div>
       </div>
@@ -5183,6 +5190,7 @@ const I18N = {
     prog_puppy_t: "100 premiers jours", prog_puppy_d: "Socialisation, propreté, premiers apprentissages.",
     prog_rescue_t: "Adoption rescue 3-3-3", prog_rescue_d: "Les trois étapes pour créer le lien de confiance.",
     prog_senior_t: "Grandir ensemble", prog_senior_d: "Accompagner ton chien, avec tendresse et lucidité.",
+    prog_baby_t: "Chien & bébé", prog_baby_d: "Préparer ton chien à l'arrivée d'un bébé, en douceur.",
     // Puppy
     puppy_title: "100 premiers jours",
     puppy_day: "Jour 15 / 100",
@@ -5657,6 +5665,7 @@ const I18N = {
     prog_puppy_t: "First 100 days", prog_puppy_d: "Socialization, potty training, early learning.",
     prog_rescue_t: "Rescue 3-3-3", prog_rescue_d: "The three steps to build real trust.",
     prog_senior_t: "Growing together", prog_senior_d: "Walk with your dog, with tenderness and clarity.",
+    prog_baby_t: "Dog & baby", prog_baby_d: "Prepare your dog for the arrival of a new baby, gently.",
     // Puppy
     puppy_title: "First 100 days",
     puppy_day: "Day 15 / 100",
