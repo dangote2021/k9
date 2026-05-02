@@ -526,16 +526,17 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .tabbar {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  height: 78px;
+  height: calc(78px + env(safe-area-inset-bottom, 0px));
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--line);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   z-index: 50;
-  padding-bottom: 14px;
+  padding-top: 8px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
 }
 .tab {
   flex: 1;
@@ -560,7 +561,7 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
   z-index: 100;
   display: none;
   flex-direction: column;
-  padding: 28px 24px 22px;
+  padding: 24px 24px calc(22px + env(safe-area-inset-bottom, 0px));
   overflow: hidden;
 }
 .onboarding.show { display: flex; }
@@ -3870,6 +3871,13 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
    K9 — Application logic
    ========================================================= */
 
+// Title-case helper : "GUILLAUME" → "Guillaume", "rex" → "Rex",
+// "marie-anne" → "Marie-Anne", "jean luc" → "Jean Luc"
+function toTitleCase(s) {
+  if (!s) return "";
+  return String(s).toLowerCase().replace(/(^|\s|-|')\p{L}/gu, c => c.toUpperCase());
+}
+
 // ====================================================================
 // K9Store — Persistance locale (localStorage)
 // Survit au refresh. Prêt à être synchronisé avec un backend (Supabase)
@@ -5298,11 +5306,11 @@ function obNext() {
     const own = document.getElementById("ownerName").value.trim();
     const v = document.getElementById("dogName").value.trim();
     if (!v) { alert(currentLang === "fr" ? "Dis-nous son nom !" : "Tell us their name!"); return; }
-    dogState.name = v;
+    dogState.name = toTitleCase(v);
     if (own) {
-      ownerState.name = own;
+      ownerState.name = toTitleCase(own);
       const disp = document.getElementById("ownerNameDisp");
-      if (disp) disp.textContent = own;
+      if (disp) disp.textContent = ownerState.name;
     }
   }
   if (obStepIdx === 2 && dogState.breed === null) {
@@ -5322,9 +5330,9 @@ function obPrev() { if (obStepIdx > 0) showStep(obStepIdx - 1); }
 function obFinish() {
   // Persist basic display
   const breed = BREEDS[dogState.breed] || BREEDS[BREEDS.length - 1];
-  document.getElementById("dogNameDisp").textContent = dogState.name;
-  document.getElementById("dogNameHero").textContent = dogState.name;
-  document.getElementById("dogNameProfile").textContent = dogState.name;
+  document.getElementById("dogNameDisp").textContent = toTitleCase(dogState.name);
+  document.getElementById("dogNameHero").textContent = toTitleCase(dogState.name);
+  document.getElementById("dogNameProfile").textContent = toTitleCase(dogState.name);
   const ageTxt = dogState.years > 0
     ? `${dogState.years} ${currentLang === "fr" ? (dogState.years > 1 ? "ans" : "an") : (dogState.years > 1 ? "yrs" : "yr")}`
     : `${dogState.months} ${currentLang === "fr" ? "mois" : "months"}`;
@@ -5368,7 +5376,7 @@ function renderDogSwitcher() {
   DOGS.forEach((d, i) => {
     const pill = document.createElement("div");
     pill.className = "dog-pill" + (i === activeDogIdx ? " active" : "");
-    pill.innerHTML = `<div class="ring">${d.emoji || "🐕"}</div><div class="lbl">${d.name || "—"}</div>`;
+    pill.innerHTML = `<div class="ring">${d.emoji || "🐕"}</div><div class="lbl">${escapeHtml(toTitleCase(d.name) || "—")}</div>`;
     pill.onclick = () => selectDog(i);
     el.appendChild(pill);
   });
@@ -5384,9 +5392,9 @@ function selectDog(i) {
   const d = DOGS[i];
   Object.assign(dogState, d);
   const breed = BREEDS[d.breed] || BREEDS[BREEDS.length - 1];
-  document.getElementById("dogNameDisp").textContent = d.name;
-  document.getElementById("dogNameHero").textContent = d.name;
-  document.getElementById("dogNameProfile").textContent = d.name;
+  document.getElementById("dogNameDisp").textContent = toTitleCase(d.name);
+  document.getElementById("dogNameHero").textContent = toTitleCase(d.name);
+  document.getElementById("dogNameProfile").textContent = toTitleCase(d.name);
   document.getElementById("dogEmojiMain").textContent = d.emoji;
   document.getElementById("dogAvatarBig").textContent = d.emoji;
   const ageTxt = d.years > 0
@@ -7056,7 +7064,92 @@ function switchTab(name) {
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById("screen-" + name).classList.add("active");
+  K9NavStack._currentTab = name;
 }
+
+// ====================================================================
+// Android back-button handling (TWA / PWA)
+// Empêche le bouton back de fermer l'app dès le 1er appui : ferme la
+// modal/sub-screen ouverte, ou revient à l'onglet home, et ne laisse
+// fermer l'app que si on est déjà sur home avec rien d'ouvert.
+// ====================================================================
+const K9NavStack = (function() {
+  let _currentTab = "home";
+  let _initialized = false;
+
+  function anyOverlayOpen() {
+    return document.querySelector(
+      ".sub-screen.show, .modal.show, .upsell-modal.show, " +
+      ".onboarding.show, #aiOverlay.show, .walk-overlay.show, " +
+      ".rescue-modal.show, .rewardModal.show"
+    );
+  }
+
+  function closeTopOverlay(el) {
+    if (!el) return false;
+    el.classList.remove("show");
+    return true;
+  }
+
+  function init() {
+    if (_initialized) return;
+    _initialized = true;
+    // Pousse un état pour que le 1er back Android tombe dans notre handler
+    try {
+      history.replaceState({ k9: true, depth: 0 }, "");
+      history.pushState({ k9: true, depth: 1 }, "");
+    } catch (e) {}
+
+    window.addEventListener("popstate", (e) => {
+      // 1) Modal IA ouverte ?
+      const ai = document.getElementById("aiOverlay");
+      if (ai && ai.classList.contains("show")) {
+        if (typeof closeAI === "function") closeAI(); else ai.classList.remove("show");
+        history.pushState({ k9: true, depth: 1 }, "");
+        return;
+      }
+      // 2) Onboarding ouvert ?
+      const onb = document.getElementById("onboarding");
+      if (onb && onb.classList.contains("show")) {
+        // Étape > 0 → step précédent. Étape 0 → on laisse repousser un état.
+        if (typeof obStepIdx !== "undefined" && obStepIdx > 0) {
+          if (typeof obPrev === "function") obPrev();
+        }
+        history.pushState({ k9: true, depth: 1 }, "");
+        return;
+      }
+      // 3) Une sub-screen / modale ouverte ?
+      const top = anyOverlayOpen();
+      if (top) {
+        closeTopOverlay(top);
+        history.pushState({ k9: true, depth: 1 }, "");
+        return;
+      }
+      // 4) Pas sur home → retour à home
+      if (_currentTab !== "home") {
+        switchTab("home");
+        history.pushState({ k9: true, depth: 1 }, "");
+        return;
+      }
+      // 5) Déjà sur home avec rien d'ouvert : repush UNE FOIS pour absorber ce 1er back.
+      // Le 2e back press fermera l'app naturellement (comportement Android attendu).
+      history.pushState({ k9: true, depth: 1 }, "");
+    });
+  }
+
+  // Init quand le DOM est prêt
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    setTimeout(init, 0);
+  } else {
+    document.addEventListener("DOMContentLoaded", init);
+  }
+
+  return {
+    init,
+    get _currentTab() { return _currentTab; },
+    set _currentTab(v) { _currentTab = v; }
+  };
+})();
 
 // ---------- AI Overlay ----------
 function openAI() {
@@ -8903,7 +8996,7 @@ if (onboardingDone && DOGS.length > 0) {
   }
   if (ownerState.name) {
     const disp = document.getElementById("ownerNameDisp");
-    if (disp) disp.textContent = ownerState.name;
+    if (disp) disp.textContent = toTitleCase(ownerState.name);
   }
 } else {
   showStep(0);
