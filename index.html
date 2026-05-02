@@ -1906,6 +1906,82 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   flex-shrink: 0;
 }
 
+/* ===== Marketplace preview ===== */
+.marketplace-preview { padding: 6px 0 16px; }
+.market-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px;
+}
+.market-card-preview {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 12px;
+  text-align: center;
+  opacity: 0.7;
+  position: relative;
+  filter: grayscale(0.1);
+}
+.market-card-preview::after {
+  content: "🔒";
+  position: absolute;
+  top: 8px; right: 10px;
+  font-size: 13px;
+  opacity: 0.65;
+}
+.market-card-preview .mc-img { font-size: 32px; line-height: 1; margin-bottom: 8px; }
+.market-card-preview .mc-cat {
+  font-size: 13px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.market-card-preview .mc-desc {
+  font-size: 11px; color: var(--ink-2); margin-top: 4px;
+  line-height: 1.35;
+}
+
+/* ===== Vet actions ===== */
+.vet-actions {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 0 16px 14px;
+}
+.vet-action-card {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 14px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.vet-action-card:active { transform: scale(0.985); }
+.vet-action-card:hover {
+  border-color: var(--brand);
+  box-shadow: 0 4px 14px rgba(232, 122, 59, 0.08);
+}
+.vet-action-card .vet-action-icon {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--brand-soft);
+  border-radius: 12px;
+  font-size: 22px;
+  line-height: 1;
+}
+.vet-action-card .vet-action-body { flex: 1; min-width: 0; }
+.vet-action-card .vet-action-title {
+  font-size: 14px; font-weight: 700; color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.vet-action-card .vet-action-desc {
+  font-size: 12px; color: var(--ink-2); margin-top: 3px;
+  line-height: 1.4;
+}
+.vet-action-card .arrow {
+  color: var(--gray); font-size: 18px; flex-shrink: 0;
+}
+
 /* ===== Programme cards ===== */
 .coming-soon-banner {
   display: flex; align-items: center; gap: 12px;
@@ -2697,6 +2773,42 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="arrow">›</div>
       </div>
 
+      <div class="section-title" data-i18n="vet_actions_title">Avec ton vétérinaire</div>
+      <div class="vet-actions">
+        <div class="vet-action-card" onclick="openAIWith(currentLang==='fr' ? 'Analyse le comportement de mon chien sur les dernières semaines : agitations, anxiété, agressivité, peurs, sociabilité. Donne-moi des recommandations concrètes et indique les signes qui mériteraient une consultation comportementaliste.' : 'Analyze my dog\'s behavior over the past weeks: restlessness, anxiety, aggression, fears, sociability. Give me concrete recommendations and flag signs that would warrant a behavioral consultation.')">
+          <div class="vet-action-icon">🧠</div>
+          <div class="vet-action-body">
+            <div class="vet-action-title" data-i18n="vet_behavior_t">Analyse de comportement</div>
+            <div class="vet-action-desc" data-i18n="vet_behavior_d">L'IA analyse les habitudes, peurs, sociabilité et signale ce qui mérite une visite véto.</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="vet-action-card" onclick="openAIWith(currentLang==='fr' ? 'Fais le suivi nutrition de mon chien. Sa ration actuelle est-elle adaptée à son âge, son poids et son activité ? Y a-t-il des signaux d\'alerte (poil terne, selles molles, prise/perte de poids) ? Suggère des ajustements pratiques.' : 'Track my dog\'s nutrition. Is the current diet appropriate for age, weight, and activity? Any warning signs (dull coat, loose stools, weight changes)? Suggest practical adjustments.')">
+          <div class="vet-action-icon">🥗</div>
+          <div class="vet-action-body">
+            <div class="vet-action-title" data-i18n="vet_nutrition_t">Suivi nutrition</div>
+            <div class="vet-action-desc" data-i18n="vet_nutrition_d">Évaluation IA de la ration, du poids et des signaux d'alerte (selles, poil, énergie).</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="vet-action-card" onclick="openAIWith(currentLang==='fr' ? 'Aide-moi à tenir un journal de comportement pour mon chien : quels événements observer chaque semaine, comment les noter, et quand alerter le vétérinaire ou un comportementaliste ?' : 'Help me keep a behavior journal for my dog: what events to observe weekly, how to log them, and when to alert the vet or a behaviorist?')">
+          <div class="vet-action-icon">📋</div>
+          <div class="vet-action-body">
+            <div class="vet-action-title" data-i18n="vet_journal_t">Journal de comportement</div>
+            <div class="vet-action-desc" data-i18n="vet_journal_d">L'IA t'aide à observer et tracer les comportements clés à partager au véto.</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="vet-action-card" onclick="openAIWith(currentLang==='fr' ? 'Donne-moi un récapitulatif santé complet de mon chien à présenter à mon vétérinaire lors de la prochaine consultation : antécédents, traitements en cours, observations récentes, points à discuter.' : 'Give me a complete health summary of my dog to present at the next vet visit: history, current treatments, recent observations, points to discuss.')">
+          <div class="vet-action-icon">📝</div>
+          <div class="vet-action-body">
+            <div class="vet-action-title" data-i18n="vet_recap_t">Préparer ma visite véto</div>
+            <div class="vet-action-desc" data-i18n="vet_recap_d">Récap santé prêt à montrer au véto : antécédents, traitements, observations.</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+      </div>
+
       <div class="section-title" data-i18n="health_tips">Conseils du moment</div>
       <div class="card">
         <div class="chip green mb-10" data-i18n="tip_spring">🌸 Printemps</div>
@@ -2746,6 +2858,41 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div style="padding: 10px 16px;">
           <button class="btn forest" onclick="openCreatePlaydateModal()" data-i18n="create_pd">+ Créer un playdate</button>
         </div>
+      </div>
+
+      <!-- Marketplace d'occasion (preview / Bientôt disponible) -->
+      <div class="marketplace-preview">
+        <div class="section-title" data-i18n="market_title">Marketplace K9</div>
+        <div class="coming-soon-banner">
+          <div class="cs-icon">🛒</div>
+          <div class="cs-text">
+            <div class="cs-title" data-i18n="market_soon_t">Bientôt disponible</div>
+            <div class="cs-sub" data-i18n="market_soon_d">Achète, vends et échange entre membres K9 — harnais, paniers, gamelles, jouets, vêtements pour chien.</div>
+          </div>
+        </div>
+        <div class="market-grid">
+          <div class="market-card-preview">
+            <div class="mc-img">🦮</div>
+            <div class="mc-cat" data-i18n="market_cat_walk">Promenade</div>
+            <div class="mc-desc" data-i18n="market_walk_d">Harnais, laisses, longes, sacs à crottes</div>
+          </div>
+          <div class="market-card-preview">
+            <div class="mc-img">🛏️</div>
+            <div class="mc-cat" data-i18n="market_cat_home">Maison</div>
+            <div class="mc-desc" data-i18n="market_home_d">Paniers, niches, gamelles, distributeurs</div>
+          </div>
+          <div class="market-card-preview">
+            <div class="mc-img">🎾</div>
+            <div class="mc-cat" data-i18n="market_cat_play">Jouets</div>
+            <div class="mc-desc" data-i18n="market_play_d">Balles, peluches, jouets éducatifs</div>
+          </div>
+          <div class="market-card-preview">
+            <div class="mc-img">🧥</div>
+            <div class="mc-cat" data-i18n="market_cat_cloth">Vêtements</div>
+            <div class="mc-desc" data-i18n="market_cloth_d">Manteaux, bottines, k-way, bandanas</div>
+          </div>
+        </div>
+        <button class="btn ghost" style="margin: 14px 16px 4px; font-size: 13px;" onclick="alert(currentLang==='fr' ? '🛒 Marketplace en préparation — tu seras notifié(e) au lancement !' : '🛒 Marketplace coming soon — you\'ll be notified at launch!')" data-i18n="market_notify">🔔 Me prévenir au lancement</button>
       </div>
 
       <div id="social-discover" style="display:none;">
@@ -4499,6 +4646,15 @@ const I18N = {
     cat_weight: "Poids & activité", cat_weight_desc: "15 kg · Idéal pour sa morphologie",
     cat_teeth: "Dents & hygiène", cat_teeth_desc: "Dernier détartrage : il y a 8 mois",
     cat_vet: "Mon vétérinaire", cat_vet_desc: "Dr. Martin · Cabinet des Lilas",
+    vet_actions_title: "Avec ton vétérinaire",
+    vet_behavior_t: "Analyse de comportement",
+    vet_behavior_d: "L'IA analyse les habitudes, peurs, sociabilité et signale ce qui mérite une visite véto.",
+    vet_nutrition_t: "Suivi nutrition",
+    vet_nutrition_d: "Évaluation IA de la ration, du poids et des signaux d'alerte (selles, poil, énergie).",
+    vet_journal_t: "Journal de comportement",
+    vet_journal_d: "L'IA t'aide à observer et tracer les comportements clés à partager au véto.",
+    vet_recap_t: "Préparer ma visite véto",
+    vet_recap_d: "Récap santé prêt à montrer au véto : antécédents, traitements, observations.",
     health_tips: "Conseils du moment",
     tip_spring: "🌸 Printemps",
     tip_title1: "Attention aux tiques à partir d'avril",
@@ -4522,6 +4678,18 @@ const I18N = {
     pd_title2: "Goûter au parc des Buttes-Chaumont",
     attending2: "+ 2 chiens inscrits",
     create_pd: "+ Créer un playdate",
+    market_title: "Marketplace K9",
+    market_soon_t: "Bientôt disponible",
+    market_soon_d: "Achète, vends et échange entre membres K9 — harnais, paniers, gamelles, jouets, vêtements pour chien.",
+    market_cat_walk: "Promenade",
+    market_walk_d: "Harnais, laisses, longes, sacs à crottes",
+    market_cat_home: "Maison",
+    market_home_d: "Paniers, niches, gamelles, distributeurs",
+    market_cat_play: "Jouets",
+    market_play_d: "Balles, peluches, jouets éducatifs",
+    market_cat_cloth: "Vêtements",
+    market_cloth_d: "Manteaux, bottines, k-way, bandanas",
+    market_notify: "🔔 Me prévenir au lancement",
     disc_title: "Chiens près de toi",
     disc_desc: "Active la géolocalisation pour découvrir les copains dans ton quartier.",
     enable_geo: "Activer la géoloc",
@@ -4932,6 +5100,15 @@ const I18N = {
     cat_weight: "Weight & activity", cat_weight_desc: "15 kg · Ideal for their build",
     cat_teeth: "Teeth & hygiene", cat_teeth_desc: "Last cleaning: 8 months ago",
     cat_vet: "My vet", cat_vet_desc: "Dr. Martin · Les Lilas clinic",
+    vet_actions_title: "With your vet",
+    vet_behavior_t: "Behavior analysis",
+    vet_behavior_d: "AI reviews habits, fears, sociability and flags what's worth a vet visit.",
+    vet_nutrition_t: "Nutrition tracking",
+    vet_nutrition_d: "AI assessment of diet, weight, and warning signs (stools, coat, energy).",
+    vet_journal_t: "Behavior journal",
+    vet_journal_d: "AI helps you observe and track key behaviors to share with the vet.",
+    vet_recap_t: "Prep for vet visit",
+    vet_recap_d: "Health recap ready for the vet: history, treatments, observations.",
     health_tips: "Timely tips",
     tip_spring: "🌸 Spring",
     tip_title1: "Watch for ticks from April",
@@ -4955,6 +5132,18 @@ const I18N = {
     pd_title2: "Afternoon at Buttes-Chaumont",
     attending2: "+ 2 dogs signed up",
     create_pd: "+ Create a playdate",
+    market_title: "K9 Marketplace",
+    market_soon_t: "Coming soon",
+    market_soon_d: "Buy, sell, and trade between K9 members — harnesses, beds, bowls, toys, dog clothing.",
+    market_cat_walk: "Walks",
+    market_walk_d: "Harnesses, leashes, long lines, poop bags",
+    market_cat_home: "Home",
+    market_home_d: "Beds, crates, bowls, feeders",
+    market_cat_play: "Toys",
+    market_play_d: "Balls, plush, training toys",
+    market_cat_cloth: "Clothing",
+    market_cloth_d: "Coats, booties, raincoats, bandanas",
+    market_notify: "🔔 Notify me at launch",
     disc_title: "Dogs near you",
     disc_desc: "Enable location to discover friends in your neighborhood.",
     enable_geo: "Enable location",
