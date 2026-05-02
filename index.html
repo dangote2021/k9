@@ -1972,6 +1972,17 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 .pros-anti-bypass .pab-icon { font-size: 18px; flex-shrink: 0; width: 24px; }
 .pros-anti-bypass .pab-text { font-size: 12.5px; color: var(--ink); line-height: 1.55; }
 
+.pros-become {
+  display: flex; gap: 12px; align-items: flex-start;
+  margin: 14px 16px 6px; padding: 16px;
+  background: linear-gradient(135deg, #FFF8EB, #FFE9C7);
+  border: 1.5px solid #F2C16B; border-radius: 16px;
+}
+.pros-become .pros-become-icon { font-size: 30px; line-height: 1; flex-shrink: 0; }
+.pros-become .pros-become-body { flex: 1; min-width: 0; }
+.pros-become .pros-become-title { font-size: 14.5px; font-weight: 800; color: #5A4206; letter-spacing: -0.2px; }
+.pros-become .pros-become-desc { font-size: 12.5px; color: #4a3520; line-height: 1.5; margin-top: 4px; }
+
 /* ===== Marketplace ===== */
 .marketplace-entry { padding: 6px 0 16px; }
 .market-cta-card {
@@ -4206,10 +4217,11 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
           <div style="font-size: 11.5px; color: var(--ink-2); background: #FFF4E0; border: 1px solid #F2D49A; padding: 8px 10px; border-radius: 10px; margin-bottom: 10px; line-height: 1.5;" data-i18n="tier_pro_beta_note">⚠️ Accès progressif : les features marquées « à venir » arrivent au fil de la bêta (Q3 2026).</div>
           <ul>
             <li data-i18n="tier_pro_1">Tout K9 Plus</li>
-            <li data-i18n="tier_pro_2">Multi-profils (pet-sitter, éleveur) — à venir</li>
-            <li data-i18n="tier_pro_3">Dashboard clients — à venir</li>
-            <li data-i18n="tier_pro_4">Mode offline complet — à venir</li>
-            <li data-i18n="tier_pro_5">Rapport mensuel auto — à venir</li>
+            <li data-i18n="tier_pro_2"><strong>Publier ton profil pro</strong> (coach, pet-sitter, toiletteur, photographe canin)</li>
+            <li data-i18n="tier_pro_3">Réservations & paiement intégrés (commission 12% K9) — à venir</li>
+            <li data-i18n="tier_pro_4">Dashboard clients & agenda — à venir</li>
+            <li data-i18n="tier_pro_5">Multi-profils (pet-sitter, éleveur) — à venir</li>
+            <li data-i18n="tier_pro_6">Rapport mensuel auto — à venir</li>
           </ul>
           <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Rejoindre la bêta Pro</button>
         </div>
@@ -4236,9 +4248,11 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         </div>
       </div>
 
-      <div class="pros-tabs">
-        <button class="pros-tab active" data-tab="coaches" onclick="switchProsTab('coaches')">🎓 <span data-i18n="pros_tab_coaches">Coachs canins</span></button>
+      <div class="pros-tabs" style="overflow-x: auto; gap: 6px;">
+        <button class="pros-tab active" data-tab="coaches" onclick="switchProsTab('coaches')">🎓 <span data-i18n="pros_tab_coaches">Coachs</span></button>
         <button class="pros-tab" data-tab="sitters" onclick="switchProsTab('sitters')">🏠 <span data-i18n="pros_tab_sitters">Pet-sitters</span></button>
+        <button class="pros-tab" data-tab="groomers" onclick="switchProsTab('groomers')">✂️ <span data-i18n="pros_tab_groomers">Toilettage</span></button>
+        <button class="pros-tab" data-tab="photographers" onclick="switchProsTab('photographers')">📷 <span data-i18n="pros_tab_photographers">Photo</span></button>
       </div>
 
       <div class="pros-zone-filter">
@@ -4359,6 +4373,118 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         </div>
       </div>
 
+      <!-- Toilettage -->
+      <div class="pros-list" id="pros-groomers" style="display:none;">
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">✂️</div>
+          <div class="pros-info">
+            <div class="pros-name">Aurélie Pelissier <span class="pros-badge">Salon</span></div>
+            <div class="pros-spec" data-i18n="pros_groom_1_spec">Toutes races · Salon climatisé · Spécialisée poils longs · Tonte ciseaux</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Lyon 6e</span>
+              <span class="pros-rating">⭐ 4.9 (203)</span>
+            </div>
+            <div class="pros-price">À partir de 35€ (petite race)</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🧴</div>
+          <div class="pros-info">
+            <div class="pros-name">Marc Tibault <span class="pros-badge">À domicile</span></div>
+            <div class="pros-spec" data-i18n="pros_groom_2_spec">Toilettage à domicile · Camion équipé · Adapté chiens stressés</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Île-de-France · 30 km</span>
+              <span class="pros-rating">⭐ 5.0 (78)</span>
+            </div>
+            <div class="pros-price">À partir de 65€ (déplacement inclus)</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐩</div>
+          <div class="pros-info">
+            <div class="pros-name">Léa Marchetti <span class="pros-badge sport">Show</span></div>
+            <div class="pros-spec" data-i18n="pros_groom_3_spec">Coupes show / exposition · Caniches, terriers, bichons · Diplômée TNCC</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Marseille 8e</span>
+              <span class="pros-rating">⭐ 4.8 (52)</span>
+            </div>
+            <div class="pros-price">À partir de 55€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🛁</div>
+          <div class="pros-info">
+            <div class="pros-name">Karim Belaid <span class="pros-badge">Express</span></div>
+            <div class="pros-spec" data-i18n="pros_groom_4_spec">Bain rapide · Démêlage · Coupe griffes · Sans rendez-vous le samedi</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Toulouse Centre</span>
+              <span class="pros-rating">⭐ 4.7 (164)</span>
+            </div>
+            <div class="pros-price">Bain dès 18€ · Coupe dès 40€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+      </div>
+
+      <!-- Photographes canins -->
+      <div class="pros-list" id="pros-photographers" style="display:none;">
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">📷</div>
+          <div class="pros-info">
+            <div class="pros-name">Inès Vasquez <span class="pros-badge">Studio</span></div>
+            <div class="pros-spec" data-i18n="pros_photo_1_spec">Portrait studio · Fond personnalisé · 15 photos retouchées · Tirage offert</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Paris 13e</span>
+              <span class="pros-rating">⭐ 4.9 (61)</span>
+            </div>
+            <div class="pros-price">Séance 1h dès 120€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🌅</div>
+          <div class="pros-info">
+            <div class="pros-name">Hugo Renard <span class="pros-badge sport">Action</span></div>
+            <div class="pros-spec" data-i18n="pros_photo_2_spec">Photos extérieur · Action / sport · Forêt, plage, montagne · Galerie HD</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Bordeaux & Sud-Ouest</span>
+              <span class="pros-rating">⭐ 5.0 (37)</span>
+            </div>
+            <div class="pros-price">Reportage 90 min dès 150€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐾</div>
+          <div class="pros-info">
+            <div class="pros-name">Sophie Berthier <span class="pros-badge">Lifestyle</span></div>
+            <div class="pros-spec" data-i18n="pros_photo_3_spec">Photos lifestyle famille + chien · Domicile / parc · Album imprimé inclus</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Lyon · 50 km</span>
+              <span class="pros-rating">⭐ 4.8 (94)</span>
+            </div>
+            <div class="pros-price">Mini-séance 30 min dès 90€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🎨</div>
+          <div class="pros-info">
+            <div class="pros-name">Thomas Verdon <span class="pros-badge">Senior</span></div>
+            <div class="pros-spec" data-i18n="pros_photo_4_spec">Spécialisé chiens seniors · Séances douces, format souvenir, livret photo</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Nantes · domicile</span>
+              <span class="pros-rating">⭐ 5.0 (28)</span>
+            </div>
+            <div class="pros-price">Séance souvenir dès 110€</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+      </div>
+
       <div class="pros-anti-bypass">
         <div class="pab-title" data-i18n="pros_safety_t">🔐 Comment ça marchera</div>
         <div class="pab-row">
@@ -4380,6 +4506,15 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
 
       <button class="btn forest" style="margin: 18px 16px 8px; width: calc(100% - 32px);" onclick="alert(currentLang==='fr' ? '🚧 Lancement été 2026 — tu seras notifié(e) en avant-première !' : '🚧 Launching summer 2026 — you\'ll be notified first!')" data-i18n="pros_notify">🔔 Me prévenir au lancement</button>
+
+      <div class="pros-become">
+        <div class="pros-become-icon">💼</div>
+        <div class="pros-become-body">
+          <div class="pros-become-title" data-i18n="pros_become_t">Tu es pro du chien ?</div>
+          <div class="pros-become-desc" data-i18n="pros_become_d">Coach canin, pet-sitter, toiletteur ou photographe canin ? Publie ton profil sur K9 et reçois des réservations directement dans l'app — réservé aux abonnés <strong>K9 Pro 12€/mois</strong>. Inclus : profil sponsorisé, agenda intégré, paiement sécurisé, messagerie modérée.</div>
+          <button class="btn ghost" style="margin-top: 10px; font-size: 12.5px;" onclick="closeSub('sub-pros'); switchTab('profile'); setTimeout(()=>openSub('sub-plans'), 100)" data-i18n="pros_become_cta">→ Devenir K9 Pro (12€/mois)</button>
+        </div>
+      </div>
 
       <div style="font-size: 11px; color: var(--ink-2); text-align: center; padding: 8px 16px 24px; line-height: 1.5;" data-i18n="pros_demo_note">Profils ci-dessus = exemples de démonstration. Les vrais pros K9 seront vérifiés un par un.</div>
     </div>
@@ -5205,8 +5340,13 @@ const I18N = {
     pros_open_sub: "Réserve, paie et discute en toute sécurité dans l'app — coachs canins certifiés et pet-sitters de confiance.",
     pros_soon_t: "Bientôt disponible",
     pros_soon_d: "Réservation in-app, paiement sécurisé, messagerie modérée. Lancement été 2026.",
-    pros_tab_coaches: "Coachs canins",
+    pros_tab_coaches: "Coachs",
     pros_tab_sitters: "Pet-sitters",
+    pros_tab_groomers: "Toilettage",
+    pros_tab_photographers: "Photo",
+    pros_become_t: "Tu es pro du chien ?",
+    pros_become_d: "Coach canin, pet-sitter, toiletteur ou photographe canin ? Publie ton profil sur K9 et reçois des réservations directement dans l'app — réservé aux abonnés <strong>K9 Pro 12€/mois</strong>. Inclus : profil sponsorisé, agenda intégré, paiement sécurisé, messagerie modérée.",
+    pros_become_cta: "→ Devenir K9 Pro (12€/mois)",
     pros_safety_t: "🔐 Comment ça marchera",
     pros_safety_1: "Tu paies dans l'app via Stripe. Le pro est rémunéré seulement après prestation. K9 prélève 12% de commission.",
     pros_safety_2: "Messagerie modérée intégrée. Pas d'échange de numéro/email, pas de bypass possible — protection mutuelle contre les conflits.",
@@ -5349,10 +5489,11 @@ const I18N = {
     tier_pro_t: "K9 Pro", tier_pro_b: "Bêta",
     tier_pro_beta_note: "⚠️ Accès progressif : les features marquées « à venir » arrivent au fil de la bêta (Q3 2026).",
     tier_pro_1: "Tout K9 Plus",
-    tier_pro_2: "Multi-profils (pet-sitter, éleveur) — à venir",
-    tier_pro_3: "Dashboard clients — à venir",
-    tier_pro_4: "Mode offline complet — à venir",
-    tier_pro_5: "Rapport mensuel auto — à venir",
+    tier_pro_2: "Publier ton profil pro (coach, pet-sitter, toiletteur, photographe canin)",
+    tier_pro_3: "Réservations & paiement intégrés (commission 12% K9) — à venir",
+    tier_pro_4: "Dashboard clients & agenda — à venir",
+    tier_pro_5: "Multi-profils (pet-sitter, éleveur) — à venir",
+    tier_pro_6: "Rapport mensuel auto — à venir",
     tier_pro_cta: "Rejoindre la bêta Pro",
     profile_badges: "Mes badges",
     badge_first: "Premier pas", badge_walker: "Randonneur", badge_learner: "Élève appliqué",
@@ -5694,8 +5835,13 @@ const I18N = {
     pros_open_sub: "Book, pay, and chat safely in the app — certified dog trainers and trusted pet-sitters.",
     pros_soon_t: "Coming soon",
     pros_soon_d: "In-app booking, secure payment, moderated messaging. Launching summer 2026.",
-    pros_tab_coaches: "Dog trainers",
+    pros_tab_coaches: "Trainers",
     pros_tab_sitters: "Pet-sitters",
+    pros_tab_groomers: "Grooming",
+    pros_tab_photographers: "Photo",
+    pros_become_t: "Are you a dog pro?",
+    pros_become_d: "Trainer, pet-sitter, groomer, or dog photographer? Publish your profile on K9 and get bookings directly in the app — reserved for <strong>K9 Pro €12/month</strong> subscribers. Includes: featured profile, integrated calendar, secure payment, moderated messaging.",
+    pros_become_cta: "→ Become K9 Pro (€12/month)",
     pros_safety_t: "🔐 How it will work",
     pros_safety_1: "You pay in-app via Stripe. The pro is paid only after the service. K9 takes a 12% commission.",
     pros_safety_2: "In-app moderated messaging. No phone/email exchange, no bypass possible — mutual protection against disputes.",
@@ -5838,10 +5984,11 @@ const I18N = {
     tier_pro_t: "K9 Pro", tier_pro_b: "Beta",
     tier_pro_beta_note: "⚠️ Progressive access: features marked 'coming soon' land during the beta (Q3 2026).",
     tier_pro_1: "Everything in Plus",
-    tier_pro_2: "Multi-profiles (pet-sitters, breeders) — coming",
-    tier_pro_3: "Client dashboard — coming",
-    tier_pro_4: "Full offline mode — coming",
-    tier_pro_5: "Monthly auto-report — coming",
+    tier_pro_2: "Publish your pro profile (trainer, pet-sitter, groomer, dog photographer)",
+    tier_pro_3: "In-app bookings & payments (12% K9 commission) — coming",
+    tier_pro_4: "Client dashboard & calendar — coming",
+    tier_pro_5: "Multi-profiles (pet-sitters, breeders) — coming",
+    tier_pro_6: "Monthly auto-report — coming",
     tier_pro_cta: "Join Pro beta",
     profile_badges: "My badges",
     badge_first: "First step", badge_walker: "Hiker", badge_learner: "Dedicated student",
@@ -8490,8 +8637,10 @@ function closeSub(id) { document.getElementById(id).classList.remove("show"); }
 // ====================================================================
 function switchProsTab(name) {
   document.querySelectorAll(".pros-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
-  document.getElementById("pros-coaches").style.display = (name === "coaches") ? "" : "none";
-  document.getElementById("pros-sitters").style.display = (name === "sitters") ? "" : "none";
+  ["coaches","sitters","groomers","photographers"].forEach(t => {
+    const el = document.getElementById("pros-" + t);
+    if (el) el.style.display = (t === name) ? "" : "none";
+  });
 }
 
 // ====================================================================
