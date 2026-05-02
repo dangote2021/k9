@@ -10,7 +10,7 @@
 //   - Notification click : ouvrir/focus l'app sur l'URL demandée
 // =====================================================================
 
-const VERSION = "v4.0";
+const VERSION = "v4.1";
 const CACHE_SHELL = "k9-shell-" + VERSION;
 const CACHE_ASSETS = "k9-assets-" + VERSION;
 const CACHE_API = "k9-api-" + VERSION;
