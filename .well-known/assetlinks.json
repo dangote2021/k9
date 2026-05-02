@@ -1,16 +1,8 @@
-[
-  {
-    "_comment": "Placeholder — to be replaced with the actual SHA256 fingerprint from PWABuilder Android signing key. Format: keep the array structure but replace the sha256_cert_fingerprints value.",
-    "relation": [
-      "delegate_permission/common.handle_all_urls",
-      "delegate_permission/common.use_as_origin"
-    ],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "app.k9.companion",
-      "sha256_cert_fingerprints": [
-        "REPLACE_WITH_PWABUILDER_FINGERPRINT_AT_LAUNCH"
-      ]
-    }
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.k9.companion",
+    "sha256_cert_fingerprints": ["4B:9C:66:DF:33:52:4B:57:68:B8:42:6A:56:FF:6C:68:3C:97:99:7C:D8:02:FF:88:E2:45:34:B0:B6:83:B6:A0"]
   }
-]
+}]
