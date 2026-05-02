@@ -1,7 +1,7 @@
 {
-  "name": "K9 — L'app pour les compagnons de chiens",
-  "short_name": "K9 - my dog app",
-  "description": "Carnet santé, coach IA K9 Companion, balades GPS temps réel, alertes chien perdu, communauté. Tout-en-un, gratuit.",
+  "name": "K9 Companion - the dog app",
+  "short_name": "K9 Companion",
+  "description": "Health record, AI coach, real-time GPS walks, lost dog alerts, community. All-in-one for your dog. Free.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -9,7 +9,7 @@
   "orientation": "portrait",
   "background_color": "#FFF8F0",
   "theme_color": "#e76f51",
-  "lang": "fr-FR",
+  "lang": "en",
   "dir": "ltr",
   "icons": [
     { "src": "/branding/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
@@ -24,22 +24,22 @@
       "sizes": "1200x630",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "K9 — L'app pour les compagnons de chiens"
+      "label": "K9 Companion - the dog app"
     }
   ],
   "categories": ["lifestyle", "health", "utilities", "pets"],
   "shortcuts": [
     {
-      "name": "Démarrer une balade",
-      "short_name": "Balade",
-      "description": "Démarre une balade GPS avec ton chien",
+      "name": "Start a walk",
+      "short_name": "Walk",
+      "description": "Start a GPS walk with your dog",
       "url": "/?action=walk",
       "icons": [{ "src": "/branding/app-icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Coach K9 Companion",
-      "short_name": "Coach IA",
-      "description": "Pose une question à K9 Companion",
+      "name": "K9 Companion",
+      "short_name": "Coach",
+      "description": "Ask K9 Companion anything",
       "url": "/?action=coach",
       "icons": [{ "src": "/branding/app-icon-192.png", "sizes": "192x192" }]
     }
