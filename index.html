@@ -93,6 +93,9 @@
   --terra: #E87A3B;
   --terra-dark: #C85F21;
   --forest-dark: #1F4029;
+  /* Hauteur tabbar partagée — recalculée selon safe-area pour que le FAB
+     ne chevauche pas la tab bottom sur Android avec gesture nav */
+  --tabbar-h: calc(78px + env(safe-area-inset-bottom, 0px));
   --cream: #FAF7F2;
   --cream-2: #F3EEE4;
   --ink: #1F1B16;
@@ -530,7 +533,7 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .tabbar {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  height: calc(78px + env(safe-area-inset-bottom, 0px));
+  height: var(--tabbar-h);
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -1434,7 +1437,7 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .fab {
   position: absolute;
   right: 18px;
-  bottom: 94px;
+  bottom: calc(var(--tabbar-h) + 16px);
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -2006,9 +2009,23 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   overflow: hidden;
   cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease;
+  position: relative;
 }
 .market-item-card:active { transform: scale(0.97); }
 .market-item-card:hover { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+.market-item-card.is-demo { border: 1.5px dashed #d8b876; background: #fffaf0; }
+.market-item-card .mi-demo-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  z-index: 2;
+  background: rgba(120, 53, 15, 0.92);
+  color: #fff;
+  font-size: 9.5px; font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.6px;
+  pointer-events: none;
+}
 .market-item-card .mi-photo {
   width: 100%; aspect-ratio: 1;
   background: linear-gradient(135deg, #f9f5ee, #f0e6d6);
@@ -2780,7 +2797,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     <div class="screen active" id="screen-home">
       <div class="home-header">
         <div>
-          <div class="greeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
+          <div class="greeting" id="homeGreeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
           <div class="name"><span id="ownerNameDisp">Toi</span> & <span id="dogNameDisp">Nala</span></div>
         </div>
         <button class="lang-toggle" onclick="toggleLang()"><span id="langLabel">EN</span></button>
@@ -4332,6 +4349,19 @@ function toTitleCase(s) {
   return String(s).toLowerCase().replace(/(^|\s|-|')\p{L}/gu, c => c.toUpperCase());
 }
 
+// Salutation dynamique sur la home : "Bonjour Guillaume 👋" si on connaît
+// le prénom, sinon "Bonjour 👋" tout court. Évite la friction "Bonjour
+// vide" remontée par le panel test.
+function renderGreeting() {
+  const el = document.getElementById("homeGreeting");
+  if (!el) return;
+  const fr = (typeof currentLang !== "undefined") && (currentLang === "fr");
+  const owner = (typeof ownerState !== "undefined" && ownerState && ownerState.name)
+    ? toTitleCase(ownerState.name) : "";
+  const hello = fr ? "Bonjour" : "Hi";
+  el.textContent = owner ? `${hello} ${owner} 👋` : `${hello} 👋`;
+}
+
 // ====================================================================
 // K9Store — Persistance locale (localStorage)
 // Survit au refresh. Prêt à être synchronisé avec un backend (Supabase)
@@ -5869,6 +5899,7 @@ function obNext() {
       ownerState.name = toTitleCase(own);
       const disp = document.getElementById("ownerNameDisp");
       if (disp) disp.textContent = ownerState.name;
+      renderGreeting();
     }
   }
   if (obStepIdx === 2 && dogState.breed === null) {
@@ -8381,8 +8412,12 @@ function renderMarket() {
     const photo = item.photo
       ? `<img src="${escapeHtml(item.photo)}" alt="${escapeHtml(item.title)}" />`
       : (item.emoji || _marketCatEmoji(item.cat));
+    const demoBadge = item._seed
+      ? `<div class="mi-demo-badge">${currentLang==='fr' ? 'DÉMO' : 'DEMO'}</div>`
+      : "";
     return `
-      <div class="market-item-card" onclick="openMarketDetail('${escapeHtml(item.id)}')">
+      <div class="market-item-card${item._seed ? ' is-demo' : ''}" onclick="openMarketDetail('${escapeHtml(item.id)}')">
+        ${demoBadge}
         <div class="mi-photo">${typeof photo === 'string' && photo.startsWith('<img') ? photo : `<span>${photo}</span>`}</div>
         <div class="mi-body">
           <div class="mi-title">${escapeHtml(item.title || "")}</div>
@@ -10013,6 +10048,8 @@ if (onboardingDone && DOGS.length > 0) {
     const disp = document.getElementById("ownerNameDisp");
     if (disp) disp.textContent = toTitleCase(ownerState.name);
   }
+  // Greeting dynamique au boot (récupère le prénom depuis localStorage si déjà connu)
+  renderGreeting();
 } else {
   showStep(0);
 }
