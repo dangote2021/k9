@@ -2702,7 +2702,21 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="chip green mb-10" data-i18n="tip_spring">🌸 Printemps</div>
         <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_title1">Attention aux tiques à partir d'avril</div>
         <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_desc1">La saison des tiques démarre. Pense à vérifier Nala après chaque balade et à renouveler son antiparasitaire si besoin.</div>
-        <button class="ask-ai-cta" onclick="openAIWith('Comment retirer une tique en sécurité ?')"><span>✨</span> <span data-i18n="ask_ai_tick">Demander à l'IA : comment retirer une tique ?</span></button>
+        <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Comment retirer une tique en sécurité ?' : 'How to safely remove a tick?')"><span>✨</span> <span data-i18n="ask_ai_tick">Demander à l'IA : comment retirer une tique ?</span></button>
+      </div>
+
+      <div class="card" style="margin-top: 12px;">
+        <div class="chip mb-10" style="background: var(--brand-soft); color: var(--brand-dark);" data-i18n="tip_paws_chip">🐾 Coussinets</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_paws_t">Bien prendre soin de ses coussinets</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_paws_d">Bitume brûlant l'été, sel et gel l'hiver, cailloux toute l'année — les coussinets souffrent souvent en silence. Inspecte-les après chaque balade, hydrate avec un baume adapté et vérifie qu'aucun corps étranger n'est resté coincé entre les doigts.</div>
+        <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Comment prendre soin des coussinets de mon chien au quotidien ? Quels gestes en été et en hiver ?' : 'How do I take care of my dog\'s paw pads day to day? What about summer and winter?')"><span>✨</span> <span data-i18n="ask_ai_paws">Demander à l'IA : protéger ses coussinets</span></button>
+      </div>
+
+      <div class="card" style="margin-top: 12px;">
+        <div class="chip mb-10" style="background: var(--brand-soft); color: var(--brand-dark);" data-i18n="tip_ears_chip">👂 Oreilles</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_ears_t">Bien prendre soin de ses oreilles</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_ears_d">Les otites touchent 1 chien sur 5, surtout les races à oreilles tombantes. Nettoie en douceur 1× par mois avec un nettoyant auriculaire (jamais de coton-tige), sèche bien après les baignades, et surveille démangeaisons, mauvaise odeur ou tête penchée — signes d'alerte à montrer au véto.</div>
+        <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Comment nettoyer les oreilles de mon chien sans risque ? Quels signes doivent m\'alerter ?' : 'How do I safely clean my dog\'s ears? What warning signs should I look for?')"><span>✨</span> <span data-i18n="ask_ai_ears">Demander à l'IA : entretenir ses oreilles</span></button>
       </div>
     </div>
 
@@ -4450,6 +4464,14 @@ const I18N = {
     ai_bar_sub: "Santé, éducation, comportement — une réponse en 10 secondes",
     ai_disclaimer: "Les conseils sont générés par IA. En cas de symptôme inquiétant ou d'urgence, contacte ton vétérinaire. Ne remplace jamais un diagnostic médical.",
     ask_ai_tick: "Demander à l'IA : comment retirer une tique ?",
+    tip_paws_chip: "🐾 Coussinets",
+    tip_paws_t: "Bien prendre soin de ses coussinets",
+    tip_paws_d: "Bitume brûlant l'été, sel et gel l'hiver, cailloux toute l'année — les coussinets souffrent souvent en silence. Inspecte-les après chaque balade, hydrate avec un baume adapté et vérifie qu'aucun corps étranger n'est resté coincé entre les doigts.",
+    ask_ai_paws: "Demander à l'IA : protéger ses coussinets",
+    tip_ears_chip: "👂 Oreilles",
+    tip_ears_t: "Bien prendre soin de ses oreilles",
+    tip_ears_d: "Les otites touchent 1 chien sur 5, surtout les races à oreilles tombantes. Nettoie en douceur 1× par mois avec un nettoyant auriculaire (jamais de coton-tige), sèche bien après les baignades, et surveille démangeaisons, mauvaise odeur ou tête penchée — signes d'alerte à montrer au véto.",
+    ask_ai_ears: "Demander à l'IA : entretenir ses oreilles",
     sec_reminders: "Prochains rappels",
     rem_vac: "Rappel vaccin CHPPL",
     rem_vac_desc: "Chez le vétérinaire du quartier",
@@ -4875,6 +4897,14 @@ const I18N = {
     ai_bar_sub: "Health, training, behavior — an answer in 10 seconds",
     ai_disclaimer: "Advice is AI-generated. For worrying symptoms or emergencies, contact your vet. Never a substitute for medical diagnosis.",
     ask_ai_tick: "Ask the AI: how to safely remove a tick?",
+    tip_paws_chip: "🐾 Paw pads",
+    tip_paws_t: "Take good care of their paw pads",
+    tip_paws_d: "Burning pavement in summer, salt and ice in winter, sharp gravel year-round — paw pads suffer in silence. Inspect them after every walk, moisturize with a paw balm, and check no debris is stuck between the toes.",
+    ask_ai_paws: "Ask the AI: protect their paw pads",
+    tip_ears_chip: "👂 Ears",
+    tip_ears_t: "Take good care of their ears",
+    tip_ears_d: "Ear infections affect 1 dog in 5, especially floppy-eared breeds. Clean gently once a month with an ear-cleaning solution (never cotton swabs), dry thoroughly after swims, and watch for itching, bad smell, or head tilt — warning signs to show the vet.",
+    ask_ai_ears: "Ask the AI: ear care basics",
     sec_reminders: "Upcoming reminders",
     rem_vac: "DHPPL booster",
     rem_vac_desc: "At the local vet",
