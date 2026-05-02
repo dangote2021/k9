@@ -1906,40 +1906,217 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   flex-shrink: 0;
 }
 
-/* ===== Marketplace preview ===== */
-.marketplace-preview { padding: 6px 0 16px; }
-.market-grid {
+/* ===== Marketplace ===== */
+.marketplace-entry { padding: 6px 0 16px; }
+.market-cta-card {
+  display: flex; align-items: center; gap: 12px;
+  margin: 4px 16px 0;
+  padding: 16px 16px;
+  background: linear-gradient(135deg, #fff, var(--brand-soft));
+  border: 1.5px solid var(--brand);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 2px 8px rgba(232, 122, 59, 0.10);
+}
+.market-cta-card:active { transform: scale(0.985); }
+.market-cta-card:hover { box-shadow: 0 4px 16px rgba(232, 122, 59, 0.18); }
+.market-cta-card .market-cta-icon {
+  width: 48px; height: 48px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 24px;
+}
+.market-cta-card .market-cta-body { flex: 1; min-width: 0; }
+.market-cta-card .market-cta-title {
+  font-size: 14.5px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.2px;
+}
+.market-cta-card .market-cta-sub {
+  font-size: 12.5px; color: var(--ink-2); margin-top: 2px; line-height: 1.4;
+}
+.market-cta-card .arrow { color: var(--brand); font-size: 22px; flex-shrink: 0; font-weight: 700; }
+
+.market-add-btn {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  font-size: 22px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(232, 122, 59, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.market-add-btn:active { transform: translateY(-50%) scale(0.92); }
+
+.market-disclaimer {
+  background: #fff8e6;
+  border-left: 3px solid #d97706;
+  padding: 10px 14px;
+  margin: 6px 16px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.market-filter-bar {
+  display: flex; gap: 8px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.market-filter-bar::-webkit-scrollbar { display: none; }
+.market-filter {
+  flex-shrink: 0;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px; font-weight: 700;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+.market-filter.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(232, 122, 59, 0.25);
+}
+
+.market-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 0 16px;
+  gap: 12px;
+  padding: 0 16px 16px;
 }
-.market-card-preview {
+.market-item-card {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 14px 12px;
-  text-align: center;
-  opacity: 0.7;
-  position: relative;
-  filter: grayscale(0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-.market-card-preview::after {
-  content: "🔒";
-  position: absolute;
-  top: 8px; right: 10px;
-  font-size: 13px;
-  opacity: 0.65;
+.market-item-card:active { transform: scale(0.97); }
+.market-item-card:hover { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+.market-item-card .mi-photo {
+  width: 100%; aspect-ratio: 1;
+  background: linear-gradient(135deg, #f9f5ee, #f0e6d6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px;
+  overflow: hidden;
 }
-.market-card-preview .mc-img { font-size: 32px; line-height: 1; margin-bottom: 8px; }
-.market-card-preview .mc-cat {
-  font-size: 13px; font-weight: 800; color: var(--ink);
+.market-item-card .mi-photo img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.market-item-card .mi-body { padding: 10px 12px; }
+.market-item-card .mi-title {
+  font-size: 13px; font-weight: 700; color: var(--ink);
   letter-spacing: -0.1px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
 }
-.market-card-preview .mc-desc {
-  font-size: 11px; color: var(--ink-2); margin-top: 4px;
-  line-height: 1.35;
+.market-item-card .mi-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 6px;
 }
+.market-item-card .mi-price {
+  font-size: 15px; font-weight: 800; color: var(--brand-dark);
+}
+.market-item-card .mi-loc {
+  font-size: 10.5px; color: var(--gray);
+}
+
+.market-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+}
+.market-empty .emoji { font-size: 48px; margin-bottom: 12px; }
+.market-empty .title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.market-empty .desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+.market-form { display: flex; flex-direction: column; gap: 0; }
+.market-form .field-label { margin-top: 10px; margin-bottom: 4px; }
+.market-form .input, .market-form .select {
+  padding: 11px 13px; font-size: 14px; margin-bottom: 0;
+}
+.market-form textarea.input { resize: vertical; min-height: 60px; font-family: inherit; }
+.market-photo-preview {
+  display: none;
+  width: 100%; max-height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 6px 0;
+  background: #f9f5ee;
+}
+.market-photo-preview.active { display: block; }
+.market-photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.market-detail-photo {
+  width: 100%; aspect-ratio: 1.4;
+  background: linear-gradient(135deg, #f9f5ee, #f0e6d6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 96px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.market-detail-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.market-detail-cat {
+  display: inline-block;
+  background: var(--brand-soft); color: var(--brand-dark);
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.market-detail-title {
+  font-size: 18px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.3px; line-height: 1.25;
+  margin-bottom: 4px;
+}
+.market-detail-price {
+  font-size: 24px; font-weight: 900; color: var(--brand-dark);
+  margin: 6px 0 14px;
+}
+.market-detail-meta {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.market-detail-meta .pill {
+  background: #f9f5ee;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 11.5px; color: var(--ink-2); font-weight: 600;
+}
+.market-detail-desc {
+  font-size: 14px; color: var(--ink-2);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  margin-bottom: 14px;
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 10px;
+}
+.market-detail-seller {
+  font-size: 12.5px; color: var(--ink-2);
+  padding: 10px 12px;
+  background: var(--cream);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.market-detail-seller strong { color: var(--ink); }
 
 /* ===== Vet actions ===== */
 .vet-actions {
@@ -2830,6 +3007,13 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_ears_d">Les otites touchent 1 chien sur 5, surtout les races à oreilles tombantes. Nettoie en douceur 1× par mois avec un nettoyant auriculaire (jamais de coton-tige), sèche bien après les baignades, et surveille démangeaisons, mauvaise odeur ou tête penchée — signes d'alerte à montrer au véto.</div>
         <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Comment nettoyer les oreilles de mon chien sans risque ? Quels signes doivent m\'alerter ?' : 'How do I safely clean my dog\'s ears? What warning signs should I look for?')"><span>✨</span> <span data-i18n="ask_ai_ears">Demander à l'IA : entretenir ses oreilles</span></button>
       </div>
+
+      <div class="card" style="margin-top: 12px;">
+        <div class="chip mb-10" style="background: var(--forest-soft); color: var(--forest);" data-i18n="tip_run_chip">🏃 Sport canin</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_run_t">Comment courir avec son chien</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_run_d">Courir avec son chien c'est génial — à condition de respecter sa morphologie. Attendre 12-18 mois (croissance terminée selon la race), démarrer par 10-15 min puis monter progressivement, éviter le bitume brûlant l'été (test main 5s), prévoir de l'eau toutes les 20 min, équipement adapté (ceinture canicross + ligne de trait amortisseur + harnais X-back). Évite les races brachycéphales (carlin, bouledogue) qui supportent mal l'effort prolongé.</div>
+        <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Je veux commencer à courir avec mon chien (canicross). Donne-moi un plan progressif sur 8 semaines adapté à sa race et son âge, le matériel à acheter, et les précautions par météo.' : 'I want to start running with my dog (canicross). Give me an 8-week progressive plan adapted to their breed and age, the gear to buy, and weather precautions.')"><span>✨</span> <span data-i18n="ask_ai_run">Demander à l'IA : plan canicross perso</span></button>
+      </div>
     </div>
 
     <!-- SOCIAL -->
@@ -2860,39 +3044,17 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         </div>
       </div>
 
-      <!-- Marketplace d'occasion (preview / Bientôt disponible) -->
-      <div class="marketplace-preview">
+      <!-- Marketplace K9 — annonces revente accessoires canins -->
+      <div class="marketplace-entry">
         <div class="section-title" data-i18n="market_title">Marketplace K9</div>
-        <div class="coming-soon-banner">
-          <div class="cs-icon">🛒</div>
-          <div class="cs-text">
-            <div class="cs-title" data-i18n="market_soon_t">Bientôt disponible</div>
-            <div class="cs-sub" data-i18n="market_soon_d">Achète, vends et échange entre membres K9 — harnais, paniers, gamelles, jouets, vêtements pour chien.</div>
+        <div class="market-cta-card" onclick="openSub('sub-market')">
+          <div class="market-cta-icon">🛒</div>
+          <div class="market-cta-body">
+            <div class="market-cta-title" data-i18n="market_open_t">Acheter & vendre entre K9ers</div>
+            <div class="market-cta-sub" data-i18n="market_open_sub">Harnais, paniers, jouets, équipement canicross — d'occasion, entre passionnés.</div>
           </div>
+          <div class="arrow">›</div>
         </div>
-        <div class="market-grid">
-          <div class="market-card-preview">
-            <div class="mc-img">🦮</div>
-            <div class="mc-cat" data-i18n="market_cat_walk">Promenade</div>
-            <div class="mc-desc" data-i18n="market_walk_d">Harnais, laisses, longes, sacs à crottes</div>
-          </div>
-          <div class="market-card-preview">
-            <div class="mc-img">🛏️</div>
-            <div class="mc-cat" data-i18n="market_cat_home">Maison</div>
-            <div class="mc-desc" data-i18n="market_home_d">Paniers, niches, gamelles, distributeurs</div>
-          </div>
-          <div class="market-card-preview">
-            <div class="mc-img">🎾</div>
-            <div class="mc-cat" data-i18n="market_cat_play">Jouets</div>
-            <div class="mc-desc" data-i18n="market_play_d">Balles, peluches, jouets éducatifs</div>
-          </div>
-          <div class="market-card-preview">
-            <div class="mc-img">🧥</div>
-            <div class="mc-cat" data-i18n="market_cat_cloth">Vêtements</div>
-            <div class="mc-desc" data-i18n="market_cloth_d">Manteaux, bottines, k-way, bandanas</div>
-          </div>
-        </div>
-        <button class="btn ghost" style="margin: 14px 16px 4px; font-size: 13px;" onclick="alert(currentLang==='fr' ? '🛒 Marketplace en préparation — tu seras notifié(e) au lancement !' : '🛒 Marketplace coming soon — you\'ll be notified at launch!')" data-i18n="market_notify">🔔 Me prévenir au lancement</button>
       </div>
 
       <div id="social-discover" style="display:none;">
@@ -3959,6 +4121,85 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
   </div>
 
+  <!-- Marketplace K9 — annonces revente accessoires canins -->
+  <div class="sub-screen" id="sub-market">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-market')">‹</button>
+      <div class="sub-title" data-i18n="market_title">Marketplace K9</div>
+      <button class="market-add-btn" onclick="openMarketCreateModal()" aria-label="Créer une annonce">+</button>
+    </div>
+    <div class="sub-body">
+      <div class="market-disclaimer">
+        <span data-i18n="market_disclaimer">🤝 Échanges entre membres K9. K9 ne gère ni le paiement ni la livraison — vous vous arrangez directement avec le vendeur. Soyez vigilants.</span>
+      </div>
+      <div class="market-filter-bar" id="marketFilterBar">
+        <button class="market-filter active" data-cat="all" onclick="filterMarket('all')" data-i18n="market_all">Tout</button>
+        <button class="market-filter" data-cat="sport" onclick="filterMarket('sport')">🏃 <span data-i18n="market_cat_sport">Sport</span></button>
+        <button class="market-filter" data-cat="walk" onclick="filterMarket('walk')">🦮 <span data-i18n="market_cat_walk">Promenade</span></button>
+        <button class="market-filter" data-cat="home" onclick="filterMarket('home')">🛏️ <span data-i18n="market_cat_home">Maison</span></button>
+        <button class="market-filter" data-cat="play" onclick="filterMarket('play')">🎾 <span data-i18n="market_cat_play">Jouets</span></button>
+        <button class="market-filter" data-cat="cloth" onclick="filterMarket('cloth')">🧥 <span data-i18n="market_cat_cloth">Vêtements</span></button>
+      </div>
+      <div class="market-list" id="marketList"><!-- rendu dynamique --></div>
+    </div>
+  </div>
+
+  <!-- Marketplace : modal création d'annonce -->
+  <div class="upsell-modal" id="marketCreateModal">
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <h3 class="upsell-title" data-i18n="market_create_t">Vendre un objet</h3>
+      <p class="upsell-sub" data-i18n="market_create_sub">Décris ton objet, ajoute une photo, fixe ton prix. Les autres K9ers te contacteront par email.</p>
+      <div class="market-form">
+        <label class="field-label" data-i18n="market_field_title">Titre</label>
+        <input id="mfTitle" class="input" placeholder="Ex. Harnais X-back canicross taille M" />
+        <label class="field-label" data-i18n="market_field_cat">Catégorie</label>
+        <select id="mfCat" class="select">
+          <option value="sport">🏃 Sport canin</option>
+          <option value="walk">🦮 Promenade</option>
+          <option value="home">🛏️ Maison</option>
+          <option value="play">🎾 Jouets</option>
+          <option value="cloth">🧥 Vêtements</option>
+        </select>
+        <label class="field-label" data-i18n="market_field_cond">État</label>
+        <select id="mfCond" class="select">
+          <option value="new" data-i18n="market_cond_new">Neuf avec étiquette</option>
+          <option value="excellent" data-i18n="market_cond_excellent" selected>Excellent état</option>
+          <option value="good" data-i18n="market_cond_good">Bon état</option>
+          <option value="fair" data-i18n="market_cond_fair">État correct</option>
+        </select>
+        <label class="field-label" data-i18n="market_field_price">Prix (€)</label>
+        <input id="mfPrice" class="input" type="number" min="0" step="0.5" placeholder="45" />
+        <label class="field-label" data-i18n="market_field_loc">Ville (optionnel)</label>
+        <input id="mfLoc" class="input" placeholder="Ex. Paris, Lyon, Bordeaux…" />
+        <label class="field-label" data-i18n="market_field_desc">Description</label>
+        <textarea id="mfDesc" class="input" rows="3" placeholder="Détails, taille, marque, durée d'usage, raison de la vente…"></textarea>
+        <label class="field-label" data-i18n="market_field_email">Email de contact</label>
+        <input id="mfEmail" class="input" type="email" placeholder="ton-email@exemple.fr" />
+        <label class="field-label" data-i18n="market_field_photo">Photo (optionnel)</label>
+        <input id="mfPhoto" type="file" accept="image/*" onchange="onMarketPhotoChange(event)" style="margin-bottom: 6px;" />
+        <div id="mfPhotoPreview" class="market-photo-preview"></div>
+        <div id="mfErr" style="color: #b91c1c; font-size: 12.5px; min-height: 18px; margin: 6px 0;"></div>
+      </div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="submitMarketCreate()" data-i18n="market_publish">Publier l'annonce</button>
+        <button class="upsell-skip" onclick="closeMarketCreateModal()" data-i18n="cancel">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marketplace : modal détail annonce -->
+  <div class="upsell-modal" id="marketDetailModal">
+    <div class="upsell-card" id="marketDetailCard">
+      <div class="upsell-grip"></div>
+      <div id="marketDetailBody"><!-- rendu dynamique --></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" id="mdContactBtn" onclick="contactMarketSeller()" data-i18n="market_contact">📧 Contacter le vendeur</button>
+        <button class="upsell-skip" onclick="closeMarketDetailModal()" data-i18n="close">Fermer</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Languages -->
   <div class="sub-screen" id="sub-langs">
     <div class="sub-header">
@@ -4619,6 +4860,10 @@ const I18N = {
     tip_ears_t: "Bien prendre soin de ses oreilles",
     tip_ears_d: "Les otites touchent 1 chien sur 5, surtout les races à oreilles tombantes. Nettoie en douceur 1× par mois avec un nettoyant auriculaire (jamais de coton-tige), sèche bien après les baignades, et surveille démangeaisons, mauvaise odeur ou tête penchée — signes d'alerte à montrer au véto.",
     ask_ai_ears: "Demander à l'IA : entretenir ses oreilles",
+    tip_run_chip: "🏃 Sport canin",
+    tip_run_t: "Comment courir avec son chien",
+    tip_run_d: "Courir avec son chien c'est génial — à condition de respecter sa morphologie. Attendre 12-18 mois (croissance terminée selon la race), démarrer par 10-15 min puis monter progressivement, éviter le bitume brûlant l'été (test main 5s), prévoir de l'eau toutes les 20 min, équipement adapté (ceinture canicross + ligne de trait amortisseur + harnais X-back). Évite les races brachycéphales (carlin, bouledogue) qui supportent mal l'effort prolongé.",
+    ask_ai_run: "Demander à l'IA : plan canicross perso",
     sec_reminders: "Prochains rappels",
     rem_vac: "Rappel vaccin CHPPL",
     rem_vac_desc: "Chez le vétérinaire du quartier",
@@ -4679,17 +4924,33 @@ const I18N = {
     attending2: "+ 2 chiens inscrits",
     create_pd: "+ Créer un playdate",
     market_title: "Marketplace K9",
-    market_soon_t: "Bientôt disponible",
-    market_soon_d: "Achète, vends et échange entre membres K9 — harnais, paniers, gamelles, jouets, vêtements pour chien.",
+    market_open_t: "Acheter & vendre entre K9ers",
+    market_open_sub: "Harnais, paniers, jouets, équipement canicross — d'occasion, entre passionnés.",
+    market_disclaimer: "🤝 Échanges entre membres K9. K9 ne gère ni le paiement ni la livraison — vous vous arrangez directement avec le vendeur. Soyez vigilants.",
+    market_all: "Tout",
+    market_cat_sport: "Sport",
     market_cat_walk: "Promenade",
-    market_walk_d: "Harnais, laisses, longes, sacs à crottes",
     market_cat_home: "Maison",
-    market_home_d: "Paniers, niches, gamelles, distributeurs",
     market_cat_play: "Jouets",
-    market_play_d: "Balles, peluches, jouets éducatifs",
     market_cat_cloth: "Vêtements",
-    market_cloth_d: "Manteaux, bottines, k-way, bandanas",
-    market_notify: "🔔 Me prévenir au lancement",
+    market_create_t: "Vendre un objet",
+    market_create_sub: "Décris ton objet, ajoute une photo, fixe ton prix. Les autres K9ers te contacteront par email.",
+    market_field_title: "Titre",
+    market_field_cat: "Catégorie",
+    market_field_cond: "État",
+    market_cond_new: "Neuf avec étiquette",
+    market_cond_excellent: "Excellent état",
+    market_cond_good: "Bon état",
+    market_cond_fair: "État correct",
+    market_field_price: "Prix (€)",
+    market_field_loc: "Ville (optionnel)",
+    market_field_desc: "Description",
+    market_field_email: "Email de contact",
+    market_field_photo: "Photo (optionnel)",
+    market_publish: "Publier l'annonce",
+    market_contact: "📧 Contacter le vendeur",
+    cancel: "Annuler",
+    close: "Fermer",
     disc_title: "Chiens près de toi",
     disc_desc: "Active la géolocalisation pour découvrir les copains dans ton quartier.",
     enable_geo: "Activer la géoloc",
@@ -5073,6 +5334,10 @@ const I18N = {
     tip_ears_t: "Take good care of their ears",
     tip_ears_d: "Ear infections affect 1 dog in 5, especially floppy-eared breeds. Clean gently once a month with an ear-cleaning solution (never cotton swabs), dry thoroughly after swims, and watch for itching, bad smell, or head tilt — warning signs to show the vet.",
     ask_ai_ears: "Ask the AI: ear care basics",
+    tip_run_chip: "🏃 Dog sports",
+    tip_run_t: "How to run with your dog",
+    tip_run_d: "Running with your dog is amazing — as long as you respect their build. Wait until 12-18 months (growth complete depending on breed), start with 10-15 min then ramp up, avoid burning pavement in summer (5s palm test), water break every 20 min, proper gear (canicross belt + bungee line + X-back harness). Skip brachycephalic breeds (pug, bulldog) — they don't handle sustained effort well.",
+    ask_ai_run: "Ask the AI: my canicross plan",
     sec_reminders: "Upcoming reminders",
     rem_vac: "DHPPL booster",
     rem_vac_desc: "At the local vet",
@@ -5133,17 +5398,33 @@ const I18N = {
     attending2: "+ 2 dogs signed up",
     create_pd: "+ Create a playdate",
     market_title: "K9 Marketplace",
-    market_soon_t: "Coming soon",
-    market_soon_d: "Buy, sell, and trade between K9 members — harnesses, beds, bowls, toys, dog clothing.",
+    market_open_t: "Buy & sell between K9ers",
+    market_open_sub: "Harnesses, beds, toys, canicross gear — second-hand, between dog lovers.",
+    market_disclaimer: "🤝 Exchanges between K9 members. K9 doesn't handle payment or shipping — you arrange directly with the seller. Stay vigilant.",
+    market_all: "All",
+    market_cat_sport: "Sports",
     market_cat_walk: "Walks",
-    market_walk_d: "Harnesses, leashes, long lines, poop bags",
     market_cat_home: "Home",
-    market_home_d: "Beds, crates, bowls, feeders",
     market_cat_play: "Toys",
-    market_play_d: "Balls, plush, training toys",
     market_cat_cloth: "Clothing",
-    market_cloth_d: "Coats, booties, raincoats, bandanas",
-    market_notify: "🔔 Notify me at launch",
+    market_create_t: "Sell an item",
+    market_create_sub: "Describe the item, add a photo, set your price. K9ers will reach out by email.",
+    market_field_title: "Title",
+    market_field_cat: "Category",
+    market_field_cond: "Condition",
+    market_cond_new: "New with tag",
+    market_cond_excellent: "Excellent",
+    market_cond_good: "Good",
+    market_cond_fair: "Fair",
+    market_field_price: "Price (€)",
+    market_field_loc: "City (optional)",
+    market_field_desc: "Description",
+    market_field_email: "Contact email",
+    market_field_photo: "Photo (optional)",
+    market_publish: "Publish listing",
+    market_contact: "📧 Contact seller",
+    cancel: "Cancel",
+    close: "Close",
     disc_title: "Dogs near you",
     disc_desc: "Enable location to discover friends in your neighborhood.",
     enable_geo: "Enable location",
@@ -7889,8 +8170,378 @@ async function submitCreatePlaydate() {
 }
 
 // ---------- Sub-screens ----------
-function openSub(id) { document.getElementById(id).classList.add("show"); }
+function openSub(id) {
+  document.getElementById(id).classList.add("show");
+  // Marketplace : on charge la liste à l'ouverture
+  if (id === "sub-market" && typeof renderMarket === "function") renderMarket();
+}
 function closeSub(id) { document.getElementById(id).classList.remove("show"); }
+
+// ====================================================================
+// Marketplace K9 — annonces revente accessoires canins
+// Stockage local-first dans localStorage (cloud sync préparé pour plus tard)
+// ====================================================================
+const K9Market = (function() {
+  const KEY = "k9.market.v1";
+
+  // Annonces de démarrage (visibles dès la 1ère ouverture)
+  const SEED = [
+    {
+      id: "seed-canicross-belt",
+      title: "Ceinture canicross Howling Dog",
+      desc: "Ceinture taille S/M, utilisée 1 an pour entraînements. Très confortable, mousse intacte. Sangle de cuisse incluse. Vendue car je passe sur du bikejoring.",
+      price: 35,
+      cat: "sport",
+      cond: "good",
+      loc: "Annecy",
+      sellerName: "Léa",
+      sellerEmail: "demo+lea@k9-one.vercel.app",
+      photo: null,
+      emoji: "🏃",
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3,
+      _seed: true
+    },
+    {
+      id: "seed-xback-harness",
+      title: "Harnais X-back Manmat taille L",
+      desc: "Harnais de traction X-back en parfait état, tour de poitrine 60-70 cm. Idéal canicross/cani-VTT. Acheté 75 €, cédé 40 € car mon Husky a forci.",
+      price: 40,
+      cat: "sport",
+      cond: "excellent",
+      loc: "Grenoble",
+      sellerName: "Antoine",
+      sellerEmail: "demo+antoine@k9-one.vercel.app",
+      photo: null,
+      emoji: "🦮",
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 7,
+      _seed: true
+    },
+    {
+      id: "seed-orthopedic-bed",
+      title: "Panier orthopédique Hunter 100×70",
+      desc: "Panier orthopédique avec mousse à mémoire de forme, housse déhoussable lavable. Très peu utilisé, mon chien préfère le canapé. Couleur taupe.",
+      price: 55,
+      cat: "home",
+      cond: "excellent",
+      loc: "Paris 11e",
+      sellerName: "Sophie",
+      sellerEmail: "demo+sophie@k9-one.vercel.app",
+      photo: null,
+      emoji: "🛏️",
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 1,
+      _seed: true
+    },
+    {
+      id: "seed-bungee-line",
+      title: "Ligne de trait amortisseur 2 m",
+      desc: "Ligne de trait avec amortisseur élastique, longueur 2 m, mousqueton acier inox. Idéal pour débuter en canicross. Pas de signe d'usure.",
+      price: 18,
+      cat: "sport",
+      cond: "excellent",
+      loc: "Lyon",
+      sellerName: "Marc",
+      sellerEmail: "demo+marc@k9-one.vercel.app",
+      photo: null,
+      emoji: "🪢",
+      createdAt: Date.now() - 1000 * 60 * 60 * 12,
+      _seed: true
+    },
+    {
+      id: "seed-raincoat",
+      title: "Manteau imperméable Ruffwear taille M",
+      desc: "Manteau Ruffwear Sun Shower taille M (tour poitrine 56-66 cm), couleur orange. Imperméable et respirant. Utilisé 2 hivers, encore très bon état.",
+      price: 30,
+      cat: "cloth",
+      cond: "good",
+      loc: "Bordeaux",
+      sellerName: "Camille",
+      sellerEmail: "demo+camille@k9-one.vercel.app",
+      photo: null,
+      emoji: "🧥",
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 5,
+      _seed: true
+    },
+    {
+      id: "seed-kong",
+      title: "Kong Classic + 3 jouets éducatifs",
+      desc: "Lot : Kong Classic taille L (rouge) + balle Chuckit + tug en corde + tapis de fouille. Mon chien a grandi, plus intéressé. Tout est en très bon état.",
+      price: 22,
+      cat: "play",
+      cond: "good",
+      loc: "Toulouse",
+      sellerName: "Julie",
+      sellerEmail: "demo+julie@k9-one.vercel.app",
+      photo: null,
+      emoji: "🎾",
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 2,
+      _seed: true
+    },
+  ];
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return [...SEED];
+      const list = JSON.parse(raw);
+      if (!Array.isArray(list)) return [...SEED];
+      return list;
+    } catch (e) {
+      return [...SEED];
+    }
+  }
+
+  function save(list) {
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+  }
+
+  function add(item) {
+    const list = load();
+    const newItem = {
+      id: "k9m-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+      createdAt: Date.now(),
+      ...item
+    };
+    list.unshift(newItem);
+    save(list);
+    return newItem;
+  }
+
+  return { load, save, add };
+})();
+
+let _marketFilter = "all";
+let _marketCurrentItem = null;
+
+function _marketCatLabel(cat) {
+  const fr = currentLang !== "en";
+  const map = {
+    sport: fr ? "Sport canin" : "Dog sports",
+    walk:  fr ? "Promenade"   : "Walks",
+    home:  fr ? "Maison"      : "Home",
+    play:  fr ? "Jouets"      : "Toys",
+    cloth: fr ? "Vêtements"   : "Clothing"
+  };
+  return map[cat] || cat;
+}
+function _marketCatEmoji(cat) {
+  return ({ sport: "🏃", walk: "🦮", home: "🛏️", play: "🎾", cloth: "🧥" })[cat] || "📦";
+}
+function _marketCondLabel(cond) {
+  const fr = currentLang !== "en";
+  const map = {
+    new:       fr ? "Neuf"        : "New",
+    excellent: fr ? "Excellent"   : "Excellent",
+    good:      fr ? "Bon état"    : "Good",
+    fair:      fr ? "Correct"     : "Fair"
+  };
+  return map[cond] || cond;
+}
+function _marketTimeAgo(ts) {
+  const fr = currentLang !== "en";
+  const diff = Date.now() - ts;
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(h / 24);
+  if (d >= 7) return fr ? `il y a ${Math.floor(d/7)} sem.` : `${Math.floor(d/7)}w ago`;
+  if (d >= 1) return fr ? `il y a ${d} j` : `${d}d ago`;
+  if (h >= 1) return fr ? `il y a ${h} h` : `${h}h ago`;
+  return fr ? "à l'instant" : "just now";
+}
+
+function filterMarket(cat) {
+  _marketFilter = cat;
+  document.querySelectorAll(".market-filter").forEach(b => {
+    b.classList.toggle("active", b.dataset.cat === cat);
+  });
+  renderMarket();
+}
+
+function renderMarket() {
+  const el = document.getElementById("marketList");
+  if (!el) return;
+  const all = K9Market.load();
+  const filtered = (_marketFilter === "all") ? all : all.filter(i => i.cat === _marketFilter);
+  if (filtered.length === 0) {
+    el.innerHTML = `<div class="market-empty">
+      <div class="emoji">🛒</div>
+      <div class="title">${currentLang==='fr' ? "Aucune annonce dans cette catégorie" : "No listing in this category"}</div>
+      <div class="desc">${currentLang==='fr' ? "Sois le premier à publier !" : "Be the first to post!"}</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(item => {
+    const photo = item.photo
+      ? `<img src="${escapeHtml(item.photo)}" alt="${escapeHtml(item.title)}" />`
+      : (item.emoji || _marketCatEmoji(item.cat));
+    return `
+      <div class="market-item-card" onclick="openMarketDetail('${escapeHtml(item.id)}')">
+        <div class="mi-photo">${typeof photo === 'string' && photo.startsWith('<img') ? photo : `<span>${photo}</span>`}</div>
+        <div class="mi-body">
+          <div class="mi-title">${escapeHtml(item.title || "")}</div>
+          <div class="mi-meta">
+            <div class="mi-price">${item.price ? item.price + " €" : "—"}</div>
+            <div class="mi-loc">${escapeHtml(item.loc || "")}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function openMarketDetail(id) {
+  const item = K9Market.load().find(i => i.id === id);
+  if (!item) return;
+  _marketCurrentItem = item;
+  const fr = currentLang !== "en";
+  const body = document.getElementById("marketDetailBody");
+  const photo = item.photo
+    ? `<img src="${escapeHtml(item.photo)}" alt="${escapeHtml(item.title)}" />`
+    : `<span>${item.emoji || _marketCatEmoji(item.cat)}</span>`;
+  body.innerHTML = `
+    <div class="market-detail-photo">${photo}</div>
+    <div class="market-detail-cat">${_marketCatEmoji(item.cat)} ${_marketCatLabel(item.cat)}</div>
+    <div class="market-detail-title">${escapeHtml(item.title || "")}</div>
+    <div class="market-detail-price">${item.price ? item.price + " €" : "—"}</div>
+    <div class="market-detail-meta">
+      <span class="pill">${_marketCondLabel(item.cond)}</span>
+      ${item.loc ? `<span class="pill">📍 ${escapeHtml(item.loc)}</span>` : ""}
+      <span class="pill">⏱ ${_marketTimeAgo(item.createdAt)}</span>
+    </div>
+    <div class="market-detail-desc">${escapeHtml(item.desc || "")}</div>
+    <div class="market-detail-seller">
+      <strong>${escapeHtml(item.sellerName || (fr ? "Vendeur" : "Seller"))}</strong>
+      ${item._seed ? `<br/><span style="font-size: 11px; color: var(--gray);">${fr ? '🤖 Annonce de démonstration' : '🤖 Demo listing'}</span>` : ""}
+    </div>
+  `;
+  // Bouton contacter : adapté selon démo ou réel
+  const btn = document.getElementById("mdContactBtn");
+  if (item._seed) {
+    btn.textContent = fr ? "💡 Annonce de démonstration" : "💡 Demo listing";
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    btn.style.cursor = "default";
+  } else {
+    btn.textContent = fr ? "📧 Contacter le vendeur" : "📧 Contact seller";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+  }
+  document.getElementById("marketDetailModal").classList.add("show");
+}
+
+function closeMarketDetailModal() {
+  document.getElementById("marketDetailModal").classList.remove("show");
+  _marketCurrentItem = null;
+}
+
+function contactMarketSeller() {
+  if (!_marketCurrentItem || _marketCurrentItem._seed) return;
+  const it = _marketCurrentItem;
+  const fr = currentLang !== "en";
+  const subject = encodeURIComponent(
+    fr ? `[K9 Marketplace] Intéressé(e) par "${it.title}"` : `[K9 Marketplace] Interested in "${it.title}"`
+  );
+  const body = encodeURIComponent(
+    fr
+      ? `Bonjour ${it.sellerName || ""},\n\nJe suis intéressé(e) par ton annonce "${it.title}" à ${it.price} €.\n\n[Tes questions ici…]\n\nMerci !`
+      : `Hi ${it.sellerName || ""},\n\nI'm interested in your listing "${it.title}" for €${it.price}.\n\n[Your questions here…]\n\nThanks!`
+  );
+  window.location.href = `mailto:${it.sellerEmail}?subject=${subject}&body=${body}`;
+}
+
+function openMarketCreateModal() {
+  // Pré-remplir email si l'user en a un en local
+  const emailInput = document.getElementById("mfEmail");
+  if (emailInput && !emailInput.value) {
+    const owner = (typeof ownerState !== "undefined") ? ownerState : null;
+    if (owner && owner.email) emailInput.value = owner.email;
+  }
+  document.getElementById("mfErr").textContent = "";
+  document.getElementById("marketCreateModal").classList.add("show");
+}
+
+function closeMarketCreateModal() {
+  document.getElementById("marketCreateModal").classList.remove("show");
+}
+
+function onMarketPhotoChange(e) {
+  const file = e.target.files && e.target.files[0];
+  const preview = document.getElementById("mfPhotoPreview");
+  if (!file) { preview.classList.remove("active"); preview.innerHTML = ""; return; }
+  // Limit ~ 1 MB to avoid blowing localStorage
+  if (file.size > 1024 * 1024 * 2) {
+    document.getElementById("mfErr").textContent = currentLang==='fr'
+      ? "Photo trop lourde (max 2 Mo)" : "Photo too heavy (max 2 MB)";
+    e.target.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    // Compression légère via canvas
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 800;
+      const ratio = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * ratio);
+      const h = Math.round(img.height * ratio);
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = c.toDataURL("image/jpeg", 0.78);
+      preview.innerHTML = `<img src="${dataUrl}" alt="preview" />`;
+      preview.classList.add("active");
+      preview.dataset.src = dataUrl;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitMarketCreate() {
+  const fr = currentLang !== "en";
+  const errEl = document.getElementById("mfErr");
+  errEl.textContent = "";
+  const title = document.getElementById("mfTitle").value.trim();
+  const desc = document.getElementById("mfDesc").value.trim();
+  const cat = document.getElementById("mfCat").value;
+  const cond = document.getElementById("mfCond").value;
+  const priceRaw = document.getElementById("mfPrice").value;
+  const price = parseFloat(priceRaw);
+  const loc = document.getElementById("mfLoc").value.trim();
+  const email = document.getElementById("mfEmail").value.trim();
+  const photo = (document.getElementById("mfPhotoPreview").dataset.src) || null;
+
+  if (!title) { errEl.textContent = fr ? "Titre requis" : "Title required"; return; }
+  if (!desc || desc.length < 10) { errEl.textContent = fr ? "Description trop courte (10 car. min)" : "Description too short (10 chars min)"; return; }
+  if (!isFinite(price) || price < 0) { errEl.textContent = fr ? "Prix invalide" : "Invalid price"; return; }
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+    errEl.textContent = fr ? "Email de contact invalide" : "Invalid contact email";
+    return;
+  }
+
+  const sellerName = (typeof ownerState !== "undefined" && ownerState.name)
+    ? toTitleCase(ownerState.name)
+    : (fr ? "Membre K9" : "K9 member");
+
+  K9Market.add({
+    title, desc, price, cat, cond, loc, photo,
+    sellerName, sellerEmail: email,
+    emoji: _marketCatEmoji(cat)
+  });
+
+  // Reset form
+  ["mfTitle","mfDesc","mfPrice","mfLoc"].forEach(id => document.getElementById(id).value = "");
+  const preview = document.getElementById("mfPhotoPreview");
+  preview.classList.remove("active");
+  preview.innerHTML = "";
+  delete preview.dataset.src;
+  document.getElementById("mfPhoto").value = "";
+
+  closeMarketCreateModal();
+  filterMarket("all");
+  // Toast succès
+  const msg = fr ? "🎉 Annonce publiée ! Elle apparaît dans la liste." : "🎉 Listing published! It's now in the list.";
+  if (typeof showToast === "function") showToast(msg); else alert(msg);
+}
 
 // ---------- Language ----------
 // Injecte les variables dynamiques {dog}, {owner} et les pronoms selon le sexe
