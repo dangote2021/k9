@@ -1909,6 +1909,69 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
   flex-shrink: 0;
 }
 
+/* ===== Pros K9 (preview) ===== */
+.pros-tabs { display: flex; gap: 8px; padding: 4px 16px 12px; }
+.pros-tab {
+  flex: 1; background: #fff; border: 1.5px solid var(--line);
+  border-radius: 999px; padding: 9px 12px;
+  font-size: 13px; font-weight: 700; color: var(--ink-2);
+  cursor: pointer; transition: all .15s ease;
+}
+.pros-tab.active {
+  background: var(--forest); border-color: var(--forest); color: #fff;
+  box-shadow: 0 2px 8px rgba(45, 90, 61, 0.25);
+}
+.pros-zone-filter {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 16px 14px; padding: 10px 14px;
+  background: #fff; border: 1.5px solid var(--line); border-radius: 12px;
+  opacity: 0.7;
+}
+.pros-zone-icon { font-size: 16px; }
+.pros-zone-input { flex: 1; border: 0; padding: 0; background: transparent; font-size: 14px; cursor: not-allowed; }
+.pros-zone-lock { color: var(--gray); font-size: 14px; }
+.pros-list { display: flex; flex-direction: column; gap: 10px; padding: 0 16px 18px; }
+.pros-card {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff; border: 1px solid var(--line);
+  border-radius: 14px; padding: 14px;
+}
+.pros-card.pro-locked { opacity: 0.78; filter: grayscale(0.1); cursor: not-allowed; }
+.pros-card .pros-avatar {
+  width: 50px; height: 50px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--forest-soft); border-radius: 50%;
+  font-size: 26px; line-height: 1;
+}
+.pros-card .pros-info { flex: 1; min-width: 0; }
+.pros-card .pros-name {
+  font-size: 14.5px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.2px; line-height: 1.3;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+}
+.pros-card .pros-badge {
+  display: inline-block; background: var(--forest-soft); color: var(--forest);
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.3px;
+}
+.pros-card .pros-badge.sport { background: var(--brand-soft); color: var(--brand-dark); }
+.pros-card .pros-spec { font-size: 12px; color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
+.pros-card .pros-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; font-size: 11.5px; color: var(--ink-2); }
+.pros-card .pros-meta .pros-rating { font-weight: 700; color: #d97706; }
+.pros-card .pros-price { margin-top: 6px; font-size: 12.5px; font-weight: 700; color: var(--brand-dark); }
+.pros-card .pros-cta { align-self: center; flex-shrink: 0; font-size: 18px; opacity: 0.6; }
+
+.pros-anti-bypass {
+  margin: 16px 16px 6px; padding: 16px;
+  background: linear-gradient(135deg, #f5fbf7, #e8f4ee);
+  border: 1.5px solid var(--forest); border-radius: 16px;
+}
+.pros-anti-bypass .pab-title { font-size: 14px; font-weight: 800; color: var(--forest); margin-bottom: 12px; }
+.pros-anti-bypass .pab-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+.pros-anti-bypass .pab-row:last-child { margin-bottom: 0; }
+.pros-anti-bypass .pab-icon { font-size: 18px; flex-shrink: 0; width: 24px; }
+.pros-anti-bypass .pab-text { font-size: 12.5px; color: var(--ink); line-height: 1.55; }
+
 /* ===== Marketplace ===== */
 .marketplace-entry { padding: 6px 0 16px; }
 .market-cta-card {
@@ -3081,6 +3144,19 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         </div>
       </div>
 
+      <!-- Pros K9 — coach canin & pet-sitter (preview) -->
+      <div class="marketplace-entry">
+        <div class="section-title" data-i18n="pros_title">Pros K9</div>
+        <div class="market-cta-card" onclick="openSub('sub-pros')">
+          <div class="market-cta-icon" style="background: var(--forest);">👥</div>
+          <div class="market-cta-body">
+            <div class="market-cta-title" data-i18n="pros_open_t">Trouver un coach ou pet-sitter</div>
+            <div class="market-cta-sub" data-i18n="pros_open_sub">Réserve, paie et discute en toute sécurité dans l'app — coachs canins certifiés et pet-sitters de confiance.</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+      </div>
+
       <div id="social-discover" style="display:none;">
         <div class="empty-state">
           <div class="emoji">🗺️</div>
@@ -4145,6 +4221,170 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
   </div>
 
+  <!-- Pros K9 — coach canin + pet-sitter (preview) -->
+  <div class="sub-screen" id="sub-pros">
+    <div class="sub-header">
+      <button class="back" onclick="closeSub('sub-pros')">‹</button>
+      <div class="sub-title" data-i18n="pros_title">Pros K9</div>
+    </div>
+    <div class="sub-body">
+      <div class="coming-soon-banner">
+        <div class="cs-icon">🚧</div>
+        <div class="cs-text">
+          <div class="cs-title" data-i18n="pros_soon_t">Bientôt disponible</div>
+          <div class="cs-sub" data-i18n="pros_soon_d">Réservation in-app, paiement sécurisé, messagerie modérée. Lancement été 2026.</div>
+        </div>
+      </div>
+
+      <div class="pros-tabs">
+        <button class="pros-tab active" data-tab="coaches" onclick="switchProsTab('coaches')">🎓 <span data-i18n="pros_tab_coaches">Coachs canins</span></button>
+        <button class="pros-tab" data-tab="sitters" onclick="switchProsTab('sitters')">🏠 <span data-i18n="pros_tab_sitters">Pet-sitters</span></button>
+      </div>
+
+      <div class="pros-zone-filter">
+        <div class="pros-zone-icon">📍</div>
+        <input class="input pros-zone-input" placeholder="Saisis ta ville..." id="prosZoneInput" disabled />
+        <span class="pros-zone-lock">🔒</span>
+      </div>
+
+      <!-- Coachs canins -->
+      <div class="pros-list" id="pros-coaches">
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐕‍🦺</div>
+          <div class="pros-info">
+            <div class="pros-name">Léo Mercier <span class="pros-badge">Certifié EFC</span></div>
+            <div class="pros-spec" data-i18n="pros_coach_1_spec">Éducation positive · Réactivité · Rappel · Récup chiens timides</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Lyon · 25 km</span>
+              <span class="pros-rating">⭐ 4.9 (87)</span>
+            </div>
+            <div class="pros-price">À partir de 45€/séance</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐶</div>
+          <div class="pros-info">
+            <div class="pros-name">Sarah Boukhalfa <span class="pros-badge">Comportementaliste</span></div>
+            <div class="pros-spec" data-i18n="pros_coach_2_spec">Anxiété de séparation · Aboiement · Agressivité · Adoption rescue</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Paris · domicile</span>
+              <span class="pros-rating">⭐ 4.8 (124)</span>
+            </div>
+            <div class="pros-price">À partir de 60€/séance</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🦮</div>
+          <div class="pros-info">
+            <div class="pros-name">Antoine Galland <span class="pros-badge sport">Canicross</span></div>
+            <div class="pros-spec" data-i18n="pros_coach_3_spec">Coaching sportif · Canicross · Bikejoring · Préparation course</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Annecy · extérieur</span>
+              <span class="pros-rating">⭐ 5.0 (42)</span>
+            </div>
+            <div class="pros-price">À partir de 50€/séance</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐩</div>
+          <div class="pros-info">
+            <div class="pros-name">Camille Dufresne <span class="pros-badge">Chiots</span></div>
+            <div class="pros-spec" data-i18n="pros_coach_4_spec">Spécialiste chiots · Socialisation · Premiers apprentissages · Propreté</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Bordeaux · 15 km</span>
+              <span class="pros-rating">⭐ 4.9 (93)</span>
+            </div>
+            <div class="pros-price">À partir de 40€/séance</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+      </div>
+
+      <!-- Pet-sitters -->
+      <div class="pros-list" id="pros-sitters" style="display:none;">
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🏡</div>
+          <div class="pros-info">
+            <div class="pros-name">Marie Lavigne <span class="pros-badge">Vérifiée</span></div>
+            <div class="pros-spec" data-i18n="pros_sit_1_spec">Garde à domicile · Promenades · Maison avec jardin clos · Familiarisée chiens anxieux</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Toulouse · 5 km</span>
+              <span class="pros-rating">⭐ 4.9 (156)</span>
+            </div>
+            <div class="pros-price">25€/jour · 12€/promenade</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🐾</div>
+          <div class="pros-info">
+            <div class="pros-name">Yacine Berrada <span class="pros-badge sport">Sportif</span></div>
+            <div class="pros-spec" data-i18n="pros_sit_2_spec">Promenades longues 1-2h · Trails · Adapté grands chiens · Domicile vétérifié</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Grenoble · 10 km</span>
+              <span class="pros-rating">⭐ 5.0 (68)</span>
+            </div>
+            <div class="pros-price">15€/promenade · 30€/jour</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🌳</div>
+          <div class="pros-info">
+            <div class="pros-name">Élise Toussaint <span class="pros-badge">Multi-chiens</span></div>
+            <div class="pros-spec" data-i18n="pros_sit_3_spec">Garde 2-4 chiens · Maison campagne · Pension familiale · Photos quotidiennes</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Nantes · pension</span>
+              <span class="pros-rating">⭐ 4.9 (211)</span>
+            </div>
+            <div class="pros-price">22€/jour · -10% à partir de 5j</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+        <div class="pros-card pro-locked">
+          <div class="pros-avatar">🚶</div>
+          <div class="pros-info">
+            <div class="pros-name">Romain Pacheco <span class="pros-badge">Express</span></div>
+            <div class="pros-spec" data-i18n="pros_sit_4_spec">Promenades midi/après-midi · Visite 30 min à domicile · Disponibilité dernière minute</div>
+            <div class="pros-meta">
+              <span class="pros-loc">📍 Paris 11e</span>
+              <span class="pros-rating">⭐ 4.7 (89)</span>
+            </div>
+            <div class="pros-price">10€/visite · 8€ x4 visites</div>
+          </div>
+          <div class="pros-cta">🔒</div>
+        </div>
+      </div>
+
+      <div class="pros-anti-bypass">
+        <div class="pab-title" data-i18n="pros_safety_t">🔐 Comment ça marchera</div>
+        <div class="pab-row">
+          <div class="pab-icon">💳</div>
+          <div class="pab-text" data-i18n="pros_safety_1">Tu paies dans l'app via Stripe. Le pro est rémunéré seulement après prestation. K9 prélève 12% de commission.</div>
+        </div>
+        <div class="pab-row">
+          <div class="pab-icon">💬</div>
+          <div class="pab-text" data-i18n="pros_safety_2">Messagerie modérée intégrée. Pas d'échange de numéro/email, pas de bypass possible — protection mutuelle contre les conflits.</div>
+        </div>
+        <div class="pab-row">
+          <div class="pab-icon">🛡️</div>
+          <div class="pab-text" data-i18n="pros_safety_3">Pros vérifiés (KYC, certifications, casier vierge), avis clients honnêtes, médiation K9 en cas de litige.</div>
+        </div>
+        <div class="pab-row">
+          <div class="pab-icon">🐶</div>
+          <div class="pab-text" data-i18n="pros_safety_4">Le profil santé de ton chien est partagé automatiquement au pro choisi (vaccins, allergies, notes véto).</div>
+        </div>
+      </div>
+
+      <button class="btn forest" style="margin: 18px 16px 8px; width: calc(100% - 32px);" onclick="alert(currentLang==='fr' ? '🚧 Lancement été 2026 — tu seras notifié(e) en avant-première !' : '🚧 Launching summer 2026 — you\'ll be notified first!')" data-i18n="pros_notify">🔔 Me prévenir au lancement</button>
+
+      <div style="font-size: 11px; color: var(--ink-2); text-align: center; padding: 8px 16px 24px; line-height: 1.5;" data-i18n="pros_demo_note">Profils ci-dessus = exemples de démonstration. Les vrais pros K9 seront vérifiés un par un.</div>
+    </div>
+  </div>
+
   <!-- Marketplace K9 — annonces revente accessoires canins -->
   <div class="sub-screen" id="sub-market">
     <div class="sub-header">
@@ -4960,6 +5200,20 @@ const I18N = {
     pd_title2: "Goûter au parc des Buttes-Chaumont",
     attending2: "+ 2 chiens inscrits",
     create_pd: "+ Créer un playdate",
+    pros_title: "Pros K9",
+    pros_open_t: "Trouver un coach ou pet-sitter",
+    pros_open_sub: "Réserve, paie et discute en toute sécurité dans l'app — coachs canins certifiés et pet-sitters de confiance.",
+    pros_soon_t: "Bientôt disponible",
+    pros_soon_d: "Réservation in-app, paiement sécurisé, messagerie modérée. Lancement été 2026.",
+    pros_tab_coaches: "Coachs canins",
+    pros_tab_sitters: "Pet-sitters",
+    pros_safety_t: "🔐 Comment ça marchera",
+    pros_safety_1: "Tu paies dans l'app via Stripe. Le pro est rémunéré seulement après prestation. K9 prélève 12% de commission.",
+    pros_safety_2: "Messagerie modérée intégrée. Pas d'échange de numéro/email, pas de bypass possible — protection mutuelle contre les conflits.",
+    pros_safety_3: "Pros vérifiés (KYC, certifications, casier vierge), avis clients honnêtes, médiation K9 en cas de litige.",
+    pros_safety_4: "Le profil santé de ton chien est partagé automatiquement au pro choisi (vaccins, allergies, notes véto).",
+    pros_notify: "🔔 Me prévenir au lancement",
+    pros_demo_note: "Profils ci-dessus = exemples de démonstration. Les vrais pros K9 seront vérifiés un par un.",
     market_title: "Marketplace K9",
     market_open_t: "Acheter & vendre entre K9ers",
     market_open_sub: "Harnais, paniers, jouets, équipement canicross — d'occasion, entre passionnés.",
@@ -5435,6 +5689,20 @@ const I18N = {
     pd_title2: "Afternoon at Buttes-Chaumont",
     attending2: "+ 2 dogs signed up",
     create_pd: "+ Create a playdate",
+    pros_title: "K9 Pros",
+    pros_open_t: "Find a trainer or pet-sitter",
+    pros_open_sub: "Book, pay, and chat safely in the app — certified dog trainers and trusted pet-sitters.",
+    pros_soon_t: "Coming soon",
+    pros_soon_d: "In-app booking, secure payment, moderated messaging. Launching summer 2026.",
+    pros_tab_coaches: "Dog trainers",
+    pros_tab_sitters: "Pet-sitters",
+    pros_safety_t: "🔐 How it will work",
+    pros_safety_1: "You pay in-app via Stripe. The pro is paid only after the service. K9 takes a 12% commission.",
+    pros_safety_2: "In-app moderated messaging. No phone/email exchange, no bypass possible — mutual protection against disputes.",
+    pros_safety_3: "Verified pros (KYC, certifications, background check), honest reviews, K9 mediation in case of conflict.",
+    pros_safety_4: "Your dog's health profile is automatically shared with the chosen pro (vaccines, allergies, vet notes).",
+    pros_notify: "🔔 Notify me at launch",
+    pros_demo_note: "Profiles above = demo examples. Real K9 pros will be verified one by one.",
     market_title: "K9 Marketplace",
     market_open_t: "Buy & sell between K9ers",
     market_open_sub: "Harnesses, beds, toys, canicross gear — second-hand, between dog lovers.",
@@ -8216,6 +8484,15 @@ function openSub(id) {
   if (id === "sub-market" && typeof renderMarket === "function") renderMarket();
 }
 function closeSub(id) { document.getElementById(id).classList.remove("show"); }
+
+// ====================================================================
+// Pros K9 — preview / waitlist (coachs canins + pet-sitters)
+// ====================================================================
+function switchProsTab(name) {
+  document.querySelectorAll(".pros-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+  document.getElementById("pros-coaches").style.display = (name === "coaches") ? "" : "none";
+  document.getElementById("pros-sitters").style.display = (name === "sitters") ? "" : "none";
+}
 
 // ====================================================================
 // Marketplace K9 — annonces revente accessoires canins
