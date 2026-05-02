@@ -89,6 +89,10 @@
   --brand-soft: #FBE5D3;
   --forest: #2D5A3D;
   --forest-soft: #D7E4D9;
+  /* Aliases — patch pour variables référencées sans déclaration explicite */
+  --terra: #E87A3B;
+  --terra-dark: #C85F21;
+  --forest-dark: #1F4029;
   --cream: #FAF7F2;
   --cream-2: #F3EEE4;
   --ink: #1F1B16;
@@ -1903,6 +1907,40 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 }
 
 /* ===== Programme cards ===== */
+.coming-soon-banner {
+  display: flex; align-items: center; gap: 12px;
+  margin: 8px 16px 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #FFF4E1, #FDE0CB);
+  border: 1.5px solid var(--brand);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(232, 122, 59, 0.15);
+}
+.coming-soon-banner .cs-icon {
+  font-size: 28px; line-height: 1;
+  flex-shrink: 0;
+}
+.coming-soon-banner .cs-text { flex: 1; min-width: 0; }
+.coming-soon-banner .cs-title {
+  font-size: 14px; font-weight: 800; color: var(--brand-dark);
+  letter-spacing: -0.2px;
+}
+.coming-soon-banner .cs-sub {
+  font-size: 12px; color: var(--ink-2); margin-top: 2px; line-height: 1.4;
+}
+.prog-grid-locked .prog-card {
+  opacity: 0.65;
+  filter: grayscale(0.15);
+  pointer-events: none;
+  position: relative;
+}
+.prog-grid-locked .prog-card::after {
+  content: "🔒";
+  position: absolute;
+  top: 8px; right: 10px;
+  font-size: 14px;
+  opacity: 0.7;
+}
 .prog-grid {
   display: flex;
   gap: 10px;
@@ -2562,7 +2600,14 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
 
       <div class="section-title" data-i18n="sec_programs">Programmes dédiés</div>
-      <div class="prog-grid">
+      <div class="coming-soon-banner">
+        <div class="cs-icon">🚧</div>
+        <div class="cs-text">
+          <div class="cs-title" data-i18n="coming_soon_t">Bientôt disponible</div>
+          <div class="cs-sub" data-i18n="coming_soon_d">Les programmes complets arrivent. En attendant, jette un œil au pitch ci-dessous.</div>
+        </div>
+      </div>
+      <div class="prog-grid prog-grid-locked">
         <div class="prog-card puppy" onclick="openSub('sub-puppy')">
           <div class="emo">🐶</div>
           <h4 data-i18n="prog_puppy_t">100 premiers jours</h4>
@@ -4682,6 +4727,8 @@ const I18N = {
     spot_4_t: "Refuge de la Pra", spot_4_d: "Gamelle + couchage chien · sur réservation",
     // Programmes
     sec_programs: "Programmes dédiés",
+    coming_soon_t: "Bientôt disponible",
+    coming_soon_d: "Les programmes complets arrivent. En attendant, jette un œil au pitch ci-dessous.",
     prog_puppy_t: "100 premiers jours", prog_puppy_d: "Socialisation, propreté, premiers apprentissages.",
     prog_rescue_t: "Adoption rescue 3-3-3", prog_rescue_d: "Les trois étapes pour créer le lien de confiance.",
     prog_senior_t: "Vieillir ensemble", prog_senior_d: "Accompagner ton chien, avec tendresse et lucidité.",
@@ -5105,6 +5152,8 @@ const I18N = {
     spot_4_t: "La Pra mountain refuge", spot_4_d: "Dog bowl + bedding · on reservation",
     // Programmes
     sec_programs: "Dedicated programs",
+    coming_soon_t: "Coming soon",
+    coming_soon_d: "Full programs are on the way. Take a peek at the previews below.",
     prog_puppy_t: "First 100 days", prog_puppy_d: "Socialization, potty training, early learning.",
     prog_rescue_t: "Rescue 3-3-3", prog_rescue_d: "The three steps to build real trust.",
     prog_senior_t: "Growing old together", prog_senior_d: "Walk with your dog, with tenderness and clarity.",

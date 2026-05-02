@@ -6,10 +6,10 @@
       <stop offset="1" stop-color="#e76f51"/>
     </linearGradient>
   </defs>
-  <ellipse cx="62" cy="58" rx="13" ry="17" fill="url(#g)"/>
-  <ellipse cx="89" cy="40" rx="13" ry="17" fill="url(#g)"/>
-  <ellipse cx="111" cy="40" rx="13" ry="17" fill="url(#g)"/>
-  <ellipse cx="138" cy="58" rx="13" ry="17" fill="url(#g)"/>
+  <ellipse cx="54" cy="58" rx="13" ry="17" fill="url(#g)"/>
+  <ellipse cx="82" cy="40" rx="13" ry="17" fill="url(#g)"/>
+  <ellipse cx="118" cy="40" rx="13" ry="17" fill="url(#g)"/>
+  <ellipse cx="146" cy="58" rx="13" ry="17" fill="url(#g)"/>
   <path d="M68 88 C 68 70, 132 70, 132 88 C 150 106, 142 140, 100 140 C 58 140, 50 106, 68 88 Z" fill="url(#g)"/>
   <text x="100" y="200" text-anchor="middle"
         font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"

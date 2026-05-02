@@ -7,9 +7,9 @@
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#bg)"/>
-  <ellipse cx="318" cy="380" rx="78" ry="100" fill="#ffffff"/>
-  <ellipse cx="468" cy="270" rx="78" ry="100" fill="#ffffff"/>
-  <ellipse cx="556" cy="270" rx="78" ry="100" fill="#ffffff"/>
-  <ellipse cx="706" cy="380" rx="78" ry="100" fill="#ffffff"/>
+  <ellipse cx="276" cy="380" rx="78" ry="100" fill="#ffffff"/>
+  <ellipse cx="420" cy="270" rx="78" ry="100" fill="#ffffff"/>
+  <ellipse cx="604" cy="270" rx="78" ry="100" fill="#ffffff"/>
+  <ellipse cx="748" cy="380" rx="78" ry="100" fill="#ffffff"/>
   <path d="M348 540 C 348 440, 676 440, 676 540 C 786 640, 740 820, 512 820 C 284 820, 238 640, 348 540 Z" fill="#ffffff"/>
 </svg>
