@@ -7475,12 +7475,64 @@ async function submitAddFriend() {
 
 function proposePlaydateWith(friendId, friendName) {
   // Pré-remplit le modal create-playdate avec une note "avec X"
+  if (!_ensureCloudSignedIn("playdate")) return;
   openCreatePlaydateModal();
-  const notes = document.getElementById("pdNotes");
-  if (notes) {
-    const tag = currentLang === "fr" ? `Avec ${friendName}` : `With ${friendName}`;
-    notes.value = tag;
+  // Le DOM de la modal est asynchrone (innerHTML rendu) — petit délai
+  setTimeout(() => {
+    const notes = document.getElementById("pdNotes");
+    if (notes) {
+      const tag = currentLang === "fr" ? `Avec ${friendName}` : `With ${friendName}`;
+      notes.value = tag;
+    }
+  }, 30);
+}
+
+// Guard centralisé : avant toute action cloud, vérifie qu'on est connecté.
+// Si non, propose à l'utilisateur d'activer le cloud avec un message clair.
+function _ensureCloudSignedIn(action) {
+  const ready = (typeof K9Cloud !== "undefined") && K9Cloud.isReady && K9Cloud.isReady();
+  const signed = ready && K9Cloud.isSignedIn && K9Cloud.isSignedIn();
+  if (signed) return true;
+  const msgs = {
+    fr: {
+      playdate: "Pour créer un playdate, on a besoin du cloud (synchroniser avec d'autres K9ers).",
+      friend:   "Pour ajouter des amis, on a besoin du cloud activé.",
+      post:     "Pour publier dans la communauté, active le cloud.",
+      generic:  "Active le cloud pour utiliser cette fonctionnalité."
+    },
+    en: {
+      playdate: "Creating a playdate needs the cloud (to sync with other K9ers).",
+      friend:   "Adding friends needs the cloud activated.",
+      post:     "Posting in the community needs the cloud.",
+      generic:  "Activate the cloud to use this feature."
+    }
+  };
+  const lang = (currentLang === "en") ? "en" : "fr";
+  const text = msgs[lang][action] || msgs[lang].generic;
+  const cta = lang === "fr" ? "Activer le cloud" : "Activate cloud";
+  const skip = lang === "fr" ? "Plus tard" : "Later";
+  // Petit modal léger — réutilise le pattern upsell-modal
+  let m = document.getElementById("cloudGuardModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "cloudGuardModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
   }
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">☁️</div>
+      <h3 class="upsell-title">${lang === "fr" ? "Activons le cloud" : "Let's activate the cloud"}</h3>
+      <p class="upsell-sub">${text}</p>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="document.getElementById('cloudGuardModal').classList.remove('show'); openSub('sub-cloud-signin');">${cta}</button>
+        <button class="upsell-skip" onclick="document.getElementById('cloudGuardModal').classList.remove('show')">${skip}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
+  return false;
 }
 
 // ---- Playdates ----
@@ -7553,6 +7605,7 @@ async function cancelPlaydateUI(pdId) {
 }
 
 function openCreatePlaydateModal() {
+  if (!_ensureCloudSignedIn("playdate")) return;
   const t = _socialT();
   let m = document.getElementById("createPdModal");
   if (!m) {
@@ -7599,17 +7652,51 @@ async function submitCreatePlaydate() {
   const max = parseInt(document.getElementById("pdMax").value, 10) || 4;
   const notes = document.getElementById("pdNotes").value.trim();
   const errEl = document.getElementById("pdErr");
+  const submitBtn = document.querySelector("#createPdModal .upsell-cta");
   errEl.textContent = "";
   if (!place) { errEl.textContent = t.pd_place + " ?"; return; }
   if (!when) { errEl.textContent = t.pd_when + " ?"; return; }
-  const dog = DOGS[activeDogIdx];
-  const r = await K9Cloud.createPlaydate({
-    place, scheduledAt: new Date(when).toISOString(), notes,
-    maxDogs: max, dogId: dog?.id || null,
-  });
-  if (r.error) { errEl.textContent = r.error; return; }
-  closeCreatePdModal();
-  renderPlaydates();
+  // Vérif cloud (sécurité — au cas où on aurait bypassé openCreatePlaydateModal)
+  if (typeof K9Cloud === "undefined" || !K9Cloud.isReady() || !K9Cloud.isSignedIn()) {
+    errEl.textContent = currentLang === "fr"
+      ? "Cloud non activé — clique 'Annuler' puis 'Activer le cloud'."
+      : "Cloud not active — click 'Cancel' then 'Activate cloud'.";
+    return;
+  }
+  // Loading state
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = currentLang === "fr" ? "Création…" : "Creating…";
+  }
+  try {
+    const dog = DOGS[activeDogIdx];
+    const r = await K9Cloud.createPlaydate({
+      place, scheduledAt: new Date(when).toISOString(), notes,
+      maxDogs: max, dogId: dog?.id || null,
+    });
+    if (r && r.error) {
+      errEl.textContent = (typeof r.error === "string") ? r.error
+        : (currentLang === "fr" ? "Erreur lors de la création." : "Error creating playdate.");
+      return;
+    }
+    closeCreatePdModal();
+    renderPlaydates();
+    // Petit feedback de succès
+    const toast = currentLang === "fr"
+      ? `🎾 Playdate créé ! Tes amis peuvent maintenant rejoindre.`
+      : `🎾 Playdate created! Your friends can now join.`;
+    if (typeof showToast === "function") showToast(toast); else alert(toast);
+  } catch (e) {
+    console.error("[playdate] create error:", e);
+    errEl.textContent = currentLang === "fr"
+      ? "Erreur réseau. Réessaie dans un instant."
+      : "Network error. Please retry shortly.";
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = t.pd_create_btn;
+    }
+  }
 }
 
 // ---------- Sub-screens ----------
