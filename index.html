@@ -6380,7 +6380,9 @@ function renderDogSwitcher() {
   DOGS.forEach((d, i) => {
     const pill = document.createElement("div");
     pill.className = "dog-pill" + (i === activeDogIdx ? " active" : "");
-    pill.innerHTML = `<div class="ring">${d.emoji || "🐕"}</div><div class="lbl">${escapeHtml(toTitleCase(d.name) || "—")}</div>`;
+    const dispName = toTitleCase(d.name) || "—";
+    pill.title = dispName;
+    pill.innerHTML = `<div class="ring">${d.emoji || "🐕"}</div><div class="lbl">${escapeHtml(dispName)}</div>`;
     pill.onclick = () => selectDog(i);
     el.appendChild(pill);
   });
@@ -8881,13 +8883,13 @@ function openMarketDetail(id) {
       ${item._seed ? `<br/><span style="font-size: 11px; color: var(--gray);">${fr ? '🤖 Annonce de démonstration' : '🤖 Demo listing'}</span>` : ""}
     </div>
   `;
-  // Bouton contacter : adapté selon démo ou réel
+  // Bouton contacter : message explicite si annonce démo
   const btn = document.getElementById("mdContactBtn");
   if (item._seed) {
-    btn.textContent = fr ? "💡 Annonce de démonstration" : "💡 Demo listing";
-    btn.disabled = true;
-    btn.style.opacity = "0.6";
-    btn.style.cursor = "default";
+    btn.textContent = fr ? "💡 C'est une démo — voir détails" : "💡 This is a demo — details";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
   } else {
     btn.textContent = fr ? "📧 Contacter le vendeur" : "📧 Contact seller";
     btn.disabled = false;
@@ -8903,7 +8905,16 @@ function closeMarketDetailModal() {
 }
 
 function contactMarketSeller() {
-  if (!_marketCurrentItem || _marketCurrentItem._seed) return;
+  if (!_marketCurrentItem) return;
+  // Annonce de démo → expliquer plutôt qu'ouvrir un mailto vide
+  if (_marketCurrentItem._seed) {
+    const fr = currentLang !== "en";
+    alert(fr
+      ? "🤖 Cette annonce est une démonstration — créée pour montrer à quoi ressemble la marketplace.\n\nLes vraies annonces seront postées par les membres K9 dès le lancement public.\n\n👉 Tu peux dès maintenant publier la tienne (bouton ＋ en haut) !"
+      : "🤖 This listing is a demo — created to show what the marketplace looks like.\n\nReal listings will be posted by K9 members as soon as we launch publicly.\n\n👉 You can already post yours (＋ button at the top)!"
+    );
+    return;
+  }
   const it = _marketCurrentItem;
   const fr = currentLang !== "en";
   const subject = encodeURIComponent(
@@ -8966,10 +8977,31 @@ function onMarketPhotoChange(e) {
   reader.readAsDataURL(file);
 }
 
+// Estime l'usage localStorage en KB pour prévenir l'utilisateur avant le crash
+function _localStorageUsageKB() {
+  try {
+    let total = 0;
+    for (const key in localStorage) {
+      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+        total += (localStorage[key].length + key.length) * 2; // UTF-16 = 2 bytes/char
+      }
+    }
+    return Math.round(total / 1024);
+  } catch (e) { return 0; }
+}
+
 function submitMarketCreate() {
   const fr = currentLang !== "en";
   const errEl = document.getElementById("mfErr");
   errEl.textContent = "";
+  // Vérifier qu'on a de la place avant d'enregistrer une photo en base64
+  const usageKB = _localStorageUsageKB();
+  if (usageKB > 4500) {  // ~4.5 MB sur ~5 MB de quota Chrome/Safari mobile
+    errEl.textContent = fr
+      ? `⚠️ Stockage local presque plein (${usageKB} KB). Active le cloud (Réglages) pour publier sans limite.`
+      : `⚠️ Local storage nearly full (${usageKB} KB). Enable cloud (Settings) to post without limits.`;
+    return;
+  }
   const title = document.getElementById("mfTitle").value.trim();
   const desc = document.getElementById("mfDesc").value.trim();
   const cat = document.getElementById("mfCat").value;
@@ -9997,6 +10029,67 @@ function renderSubscriptionRow() {
   const hasCustomer = !!localStorage.getItem("k9_stripe_customer");
   row.style.display = (userPlan !== "free" || hasCustomer) ? "" : "none";
 }
+// Affiche un modal "liste d'attente" propre quand Stripe n'est pas branché
+// (compte en activation côté Guillaume). Évite d'exposer un message technique
+// à l'utilisateur qui clique sur 'Choisir Plus' ou 'Pro'.
+function _showWaitlistModal(plan) {
+  const fr = currentLang === "fr";
+  const planName = plan === "plus" ? "K9 Plus" : "K9 Pro";
+  const price = plan === "plus" ? "5,99€/mois" : "12€/mois";
+  let m = document.getElementById("waitlistModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "waitlistModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">⏳</div>
+      <h3 class="upsell-title">${planName} arrive très bientôt</h3>
+      <p class="upsell-sub">${fr
+        ? `Le paiement <strong>${price}</strong> est en cours d'activation. Laisse-nous ton email et on te prévient dès que c'est dispo (avec un code de bienvenue 🎁).`
+        : `Payment for <strong>${price}</strong> is being activated. Drop your email and we'll let you know the moment it's live (with a welcome code 🎁).`
+      }</p>
+      <input id="wlEmail" class="input" type="email" placeholder="${fr ? 'ton-email@exemple.fr' : 'your-email@example.com'}" style="margin-bottom: 8px;" />
+      <div id="wlMsg" style="font-size: 12px; color: var(--ink-2); min-height: 16px; margin-bottom: 8px;"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_submitWaitlist('${plan}')">${fr ? '🔔 Me prévenir au lancement' : '🔔 Notify me at launch'}</button>
+        <button class="upsell-skip" onclick="document.getElementById('waitlistModal').classList.remove('show')">${fr ? 'Plus tard' : 'Later'}</button>
+      </div>
+    </div>`;
+  // Pré-remplir si on connaît l'email
+  setTimeout(() => {
+    const input = document.getElementById("wlEmail");
+    if (input && ownerState && ownerState.email) input.value = ownerState.email;
+  }, 50);
+  m.classList.add("show");
+}
+
+function _submitWaitlist(plan) {
+  const fr = currentLang === "fr";
+  const email = (document.getElementById("wlEmail") || {}).value || "";
+  const msg = document.getElementById("wlMsg");
+  if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+    if (msg) msg.textContent = fr ? "Email invalide" : "Invalid email";
+    return;
+  }
+  // Persist localement (waitlist envoyable plus tard via cron côté serveur)
+  try {
+    const list = JSON.parse(localStorage.getItem("k9.waitlist") || "[]");
+    list.push({ plan, email: email.trim(), at: Date.now() });
+    localStorage.setItem("k9.waitlist", JSON.stringify(list));
+  } catch (e) {}
+  if (msg) msg.textContent = fr
+    ? "✅ Merci ! On te prévient dès le lancement."
+    : "✅ Thanks! We'll ping you at launch.";
+  setTimeout(() => {
+    document.getElementById("waitlistModal").classList.remove("show");
+  }, 1400);
+}
+
 async function setPlan(p) {
   // Free downgrade: direct
   if (p === "free") {
@@ -10027,9 +10120,8 @@ async function setPlan(p) {
       return;
     }
     if (data.mock) {
-      alert(data.message || (currentLang === "fr"
-        ? "Stripe n'est pas encore branché sur ce déploiement."
-        : "Stripe isn't wired up on this deployment yet."));
+      // Stripe en cours d'activation — proposer la liste d'attente plutôt qu'un message technique
+      _showWaitlistModal(p);
     } else {
       alert(currentLang === "fr" ? "Problème de paiement, réessaye." : "Payment error, try again.");
     }
