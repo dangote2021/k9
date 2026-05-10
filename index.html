@@ -2251,6 +2251,30 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 }
 
 /* ===== Programme cards ===== */
+.auth-google-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  background: #fff; color: #2e2a26;
+  border: 1.5px solid #dadce0; border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+.auth-google-btn:hover { background: #f8f9fa; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+.auth-google-btn:active { transform: scale(0.985); }
+
+.waitlist-banner {
+  display: flex; gap: 12px; align-items: center;
+  margin: 8px 16px 14px; padding: 12px 14px;
+  background: linear-gradient(135deg, #FFF8EB, #FFE9C7);
+  border: 1.5px solid #F2C16B; border-radius: 14px;
+}
+.waitlist-banner .wb-icon { font-size: 24px; flex-shrink: 0; }
+.waitlist-banner .wb-text { flex: 1; min-width: 0; }
+.waitlist-banner .wb-title { font-size: 13px; font-weight: 800; color: #5A4206; }
+.waitlist-banner .wb-sub { font-size: 11.5px; color: #4a3520; margin-top: 3px; line-height: 1.5; }
+
 .coming-soon-banner {
   display: flex; align-items: center; gap: 12px;
   margin: 8px 16px 14px;
@@ -4175,6 +4199,13 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     </div>
     <div class="sub-body">
       <div style="padding: 14px 16px 6px; font-size: 13px; color: var(--ink-2); text-align: center;" data-i18n="plan_intro">Le gratuit couvre les bases. Passe en Plus pour l'IA illimitée et tes chiens multiples.</div>
+      <div class="waitlist-banner" id="planWaitlistBanner">
+        <div class="wb-icon">⏳</div>
+        <div class="wb-text">
+          <div class="wb-title" data-i18n="plan_waitlist_t">Plans payants en activation</div>
+          <div class="wb-sub" data-i18n="plan_waitlist_d">L'app est 100% gratuite pour le moment. Inscris-toi sur la liste d'attente et tu recevras ton accès Plus/Pro avec un code de bienvenue dès le lancement (été 2026).</div>
+        </div>
+      </div>
       <div class="tier-grid" id="tierGrid">
         <div class="tier-card" id="tier-free">
           <div style="display:flex; justify-content: space-between; align-items: center;">
@@ -4206,7 +4237,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
             <li data-i18n="tier_plus_5">Rappels avancés (saisons, lunaison)</li>
             <li data-i18n="tier_plus_6">Badges premium</li>
           </ul>
-          <button id="tierPlusBtn" class="cta-primary" onclick="setPlan('plus')" data-i18n="tier_plus_cta">Choisir Plus</button>
+          <button id="tierPlusBtn" class="cta-primary" onclick="_showWaitlistModal('plus')" data-i18n="tier_plus_cta">🔔 Liste d'attente — gratuit</button>
         </div>
         <div class="tier-card" id="tier-pro">
           <div style="display:flex; justify-content: space-between; align-items: center;">
@@ -4223,7 +4254,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
             <li data-i18n="tier_pro_5">Multi-profils (pet-sitter, éleveur) — à venir</li>
             <li data-i18n="tier_pro_6">Rapport mensuel auto — à venir</li>
           </ul>
-          <button id="tierProBtn" class="cta-ghost" onclick="setPlan('pro')" data-i18n="tier_pro_cta">Rejoindre la bêta Pro</button>
+          <button id="tierProBtn" class="cta-ghost" onclick="_showWaitlistModal('pro')" data-i18n="tier_pro_cta">🔔 Liste d'attente — gratuit</button>
         </div>
       </div>
       <div style="padding: 0 16px 10px; font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.55;" data-i18n="plan_disclaimer">Paiement sécurisé par Stripe. Tu peux annuler à tout moment depuis l'Espace facturation.</div>
@@ -5485,7 +5516,9 @@ const I18N = {
     tier_plus_4: "Export PDF véto",
     tier_plus_5: "Rappels avancés (saisons, lunaison)",
     tier_plus_6: "Badges premium",
-    tier_plus_cta: "Choisir Plus",
+    tier_plus_cta: "🔔 Liste d'attente — gratuit",
+    plan_waitlist_t: "Plans payants en activation",
+    plan_waitlist_d: "L'app est 100% gratuite pour le moment. Inscris-toi sur la liste d'attente et tu recevras ton accès Plus/Pro avec un code de bienvenue dès le lancement (été 2026).",
     tier_pro_t: "K9 Pro", tier_pro_b: "Bêta",
     tier_pro_beta_note: "⚠️ Accès progressif : les features marquées « à venir » arrivent au fil de la bêta (Q3 2026).",
     tier_pro_1: "Tout K9 Plus",
@@ -5494,7 +5527,7 @@ const I18N = {
     tier_pro_4: "Dashboard clients & agenda — à venir",
     tier_pro_5: "Multi-profils (pet-sitter, éleveur) — à venir",
     tier_pro_6: "Rapport mensuel auto — à venir",
-    tier_pro_cta: "Rejoindre la bêta Pro",
+    tier_pro_cta: "🔔 Liste d'attente — gratuit",
     profile_badges: "Mes badges",
     badge_first: "Premier pas", badge_walker: "Randonneur", badge_learner: "Élève appliqué",
     badge_social: "Sociable", badge_health: "Santé de fer", badge_photo: "Photographe",
@@ -5980,7 +6013,9 @@ const I18N = {
     tier_plus_4: "Vet PDF export",
     tier_plus_5: "Advanced reminders (seasons, moon)",
     tier_plus_6: "Premium badges",
-    tier_plus_cta: "Choose Plus",
+    tier_plus_cta: "🔔 Join waitlist — free",
+    plan_waitlist_t: "Paid plans being activated",
+    plan_waitlist_d: "The app is 100% free for now. Join the waitlist and you'll get your Plus/Pro access with a welcome code at launch (summer 2026).",
     tier_pro_t: "K9 Pro", tier_pro_b: "Beta",
     tier_pro_beta_note: "⚠️ Progressive access: features marked 'coming soon' land during the beta (Q3 2026).",
     tier_pro_1: "Everything in Plus",
@@ -5989,7 +6024,7 @@ const I18N = {
     tier_pro_4: "Client dashboard & calendar — coming",
     tier_pro_5: "Multi-profiles (pet-sitters, breeders) — coming",
     tier_pro_6: "Monthly auto-report — coming",
-    tier_pro_cta: "Join Pro beta",
+    tier_pro_cta: "🔔 Join waitlist — free",
     profile_badges: "My badges",
     badge_first: "First step", badge_walker: "Hiker", badge_learner: "Dedicated student",
     badge_social: "Social", badge_health: "Iron health", badge_photo: "Photographer",
@@ -6365,11 +6400,19 @@ function obFinish() {
   }
   renderDogSwitcher();
   onboardingDone = true;
+  // Marque le 1er usage post-onboarding (pour calculer J+7 d'auth)
+  try {
+    if (!localStorage.getItem("k9.firstUseAt")) {
+      localStorage.setItem("k9.firstUseAt", String(Date.now()));
+    }
+  } catch (e) {}
   K9Store.save();
   if (typeof renderIDCard === "function") renderIDCard();
   if (typeof applySeniorMode === "function") applySeniorMode();
   if (typeof checkBirthdayBanner === "function") checkBirthdayBanner();
   if (typeof renderPlanBadge === "function") renderPlanBadge();
+  // Demande la sauvegarde sur K9 Cloud (skippable < 7j, obligatoire ≥ 7j)
+  setTimeout(() => { if (typeof maybePromptAuth === "function") maybePromptAuth(); }, 1200);
 }
 
 // ---------- Multi-chien switcher ----------
@@ -10090,6 +10133,155 @@ function _submitWaitlist(plan) {
   }, 1400);
 }
 
+// ====================================================================
+// Auth obligatoire (magic link email + Google OAuth)
+// Skippable les 7 premiers jours d'usage post-onboarding,
+// non-skippable au-delà — pour résoudre B1 du panel (perte de données
+// après désinstall, 4/15 testeurs concernés).
+// ====================================================================
+function _daysSinceFirstUse() {
+  try {
+    const ts = parseInt(localStorage.getItem("k9.firstUseAt") || "0", 10);
+    if (!ts) return 0;
+    return (Date.now() - ts) / (1000 * 60 * 60 * 24);
+  } catch (e) { return 0; }
+}
+
+function _authPromptDismissedRecently() {
+  // Skip cooldown 24h pour éviter de spammer
+  try {
+    const last = parseInt(localStorage.getItem("k9.authPromptDismissedAt") || "0", 10);
+    if (!last) return false;
+    return (Date.now() - last) < 24 * 60 * 60 * 1000;
+  } catch (e) { return false; }
+}
+
+function maybePromptAuth() {
+  // Si déjà connecté ou Cloud pas dispo (offline), on ne montre rien
+  const cloudReady = (typeof K9Cloud !== "undefined") && K9Cloud.isReady && K9Cloud.isReady();
+  if (!cloudReady) return;
+  if (K9Cloud.isSignedIn && K9Cloud.isSignedIn()) return;
+  // L'onboarding doit être terminé
+  if (typeof onboardingDone === "undefined" || !onboardingDone) return;
+  const days = _daysSinceFirstUse();
+  const mandatory = days >= 7;
+  if (!mandatory && _authPromptDismissedRecently()) return;
+  _showAuthModal(mandatory);
+}
+
+function _showAuthModal(mandatory) {
+  const fr = currentLang === "fr";
+  let m = document.getElementById("authModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "authModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    // Backdrop click ferme uniquement si pas obligatoire
+    m.addEventListener("click", (e) => {
+      if (e.target === m && m.dataset.mandatory !== "1") _dismissAuthModal(false);
+    });
+  }
+  m.dataset.mandatory = mandatory ? "1" : "0";
+  const title = mandatory
+    ? (fr ? "🔐 Sauvegarde tes données K9" : "🔐 Save your K9 data")
+    : (fr ? "💾 Sauvegarde ton chien sur K9" : "💾 Save your dog on K9");
+  const intro = mandatory
+    ? (fr
+        ? "Cela fait 7 jours que tu utilises K9. Pour ne JAMAIS perdre les infos santé de ton chien (même si tu changes de téléphone ou réinstalles l'app), crée ton compte gratuit en 10 secondes."
+        : "You've been using K9 for 7 days. To NEVER lose your dog's health data (even when you switch phones or reinstall the app), create your free account in 10 seconds.")
+    : (fr
+        ? "Crée ton compte K9 gratuit pour synchroniser tes données entre tes appareils et les retrouver après une réinstallation. Tu peux aussi attendre — on te le rappellera dans quelques jours."
+        : "Create your free K9 account to sync your data across devices and recover it after a reinstall. You can also wait — we'll remind you in a few days.");
+  const skipLabel = mandatory
+    ? (fr ? "Je m'inscris d'abord ↑" : "Sign up first ↑")
+    : (fr ? "Plus tard" : "Later");
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">🔐</div>
+      <h3 class="upsell-title">${title}</h3>
+      <p class="upsell-sub">${intro}</p>
+      <input id="authEmail" class="input" type="email" placeholder="${fr ? 'ton-email@exemple.fr' : 'your-email@example.com'}" autocomplete="email" style="margin: 4px 0 8px;" />
+      <div id="authMsg" style="font-size: 12.5px; min-height: 18px; margin: 0 0 8px; color: var(--ink-2);"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_authMagicLink()">${fr ? '📧 Recevoir un lien magique' : '📧 Send me a magic link'}</button>
+        <button class="auth-google-btn" onclick="_authGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle; margin-right:8px;"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          ${fr ? 'Continuer avec Google' : 'Continue with Google'}
+          <span style="font-size: 10px; opacity: .55; margin-left: 6px;">(bientôt)</span>
+        </button>
+        ${mandatory ? "" : `<button class="upsell-skip" onclick="_dismissAuthModal(true)">${skipLabel}</button>`}
+      </div>
+      <p style="font-size: 10.5px; color: var(--gray); margin: 12px 0 0; text-align: center; line-height: 1.5;">${fr
+        ? "Aucun mot de passe. On t'envoie un lien sécurisé par email. <a href='/legal/privacy' style='color: var(--brand);'>Vie privée</a>"
+        : "No password. We email you a secure link. <a href='/legal/privacy' style='color: var(--brand);'>Privacy</a>"
+      }</p>
+    </div>`;
+  // Pré-remplir email si on en a un
+  setTimeout(() => {
+    const input = document.getElementById("authEmail");
+    if (input) {
+      try {
+        const last = localStorage.getItem("k9.lastAuthEmail") || "";
+        if (last && !input.value) input.value = last;
+      } catch (e) {}
+    }
+  }, 50);
+  m.classList.add("show");
+}
+
+function _dismissAuthModal(userClicked) {
+  const m = document.getElementById("authModal");
+  if (m && m.dataset.mandatory === "1") return; // ne ferme pas si obligatoire
+  if (m) m.classList.remove("show");
+  if (userClicked) {
+    try { localStorage.setItem("k9.authPromptDismissedAt", String(Date.now())); } catch (e) {}
+  }
+}
+
+async function _authMagicLink() {
+  const fr = currentLang === "fr";
+  const input = document.getElementById("authEmail");
+  const msg = document.getElementById("authMsg");
+  const email = (input && input.value || "").trim();
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    if (msg) { msg.style.color = "#b91c1c"; msg.textContent = fr ? "Email invalide" : "Invalid email"; }
+    return;
+  }
+  if (msg) { msg.style.color = "var(--ink-2)"; msg.textContent = fr ? "Envoi en cours…" : "Sending…"; }
+  try {
+    if (typeof K9Cloud === "undefined" || !K9Cloud.isReady()) {
+      throw new Error("Cloud not ready");
+    }
+    await K9Cloud.signIn(email);
+    try { localStorage.setItem("k9.lastAuthEmail", email); } catch (e) {}
+    if (msg) {
+      msg.style.color = "var(--forest)";
+      msg.innerHTML = fr
+        ? "✅ Vérifie tes emails — le lien arrive dans 30s."
+        : "✅ Check your inbox — the link arrives in 30s.";
+    }
+    // Ne pas dismiss : si user revient sans avoir cliqué le lien, le modal réapparaît
+  } catch (e) {
+    console.error("[auth] magic link error:", e);
+    if (msg) {
+      msg.style.color = "#b91c1c";
+      msg.textContent = fr
+        ? "Erreur d'envoi. Réessaie dans un instant."
+        : "Send error. Try again shortly.";
+    }
+  }
+}
+
+function _authGoogle() {
+  const fr = currentLang === "fr";
+  alert(fr
+    ? "🚧 Connexion Google en cours d'activation côté Supabase. Pour le moment, utilise le lien par email — c'est aussi rapide et sans mot de passe."
+    : "🚧 Google sign-in is being activated on Supabase. For now, use the email magic link — it's just as fast and password-free."
+  );
+}
+
 async function setPlan(p) {
   // Free downgrade: direct
   if (p === "free") {
@@ -10544,6 +10736,14 @@ handleCheckoutReturn();
 // 3. Si l'utilisateur a déjà onboardé (chien existant), on saute directement à l'app
 if (onboardingDone && DOGS.length > 0) {
   document.getElementById("onboarding").classList.remove("show");
+  // Si firstUseAt n'a jamais été marqué (utilisateur antérieur à v5.7), on le set maintenant
+  try {
+    if (!localStorage.getItem("k9.firstUseAt")) {
+      localStorage.setItem("k9.firstUseAt", String(Date.now()));
+    }
+  } catch (e) {}
+  // Re-prompt de sauvegarde compte à chaque boot (skippable < 7j, obligatoire ≥ 7j)
+  setTimeout(() => { if (typeof maybePromptAuth === "function") maybePromptAuth(); }, 1500);
   // Réhydrate l'affichage avec le chien actif
   selectDog(activeDogIdx);
   // Réapplique les toggles persistés
