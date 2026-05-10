@@ -1972,6 +1972,43 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 .pros-anti-bypass .pab-icon { font-size: 18px; flex-shrink: 0; width: 24px; }
 .pros-anti-bypass .pab-text { font-size: 12.5px; color: var(--ink); line-height: 1.55; }
 
+.pros-waitlist-hero {
+  margin: 8px 16px 16px;
+  padding: 22px 20px 18px;
+  background: linear-gradient(135deg, #f5fbf7 0%, #e8f4ee 100%);
+  border: 1.5px solid var(--forest);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(45, 90, 61, 0.08);
+}
+.pros-waitlist-hero .pwh-illu {
+  font-size: 44px; line-height: 1;
+  background: var(--forest-soft);
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+.pros-waitlist-hero .pwh-title {
+  font-size: 18px; font-weight: 800; color: var(--forest);
+  letter-spacing: -0.3px; margin-bottom: 6px;
+}
+.pros-waitlist-hero .pwh-sub {
+  font-size: 13px; color: var(--ink-2);
+  line-height: 1.55; margin-bottom: 16px;
+}
+.pros-waitlist-hero .pwh-form {
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: 380px; margin: 0 auto;
+}
+.pros-waitlist-hero .pwh-form .input {
+  padding: 11px 13px; font-size: 14px;
+  background: #fff;
+}
+.pros-waitlist-hero .pwh-form .btn {
+  width: 100%;
+}
+
 .pros-become {
   display: flex; gap: 12px; align-items: flex-start;
   margin: 14px 16px 6px; padding: 16px;
@@ -4286,233 +4323,16 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <button class="pros-tab" data-tab="photographers" onclick="switchProsTab('photographers')">📷 <span data-i18n="pros_tab_photographers">Photo</span></button>
       </div>
 
-      <div class="pros-zone-filter">
-        <div class="pros-zone-icon">📍</div>
-        <input class="input pros-zone-input" placeholder="Saisis ta ville..." id="prosZoneInput" disabled />
-        <span class="pros-zone-lock">🔒</span>
-      </div>
-
-      <!-- Coachs canins -->
-      <div class="pros-list" id="pros-coaches">
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐕‍🦺</div>
-          <div class="pros-info">
-            <div class="pros-name">Léo Mercier <span class="pros-badge">Certifié EFC</span></div>
-            <div class="pros-spec" data-i18n="pros_coach_1_spec">Éducation positive · Réactivité · Rappel · Récup chiens timides</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Lyon · 25 km</span>
-              <span class="pros-rating">⭐ 4.9 (87)</span>
-            </div>
-            <div class="pros-price">À partir de 45€/séance</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐶</div>
-          <div class="pros-info">
-            <div class="pros-name">Sarah Boukhalfa <span class="pros-badge">Comportementaliste</span></div>
-            <div class="pros-spec" data-i18n="pros_coach_2_spec">Anxiété de séparation · Aboiement · Agressivité · Adoption rescue</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Paris · domicile</span>
-              <span class="pros-rating">⭐ 4.8 (124)</span>
-            </div>
-            <div class="pros-price">À partir de 60€/séance</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🦮</div>
-          <div class="pros-info">
-            <div class="pros-name">Antoine Galland <span class="pros-badge sport">Canicross</span></div>
-            <div class="pros-spec" data-i18n="pros_coach_3_spec">Coaching sportif · Canicross · Bikejoring · Préparation course</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Annecy · extérieur</span>
-              <span class="pros-rating">⭐ 5.0 (42)</span>
-            </div>
-            <div class="pros-price">À partir de 50€/séance</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐩</div>
-          <div class="pros-info">
-            <div class="pros-name">Camille Dufresne <span class="pros-badge">Chiots</span></div>
-            <div class="pros-spec" data-i18n="pros_coach_4_spec">Spécialiste chiots · Socialisation · Premiers apprentissages · Propreté</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Bordeaux · 15 km</span>
-              <span class="pros-rating">⭐ 4.9 (93)</span>
-            </div>
-            <div class="pros-price">À partir de 40€/séance</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-      </div>
-
-      <!-- Pet-sitters -->
-      <div class="pros-list" id="pros-sitters" style="display:none;">
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🏡</div>
-          <div class="pros-info">
-            <div class="pros-name">Marie Lavigne <span class="pros-badge">Vérifiée</span></div>
-            <div class="pros-spec" data-i18n="pros_sit_1_spec">Garde à domicile · Promenades · Maison avec jardin clos · Familiarisée chiens anxieux</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Toulouse · 5 km</span>
-              <span class="pros-rating">⭐ 4.9 (156)</span>
-            </div>
-            <div class="pros-price">25€/jour · 12€/promenade</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐾</div>
-          <div class="pros-info">
-            <div class="pros-name">Yacine Berrada <span class="pros-badge sport">Sportif</span></div>
-            <div class="pros-spec" data-i18n="pros_sit_2_spec">Promenades longues 1-2h · Trails · Adapté grands chiens · Domicile vétérifié</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Grenoble · 10 km</span>
-              <span class="pros-rating">⭐ 5.0 (68)</span>
-            </div>
-            <div class="pros-price">15€/promenade · 30€/jour</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🌳</div>
-          <div class="pros-info">
-            <div class="pros-name">Élise Toussaint <span class="pros-badge">Multi-chiens</span></div>
-            <div class="pros-spec" data-i18n="pros_sit_3_spec">Garde 2-4 chiens · Maison campagne · Pension familiale · Photos quotidiennes</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Nantes · pension</span>
-              <span class="pros-rating">⭐ 4.9 (211)</span>
-            </div>
-            <div class="pros-price">22€/jour · -10% à partir de 5j</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🚶</div>
-          <div class="pros-info">
-            <div class="pros-name">Romain Pacheco <span class="pros-badge">Express</span></div>
-            <div class="pros-spec" data-i18n="pros_sit_4_spec">Promenades midi/après-midi · Visite 30 min à domicile · Disponibilité dernière minute</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Paris 11e</span>
-              <span class="pros-rating">⭐ 4.7 (89)</span>
-            </div>
-            <div class="pros-price">10€/visite · 8€ x4 visites</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-      </div>
-
-      <!-- Toilettage -->
-      <div class="pros-list" id="pros-groomers" style="display:none;">
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">✂️</div>
-          <div class="pros-info">
-            <div class="pros-name">Aurélie Pelissier <span class="pros-badge">Salon</span></div>
-            <div class="pros-spec" data-i18n="pros_groom_1_spec">Toutes races · Salon climatisé · Spécialisée poils longs · Tonte ciseaux</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Lyon 6e</span>
-              <span class="pros-rating">⭐ 4.9 (203)</span>
-            </div>
-            <div class="pros-price">À partir de 35€ (petite race)</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🧴</div>
-          <div class="pros-info">
-            <div class="pros-name">Marc Tibault <span class="pros-badge">À domicile</span></div>
-            <div class="pros-spec" data-i18n="pros_groom_2_spec">Toilettage à domicile · Camion équipé · Adapté chiens stressés</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Île-de-France · 30 km</span>
-              <span class="pros-rating">⭐ 5.0 (78)</span>
-            </div>
-            <div class="pros-price">À partir de 65€ (déplacement inclus)</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐩</div>
-          <div class="pros-info">
-            <div class="pros-name">Léa Marchetti <span class="pros-badge sport">Show</span></div>
-            <div class="pros-spec" data-i18n="pros_groom_3_spec">Coupes show / exposition · Caniches, terriers, bichons · Diplômée TNCC</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Marseille 8e</span>
-              <span class="pros-rating">⭐ 4.8 (52)</span>
-            </div>
-            <div class="pros-price">À partir de 55€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🛁</div>
-          <div class="pros-info">
-            <div class="pros-name">Karim Belaid <span class="pros-badge">Express</span></div>
-            <div class="pros-spec" data-i18n="pros_groom_4_spec">Bain rapide · Démêlage · Coupe griffes · Sans rendez-vous le samedi</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Toulouse Centre</span>
-              <span class="pros-rating">⭐ 4.7 (164)</span>
-            </div>
-            <div class="pros-price">Bain dès 18€ · Coupe dès 40€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-      </div>
-
-      <!-- Photographes canins -->
-      <div class="pros-list" id="pros-photographers" style="display:none;">
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">📷</div>
-          <div class="pros-info">
-            <div class="pros-name">Inès Vasquez <span class="pros-badge">Studio</span></div>
-            <div class="pros-spec" data-i18n="pros_photo_1_spec">Portrait studio · Fond personnalisé · 15 photos retouchées · Tirage offert</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Paris 13e</span>
-              <span class="pros-rating">⭐ 4.9 (61)</span>
-            </div>
-            <div class="pros-price">Séance 1h dès 120€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🌅</div>
-          <div class="pros-info">
-            <div class="pros-name">Hugo Renard <span class="pros-badge sport">Action</span></div>
-            <div class="pros-spec" data-i18n="pros_photo_2_spec">Photos extérieur · Action / sport · Forêt, plage, montagne · Galerie HD</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Bordeaux & Sud-Ouest</span>
-              <span class="pros-rating">⭐ 5.0 (37)</span>
-            </div>
-            <div class="pros-price">Reportage 90 min dès 150€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🐾</div>
-          <div class="pros-info">
-            <div class="pros-name">Sophie Berthier <span class="pros-badge">Lifestyle</span></div>
-            <div class="pros-spec" data-i18n="pros_photo_3_spec">Photos lifestyle famille + chien · Domicile / parc · Album imprimé inclus</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Lyon · 50 km</span>
-              <span class="pros-rating">⭐ 4.8 (94)</span>
-            </div>
-            <div class="pros-price">Mini-séance 30 min dès 90€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
-        </div>
-        <div class="pros-card pro-locked">
-          <div class="pros-avatar">🎨</div>
-          <div class="pros-info">
-            <div class="pros-name">Thomas Verdon <span class="pros-badge">Senior</span></div>
-            <div class="pros-spec" data-i18n="pros_photo_4_spec">Spécialisé chiens seniors · Séances douces, format souvenir, livret photo</div>
-            <div class="pros-meta">
-              <span class="pros-loc">📍 Nantes · domicile</span>
-              <span class="pros-rating">⭐ 5.0 (28)</span>
-            </div>
-            <div class="pros-price">Séance souvenir dès 110€</div>
-          </div>
-          <div class="pros-cta">🔒</div>
+      <!-- Carte capture waitlist par catégorie (remplace les profils démo verrouillés) -->
+      <div class="pros-waitlist-hero">
+        <div class="pwh-illu" id="pwh-illu">🎓</div>
+        <div class="pwh-title" id="pwh-title" data-i18n="pwh_coaches_t">Coachs canins certifiés</div>
+        <div class="pwh-sub" id="pwh-sub" data-i18n="pwh_coaches_d">Éducation positive, comportementalistes, coachs sportifs (canicross). Lancement prévu été 2026.</div>
+        <div class="pwh-form">
+          <input id="prosWaitEmail" class="input" type="email" placeholder="ton-email@exemple.fr" autocomplete="email" />
+          <input id="prosWaitCity" class="input" placeholder="Ta ville (ex. Paris, Lyon...)" />
+          <button class="btn forest" onclick="_submitProsWaitlist()" data-i18n="pwh_cta">🔔 Me prévenir au lancement</button>
+          <div id="prosWaitMsg" style="font-size: 12.5px; min-height: 18px; margin-top: 6px; text-align: center;"></div>
         </div>
       </div>
 
@@ -4547,7 +4367,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         </div>
       </div>
 
-      <div style="font-size: 11px; color: var(--ink-2); text-align: center; padding: 8px 16px 24px; line-height: 1.5;" data-i18n="pros_demo_note">Profils ci-dessus = exemples de démonstration. Les vrais pros K9 seront vérifiés un par un.</div>
+      <div style="font-size: 11px; color: var(--ink-2); text-align: center; padding: 8px 16px 24px; line-height: 1.5;" data-i18n="pros_demo_note">Tous les pros K9 seront vérifiés un par un (certifications, KYC, casier). Lancement été 2026.</div>
     </div>
   </div>
 
@@ -5384,7 +5204,8 @@ const I18N = {
     pros_safety_3: "Pros vérifiés (KYC, certifications, casier vierge), avis clients honnêtes, médiation K9 en cas de litige.",
     pros_safety_4: "Le profil santé de ton chien est partagé automatiquement au pro choisi (vaccins, allergies, notes véto).",
     pros_notify: "🔔 Me prévenir au lancement",
-    pros_demo_note: "Profils ci-dessus = exemples de démonstration. Les vrais pros K9 seront vérifiés un par un.",
+    pros_demo_note: "Tous les pros K9 seront vérifiés un par un (certifications, KYC, casier). Lancement été 2026.",
+    pwh_cta: "🔔 Me prévenir au lancement",
     market_title: "Marketplace K9",
     market_open_t: "Acheter & vendre entre K9ers",
     market_open_sub: "Harnais, paniers, jouets, équipement canicross — d'occasion, entre passionnés.",
@@ -5881,7 +5702,8 @@ const I18N = {
     pros_safety_3: "Verified pros (KYC, certifications, background check), honest reviews, K9 mediation in case of conflict.",
     pros_safety_4: "Your dog's health profile is automatically shared with the chosen pro (vaccines, allergies, vet notes).",
     pros_notify: "🔔 Notify me at launch",
-    pros_demo_note: "Profiles above = demo examples. Real K9 pros will be verified one by one.",
+    pros_demo_note: "All K9 pros will be verified one by one (certifications, KYC, background check). Launching summer 2026.",
+    pwh_cta: "🔔 Notify me at launch",
     market_title: "K9 Marketplace",
     market_open_t: "Buy & sell between K9ers",
     market_open_sub: "Harnesses, beds, toys, canicross gear — second-hand, between dog lovers.",
@@ -8682,10 +8504,81 @@ function closeSub(id) { document.getElementById(id).classList.remove("show"); }
 // ====================================================================
 function switchProsTab(name) {
   document.querySelectorAll(".pros-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
-  ["coaches","sitters","groomers","photographers"].forEach(t => {
-    const el = document.getElementById("pros-" + t);
-    if (el) el.style.display = (t === name) ? "" : "none";
-  });
+  // Met à jour la carte hero waitlist selon la catégorie
+  const fr = (currentLang !== "en");
+  const data = {
+    coaches: {
+      illu: "🎓",
+      t_fr: "Coachs canins certifiés",
+      t_en: "Certified dog trainers",
+      d_fr: "Éducation positive, comportementalistes, coachs sportifs (canicross). Lancement prévu été 2026.",
+      d_en: "Positive training, behaviorists, sports coaches (canicross). Launching summer 2026."
+    },
+    sitters: {
+      illu: "🏠",
+      t_fr: "Pet-sitters de confiance",
+      t_en: "Trusted pet-sitters",
+      d_fr: "Garde à domicile, promenades, pension familiale — tous KYC vérifiés. Lancement prévu été 2026.",
+      d_en: "Home boarding, walks, family pensions — all KYC-verified. Launching summer 2026."
+    },
+    groomers: {
+      illu: "✂️",
+      t_fr: "Toiletteurs canins",
+      t_en: "Dog groomers",
+      d_fr: "Salons climatisés, toilettage à domicile, coupes show. Lancement prévu été 2026.",
+      d_en: "Air-conditioned salons, home grooming, show cuts. Launching summer 2026."
+    },
+    photographers: {
+      illu: "📷",
+      t_fr: "Photographes canins",
+      t_en: "Dog photographers",
+      d_fr: "Portrait studio, action extérieur, séances souvenirs seniors. Lancement prévu été 2026.",
+      d_en: "Studio portraits, outdoor action, senior memory sessions. Launching summer 2026."
+    }
+  };
+  const d = data[name] || data.coaches;
+  const illuEl  = document.getElementById("pwh-illu");
+  const titleEl = document.getElementById("pwh-title");
+  const subEl   = document.getElementById("pwh-sub");
+  if (illuEl)  illuEl.textContent = d.illu;
+  if (titleEl) titleEl.textContent = fr ? d.t_fr : d.t_en;
+  if (subEl)   subEl.textContent   = fr ? d.d_fr : d.d_en;
+  // Mémorise la catégorie courante pour la persistance waitlist
+  document.getElementById("sub-pros").dataset.category = name;
+}
+
+function _submitProsWaitlist() {
+  const fr = (currentLang !== "en");
+  const email = (document.getElementById("prosWaitEmail") || {}).value || "";
+  const city = (document.getElementById("prosWaitCity") || {}).value || "";
+  const msg = document.getElementById("prosWaitMsg");
+  if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+    if (msg) { msg.style.color = "#b91c1c"; msg.textContent = fr ? "Email invalide" : "Invalid email"; }
+    return;
+  }
+  const cat = (document.getElementById("sub-pros") || {}).dataset?.category || "coaches";
+  try {
+    const list = JSON.parse(localStorage.getItem("k9.prosWaitlist") || "[]");
+    list.push({
+      category: cat,
+      email: email.trim(),
+      city: city.trim(),
+      at: Date.now()
+    });
+    localStorage.setItem("k9.prosWaitlist", JSON.stringify(list));
+  } catch (e) {}
+  if (msg) {
+    msg.style.color = "var(--forest)";
+    msg.textContent = fr
+      ? "✅ Merci ! On te prévient dès qu'un pro est dispo dans ta zone."
+      : "✅ Thanks! We'll ping you when a pro is available in your area.";
+  }
+  // Reset après 2s
+  setTimeout(() => {
+    document.getElementById("prosWaitEmail").value = "";
+    document.getElementById("prosWaitCity").value = "";
+    if (msg) msg.textContent = "";
+  }, 2200);
 }
 
 // ====================================================================
@@ -9354,8 +9247,9 @@ function eventCardHTML(ev) {
       dogPrefix = `<span class="cal-dog-tag" title="${escapeHtml(name)}">${d.emoji || "🐕"}</span>`;
     }
   }
+  const editHint = currentLang === "fr" ? "Modifier" : "Edit";
   return `
-    <div class="cal-event">
+    <div class="cal-event" onclick="openEventEditor('${escapeHtml(ev.id)}')" role="button" title="${editHint}" style="cursor: pointer;">
       <div class="ic ${ev.type}">${calTypeIcon(ev.type)}</div>
       <div class="body">
         <div class="title">${dogPrefix}${escapeHtml(ev.title)}</div>
@@ -9363,6 +9257,107 @@ function eventCardHTML(ev) {
       </div>
       <div class="when ${w.cls}">${w.label}</div>
     </div>`;
+}
+
+// Modal d'édition d'un rappel calendrier (date, titre, notes, suppression)
+let _editingEventId = null;
+
+function openEventEditor(eventId) {
+  const ev = calendarEvents.find(e => e.id === eventId);
+  if (!ev) return;
+  _editingEventId = eventId;
+  const fr = currentLang === "fr";
+  let m = document.getElementById("eventEditModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "eventEditModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  // Déterminer si c'est un événement récurrent santé pour proposer +1 an comme préset
+  const isRecurring = (ev.type === "vax" || ev.type === "worm" || ev.type === "birth");
+  const presets = isRecurring ? `
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(0)">${fr?'Aujourd\\'hui':'Today'}</button>
+      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(7)">+ 7 j</button>
+      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(30)">+ 1 mois</button>
+      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(365)">+ 1 an</button>
+    </div>` : "";
+
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">${calTypeIcon(ev.type)}</div>
+      <h3 class="upsell-title">${fr ? 'Modifier le rappel' : 'Edit reminder'}</h3>
+      <p class="upsell-sub">${fr
+        ? 'Adapte la date, le titre ou les notes selon ton chien et ton vétérinaire.'
+        : 'Adjust date, title or notes for your dog and your vet.'}</p>
+      <label class="field-label" data-i18n="ev_field_title">${fr?'Titre':'Title'}</label>
+      <input id="evTitle" class="input" value="${escapeHtml(ev.title || '')}" />
+      <label class="field-label">${fr?'Date':'Date'}</label>
+      <input id="evDate" class="input" type="date" value="${escapeHtml(ev.date)}" />
+      ${presets}
+      <label class="field-label">${fr?'Notes':'Notes'}</label>
+      <textarea id="evNotes" class="input" rows="2" style="resize:vertical; font-family:inherit;">${escapeHtml(ev.notes || '')}</textarea>
+      <div id="evErr" style="color:#b91c1c; font-size:12.5px; min-height:16px; margin:6px 0;"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_saveEventEdit()">${fr?'💾 Enregistrer':'💾 Save'}</button>
+        <button class="upsell-skip" style="color:#b91c1c;" onclick="_deleteEvent()">${fr?'🗑️ Supprimer':'🗑️ Delete'}</button>
+        <button class="upsell-skip" onclick="document.getElementById('eventEditModal').classList.remove('show')">${fr?'Annuler':'Cancel'}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
+}
+
+function _setEventDateOffset(days) {
+  const input = document.getElementById("evDate");
+  if (!input) return;
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  input.value = d.toISOString().slice(0, 10);
+}
+
+function _saveEventEdit() {
+  if (!_editingEventId) return;
+  const ev = calendarEvents.find(e => e.id === _editingEventId);
+  if (!ev) return;
+  const fr = currentLang === "fr";
+  const errEl = document.getElementById("evErr");
+  const title = (document.getElementById("evTitle").value || "").trim();
+  const date  = (document.getElementById("evDate").value || "").trim();
+  const notes = (document.getElementById("evNotes").value || "").trim();
+  if (!title) { errEl.textContent = fr ? "Le titre est obligatoire" : "Title is required"; return; }
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    errEl.textContent = fr ? "Date invalide" : "Invalid date";
+    return;
+  }
+  ev.title = title;
+  ev.date = date;
+  ev.notes = notes;
+  K9Store.save();
+  document.getElementById("eventEditModal").classList.remove("show");
+  renderCalendar();
+  // Toast succès
+  const msg = fr ? "✅ Rappel mis à jour" : "✅ Reminder updated";
+  if (typeof showToast === "function") showToast(msg);
+}
+
+function _deleteEvent() {
+  if (!_editingEventId) return;
+  const fr = currentLang === "fr";
+  const ok = confirm(fr
+    ? "Supprimer ce rappel ? Tu ne pourras pas le récupérer."
+    : "Delete this reminder? It cannot be undone.");
+  if (!ok) return;
+  const idx = calendarEvents.findIndex(e => e.id === _editingEventId);
+  if (idx >= 0) {
+    calendarEvents.splice(idx, 1);
+    K9Store.save();
+  }
+  _editingEventId = null;
+  document.getElementById("eventEditModal").classList.remove("show");
+  renderCalendar();
 }
 function renderCalendar() {
   // Sort by date ascending
