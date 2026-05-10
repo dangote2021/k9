@@ -9279,7 +9279,7 @@ function openEventEditor(eventId) {
   const isRecurring = (ev.type === "vax" || ev.type === "worm" || ev.type === "birth");
   const presets = isRecurring ? `
     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
-      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(0)">${fr?'Aujourd\\'hui':'Today'}</button>
+      <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(0)">${fr ? "Aujourd'hui" : "Today"}</button>
       <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(7)">+ 7 j</button>
       <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(30)">+ 1 mois</button>
       <button class="btn ghost" style="font-size:11.5px; padding:6px 10px; flex:1;" onclick="_setEventDateOffset(365)">+ 1 an</button>
