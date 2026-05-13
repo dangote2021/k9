@@ -2813,6 +2813,8 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 
   <!-- ================== ONBOARDING ================== -->
   <div class="onboarding show" id="onboarding">
+    <!-- Bouton X : visible uniquement en mode 'ajout d'un chien' (pas le 1er onboarding) -->
+    <button id="obCancel" onclick="cancelAddDog()" aria-label="Annuler" style="display:none; position:absolute; top:14px; right:16px; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.92); border:1.5px solid #f0e0c8; color:#2e2a26; font-size:18px; font-weight:700; cursor:pointer; align-items:center; justify-content:center; z-index:120; box-shadow:0 2px 8px rgba(0,0,0,0.1);">✕</button>
 
     <!-- Step 0: Welcome -->
     <div class="ob-step active" data-step="0">
@@ -2956,7 +2958,7 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       <div class="ai-home-bar" onclick="openAI()">
         <div class="spark">✨</div>
         <div class="txt">
-          <div class="title" data-i18n="ai_bar_title">Pose ta question sur Nala</div>
+          <div class="title" data-i18n="ai_bar_title">Conseils sur mesure pour votre chien</div>
           <div class="sub" data-i18n="ai_bar_sub">Santé, éducation, comportement — une réponse en 10 secondes</div>
         </div>
         <div class="arr">›</div>
@@ -3389,6 +3391,14 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="label" data-i18n="menu_priv">Confidentialité</div>
         <div class="arr">›</div>
       </div>
+      <div class="menu-row" onclick="openFeedbackModal()">
+        <div class="ic">💬</div>
+        <div class="label">
+          <span data-i18n="menu_feedback">Proposer une feature ou faire un retour</span>
+          <div style="font-size: 11.5px; color: var(--ink-2); font-weight: 400; margin-top: 2px;" data-i18n="menu_feedback_d">Aide-nous à améliorer K9</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
       <div class="menu-row">
         <div class="ic">💌</div>
         <div class="label" data-i18n="menu_help">Aide & support</div>
@@ -3442,8 +3452,9 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="label" data-i18n="menu_legal_privacy">Politique de confidentialité</div>
         <div class="arr">›</div>
       </div>
-      <div style="padding: 14px 16px 18px; text-align: center; font-size: 10.5px; color: var(--ink-2);">
-        K9 v3.6 · <span data-i18n="made_with">Fait avec</span> 🐾
+      <div style="padding: 22px 22px 28px; text-align: center; font-size: 12.5px; color: var(--ink-2); line-height: 1.65;">
+        <div style="font-weight: 700; color: var(--brand-dark); margin-bottom: 4px;" data-i18n="signature_line1">App faite avec amour pour nos meilleurs amis poilus.</div>
+        <div data-i18n="signature_line2">Made in France 🇫🇷 · K9 v5.13 · 🐾</div>
       </div>
     </div>
 
@@ -5128,7 +5139,7 @@ const I18N = {
     greeting: "Bonjour",
     stat_friends: "Amis", stat_walks: "Sorties", stat_badges: "Badges",
     qa_edu: "Éducation", qa_vac: "Vaccins", qa_books: "Lectures", qa_nut: "Nutrition",
-    ai_bar_title: "Pose ta question sur {dog}",
+    ai_bar_title: "Conseils sur mesure pour votre chien",
     ai_bar_sub: "Santé, éducation, comportement — une réponse en 10 secondes",
     ai_disclaimer: "Les conseils sont générés par IA. En cas de symptôme inquiétant ou d'urgence, contacte ton vétérinaire. Ne remplace jamais un diagnostic médical.",
     ask_ai_tick: "Demander à l'IA : comment retirer une tique ?",
@@ -5589,6 +5600,10 @@ const I18N = {
     menu_export: "Exporter mes données",
     menu_family: "Mode famille — partager mon chien",
     menu_family_d: "Carnet santé sync avec ta moitié, ta famille ou un pet-sitter",
+    menu_feedback: "Proposer une feature ou faire un retour",
+    menu_feedback_d: "Aide-nous à améliorer K9",
+    signature_line1: "App faite avec amour pour nos meilleurs amis poilus.",
+    signature_line2: "Made in France 🇫🇷 · K9 v5.13 · 🐾",
     menu_import: "Importer une sauvegarde",
     menu_reset: "Réinitialiser mes données",
     profile_legal: "Mentions & confidentialité",
@@ -5633,7 +5648,7 @@ const I18N = {
     greeting: "Hello",
     stat_friends: "Friends", stat_walks: "Walks", stat_badges: "Badges",
     qa_edu: "Training", qa_vac: "Vaccines", qa_books: "Reads", qa_nut: "Nutrition",
-    ai_bar_title: "Ask anything about {dog}",
+    ai_bar_title: "Tailored advice for your dog",
     ai_bar_sub: "Health, training, behavior — an answer in 10 seconds",
     ai_disclaimer: "Advice is AI-generated. For worrying symptoms or emergencies, contact your vet. Never a substitute for medical diagnosis.",
     ask_ai_tick: "Ask the AI: how to safely remove a tick?",
@@ -6094,6 +6109,10 @@ const I18N = {
     menu_export: "Export my data",
     menu_family: "Family mode — share my dog",
     menu_family_d: "Health record synced with your partner, family, or pet-sitter",
+    menu_feedback: "Suggest a feature or send feedback",
+    menu_feedback_d: "Help us improve K9",
+    signature_line1: "App made with love for our best furry friends.",
+    signature_line2: "Made in France 🇫🇷 · K9 v5.13 · 🐾",
     menu_import: "Import a backup",
     menu_reset: "Reset my data",
     profile_legal: "Legal & privacy",
@@ -6315,15 +6334,25 @@ function selectDog(i) {
   if (typeof checkBirthdayBanner === "function") checkBirthdayBanner();
   if (typeof renderPlanBadge === "function") renderPlanBadge();
 }
+// État pour permettre l'annulation propre de l'ajout d'un chien
+let _isAddingDog = false;
+let _prevActiveDogIdx = 0;
+
 function addNewDog() {
   // Paywall : free limité à 2 chiens
   if (typeof k9TryAddDog === "function" && !k9TryAddDog()) return;
+  // Sauvegarde l'état actuel pour pouvoir annuler
+  _prevActiveDogIdx = activeDogIdx;
+  _isAddingDog = (DOGS.length > 0);
   // Réinitialise dogState et ouvre l'onboarding en sautant la page de bienvenue
   Object.assign(dogState, { name: "", breed: null, years: 2, months: 0, sex: null, weight: 15, emoji: "🐕", coat: "golden" });
   activeDogIdx = DOGS.length;
   document.getElementById("onboarding").classList.add("show");
   renderBreeds();
   renderEmojis();
+  // Bouton X de sortie visible uniquement en mode "ajout" d'un chien
+  const closeBtn = document.getElementById("obCancel");
+  if (closeBtn) closeBtn.style.display = _isAddingDog ? "flex" : "none";
   // Si on a déjà un chien : on saute l'écran d'accueil et on pré-remplit le prénom propriétaire
   if (DOGS.length > 0) {
     showStep(1);
@@ -6332,6 +6361,19 @@ function addNewDog() {
   } else {
     showStep(0);
   }
+}
+
+// Annule l'ajout d'un chien en cours : restaure l'état précédent et ferme l'onboarding
+function cancelAddDog() {
+  if (!_isAddingDog) return;
+  activeDogIdx = Math.max(0, Math.min(_prevActiveDogIdx, DOGS.length - 1));
+  if (DOGS[activeDogIdx]) Object.assign(dogState, DOGS[activeDogIdx]);
+  _isAddingDog = false;
+  document.getElementById("onboarding").classList.remove("show");
+  const closeBtn = document.getElementById("obCancel");
+  if (closeBtn) closeBtn.style.display = "none";
+  // Refresh display
+  if (typeof selectDog === "function" && DOGS[activeDogIdx]) selectDog(activeDogIdx);
 }
 // ---------- Walk tracking (GPS temps réel + fallback timer) ----------
 // `currentWalk` est persisté via K9Store (clé localStorage `k9.walk.live`)
@@ -8511,6 +8553,71 @@ function openSub(id) {
   if (id === "sub-market" && typeof renderMarket === "function") renderMarket();
 }
 function closeSub(id) { document.getElementById(id).classList.remove("show"); }
+
+// ====================================================================
+// Feedback / proposition de feature
+// ====================================================================
+function openFeedbackModal() {
+  const fr = currentLang === "fr";
+  let m = document.getElementById("feedbackModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "feedbackModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">💬</div>
+      <h3 class="upsell-title">${fr ? "Aide-nous à améliorer K9" : "Help us improve K9"}</h3>
+      <p class="upsell-sub">${fr
+        ? "Propose une feature, signale un bug, ou dis-nous ce qui te manque. Chaque retour compte 🐾"
+        : "Suggest a feature, report a bug, or tell us what's missing. Every feedback counts 🐾"}</p>
+      <label class="field-label">${fr ? "Type" : "Type"}</label>
+      <select id="fbType" class="select">
+        <option value="feature">${fr ? "✨ Proposer une nouvelle feature" : "✨ Suggest a new feature"}</option>
+        <option value="bug">${fr ? "🐛 Signaler un bug" : "🐛 Report a bug"}</option>
+        <option value="ux">${fr ? "🎨 Améliorer l'UX / le design" : "🎨 Improve UX / design"}</option>
+        <option value="other">${fr ? "💌 Autre retour" : "💌 Other feedback"}</option>
+      </select>
+      <label class="field-label">${fr ? "Ton message" : "Your message"}</label>
+      <textarea id="fbMsg" class="input" rows="5" style="resize:vertical; font-family:inherit;" placeholder="${fr ? "Décris ton idée ou ton problème (sois aussi précis que possible)..." : "Describe your idea or issue (be as specific as you can)..."}"></textarea>
+      <label class="field-label">${fr ? "Ton email (optionnel — pour qu'on te réponde)" : "Your email (optional — so we can reply)"}</label>
+      <input id="fbEmail" class="input" type="email" placeholder="${fr ? "ton-email@exemple.fr" : "your-email@example.com"}" />
+      <div id="fbErr" style="color:#b91c1c; font-size:12.5px; min-height:16px; margin:6px 0;"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_submitFeedback()">${fr ? "📤 Envoyer mon retour" : "📤 Send my feedback"}</button>
+        <button class="upsell-skip" onclick="document.getElementById('feedbackModal').classList.remove('show')">${fr ? "Annuler" : "Cancel"}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
+}
+
+function _submitFeedback() {
+  const fr = currentLang === "fr";
+  const type = document.getElementById("fbType").value;
+  const msg = (document.getElementById("fbMsg").value || "").trim();
+  const email = (document.getElementById("fbEmail").value || "").trim();
+  const errEl = document.getElementById("fbErr");
+  if (msg.length < 10) {
+    errEl.textContent = fr ? "Le message est trop court (10 caractères minimum)." : "Message too short (10 chars minimum).";
+    return;
+  }
+  if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+    errEl.textContent = fr ? "Email invalide." : "Invalid email.";
+    return;
+  }
+  try {
+    const list = JSON.parse(localStorage.getItem("k9.feedback") || "[]");
+    list.push({ type, msg, email, at: Date.now(), lang: currentLang });
+    localStorage.setItem("k9.feedback", JSON.stringify(list));
+  } catch (e) {}
+  document.getElementById("feedbackModal").classList.remove("show");
+  const toast = fr ? "🐾 Merci ! Ton retour est précieux." : "🐾 Thanks! Your feedback is precious.";
+  if (typeof showToast === "function") showToast(toast); else alert(toast);
+}
 
 // ====================================================================
 // Partage de l'app K9 (Web Share API + fallback WhatsApp + Copier)
