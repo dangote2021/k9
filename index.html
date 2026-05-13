@@ -3399,6 +3399,14 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="label" data-i18n="menu_help">Aide & support</div>
         <div class="arr">›</div>
       </div>
+      <div class="menu-row" onclick="shareFamilyMode()">
+        <div class="ic">👨‍👩‍👦</div>
+        <div class="label">
+          <span data-i18n="menu_family">Mode famille — partager mon chien</span>
+          <div style="font-size: 11.5px; color: var(--ink-2); font-weight: 400; margin-top: 2px;" data-i18n="menu_family_d">Carnet santé sync avec ta moitié, ta famille ou un pet-sitter</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
       <div class="menu-row" onclick="exportUserData()">
         <div class="ic">📤</div>
         <div class="label" data-i18n="menu_export">Exporter mes données</div>
@@ -5584,6 +5592,8 @@ const I18N = {
     plan_hygiene_t: "Hygiène", plan_hygiene_d: "Dents · pattes · oreilles · routine hebdo",
     // Data management
     menu_export: "Exporter mes données",
+    menu_family: "Mode famille — partager mon chien",
+    menu_family_d: "Carnet santé sync avec ta moitié, ta famille ou un pet-sitter",
     menu_import: "Importer une sauvegarde",
     menu_reset: "Réinitialiser mes données",
     profile_legal: "Mentions & confidentialité",
@@ -6087,6 +6097,8 @@ const I18N = {
     plan_hygiene_t: "Hygiene", plan_hygiene_d: "Teeth · paws · ears · weekly routine",
     // Data management
     menu_export: "Export my data",
+    menu_family: "Family mode — share my dog",
+    menu_family_d: "Health record synced with your partner, family, or pet-sitter",
     menu_import: "Import a backup",
     menu_reset: "Reset my data",
     profile_legal: "Legal & privacy",
@@ -8147,7 +8159,7 @@ function _socialNoCloudHTML(t) {
   return `<div class="empty-state" style="padding:24px 16px;">
     <div class="emoji">☁️</div>
     <div class="title">${t.no_cloud}</div>
-    <button class="btn" style="margin-top:12px;" onclick="closeSub && openSub('sub-cloud-signin')">${currentLang==='fr'?'Activer le cloud':'Activate cloud'}</button>
+    <button class="btn" style="margin-top:12px;" onclick="_showAuthModal && _showAuthModal(false)">${currentLang==='fr'?'☁️ Créer mon compte (30s)':'☁️ Create my account (30s)'}</button>
   </div>`;
 }
 
@@ -8304,49 +8316,31 @@ function proposePlaydateWith(friendId, friendName) {
 }
 
 // Guard centralisé : avant toute action cloud, vérifie qu'on est connecté.
-// Si non, propose à l'utilisateur d'activer le cloud avec un message clair.
+// B2 du panel — flow simplifié : ouvre DIRECTEMENT le modal d'auth magic-link
+// (au lieu de passer par un intermédiaire + sub-screen). Une étape de moins.
 function _ensureCloudSignedIn(action) {
   const ready = (typeof K9Cloud !== "undefined") && K9Cloud.isReady && K9Cloud.isReady();
   const signed = ready && K9Cloud.isSignedIn && K9Cloud.isSignedIn();
   if (signed) return true;
-  const msgs = {
-    fr: {
-      playdate: "Pour créer un playdate, on a besoin du cloud (synchroniser avec d'autres K9ers).",
-      friend:   "Pour ajouter des amis, on a besoin du cloud activé.",
-      post:     "Pour publier dans la communauté, active le cloud.",
-      generic:  "Active le cloud pour utiliser cette fonctionnalité."
-    },
-    en: {
-      playdate: "Creating a playdate needs the cloud (to sync with other K9ers).",
-      friend:   "Adding friends needs the cloud activated.",
-      post:     "Posting in the community needs the cloud.",
-      generic:  "Activate the cloud to use this feature."
-    }
-  };
+  // Reuse direct du modal d'auth (déjà polished, 1 input + 1 bouton magic link)
+  // mode non-mandatory pour laisser l'user skipper s'il change d'avis.
+  if (typeof _showAuthModal === "function") {
+    _showAuthModal(false);
+    return false;
+  }
+  // Fallback ancien comportement (au cas où _showAuthModal pas chargé)
   const lang = (currentLang === "en") ? "en" : "fr";
-  const text = msgs[lang][action] || msgs[lang].generic;
-  const cta = lang === "fr" ? "Activer le cloud" : "Activate cloud";
-  const skip = lang === "fr" ? "Plus tard" : "Later";
-  // Petit modal léger — réutilise le pattern upsell-modal
+  alert(lang === "fr"
+    ? "Crée ton compte K9 (gratuit) pour utiliser cette fonctionnalité."
+    : "Create your K9 account (free) to use this feature.");
   let m = document.getElementById("cloudGuardModal");
   if (!m) {
     m = document.createElement("div");
     m.id = "cloudGuardModal";
     m.className = "upsell-modal";
     document.body.appendChild(m);
-    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
   }
-  m.innerHTML = `
-    <div class="upsell-card">
-      <div class="upsell-grip"></div>
-      <div class="upsell-emoji">☁️</div>
-      <h3 class="upsell-title">${lang === "fr" ? "Activons le cloud" : "Let's activate the cloud"}</h3>
-      <p class="upsell-sub">${text}</p>
-      <div class="upsell-actions">
-        <button class="upsell-cta" onclick="document.getElementById('cloudGuardModal').classList.remove('show'); openSub('sub-cloud-signin');">${cta}</button>
-        <button class="upsell-skip" onclick="document.getElementById('cloudGuardModal').classList.remove('show')">${skip}</button>
-      </div>
-    </div>`;
+  m.innerHTML = "";
   m.classList.add("show");
   return false;
 }
@@ -9880,6 +9874,92 @@ function exportUserData() {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+// ====================================================================
+// Mode famille — partager le profil du chien avec ta moitié, ta famille
+// ou un pet-sitter. MVP via fichier JSON + Web Share API (B3 panel v5.5).
+// L'autre user importe via Paramètres → 'Importer une sauvegarde'.
+// Pour le sync bidirectionnel temps-réel : v6 avec Supabase RLS.
+// ====================================================================
+function shareFamilyMode() {
+  const fr = currentLang === "fr";
+  // Étape 1 : modal explicatif
+  let m = document.getElementById("familyModeModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "familyModeModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  const dog = DOGS[activeDogIdx] || DOGS[0];
+  const dogName = (dog && dog.name) ? toTitleCase(dog.name) : (fr ? "ton chien" : "your dog");
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">👨‍👩‍👦</div>
+      <h3 class="upsell-title">${fr ? "Mode famille" : "Family mode"}</h3>
+      <p class="upsell-sub">${fr
+        ? `Partage le carnet de <strong>${escapeHtml(dogName)}</strong> avec ta moitié, ta famille ou un pet-sitter. Ils auront le même carnet santé, le calendrier, les balades et les photos sur leur app K9.`
+        : `Share <strong>${escapeHtml(dogName)}</strong>'s record with your partner, family, or pet-sitter. They'll have the same health record, calendar, walks and photos in their K9 app.`}</p>
+      <div style="background: #fff8e6; border-left: 3px solid #d97706; padding: 10px 12px; border-radius: 8px; font-size: 11.5px; color: #78350f; line-height: 1.5; margin: 4px 0 12px;">
+        ${fr
+          ? "💡 <strong>Comment ça marche</strong> :<br/>1. Tu envoies le fichier de sauvegarde à ton co-propriétaire<br/>2. Il l'importe dans son app K9 (Paramètres → Importer)<br/>3. Vous avez tous les deux le même carnet<br/><br/>📌 Sync auto bidirectionnel : <em>arrive en v6</em> (été 2026)."
+          : "💡 <strong>How it works</strong>:<br/>1. You send the backup file to your co-owner<br/>2. They import it in their K9 app (Settings → Import)<br/>3. Both of you have the same record<br/><br/>📌 Auto bi-directional sync: <em>coming in v6</em> (summer 2026)."}
+      </div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_familyShareSnapshot()">${fr ? "📤 Envoyer le carnet" : "📤 Send the record"}</button>
+        <button class="upsell-skip" onclick="document.getElementById('familyModeModal').classList.remove('show')">${fr ? "Annuler" : "Cancel"}</button>
+      </div>
+    </div>`;
+  m.classList.add("show");
+}
+
+async function _familyShareSnapshot() {
+  const fr = currentLang === "fr";
+  const dog = DOGS[activeDogIdx] || DOGS[0];
+  const dogName = (dog && dog.name) ? toTitleCase(dog.name) : (fr ? "K9" : "K9");
+  const json = K9Store.exportJSON();
+  const filename = `k9-famille-${dogName.toLowerCase().replace(/\s+/g, "-")}.json`;
+  const blob = new Blob([json], { type: "application/json" });
+  const file = new File([blob], filename, { type: "application/json" });
+  const shareText = fr
+    ? `🐾 Carnet K9 de ${dogName} — ouvre l'app K9 (https://k9-one.vercel.app), va dans Paramètres → Importer une sauvegarde, et choisis ce fichier. Tu auras toutes mes infos santé, calendrier et balades.`
+    : `🐾 K9 record for ${dogName} — open K9 (https://k9-one.vercel.app), go to Settings → Import backup, and pick this file. You'll get all my health info, calendar and walks.`;
+
+  // Méthode 1 — Web Share API native avec FICHIER (Android 12+, iOS 15+)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: `K9 — ${dogName}`,
+        text: shareText,
+        files: [file]
+      });
+      document.getElementById("familyModeModal").classList.remove("show");
+      return;
+    } catch (e) {
+      if (e.name !== "AbortError") {
+        console.warn("[family] share failed, falling back to download", e);
+      } else {
+        return; // user cancelled
+      }
+    }
+  }
+
+  // Méthode 2 — fallback : téléchargement local + alerte d'instructions
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  document.getElementById("familyModeModal").classList.remove("show");
+  alert(fr
+    ? `✅ Le fichier "${filename}" est téléchargé.\n\nEnvoie-le maintenant à ta moitié/famille (WhatsApp, Mail, AirDrop...) et dis-leur d'ouvrir K9 → Paramètres → Importer une sauvegarde.`
+    : `✅ The file "${filename}" was downloaded.\n\nNow send it to your partner/family (WhatsApp, Mail, AirDrop...) and tell them to open K9 → Settings → Import backup.`);
 }
 
 function importUserData(ev) {
