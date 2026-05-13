@@ -3172,6 +3172,13 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_run_d">Courir avec son chien c'est génial — à condition de respecter sa morphologie. Attendre 12-18 mois (croissance terminée selon la race), démarrer par 10-15 min puis monter progressivement, éviter le bitume brûlant l'été (test main 5s), prévoir de l'eau toutes les 20 min, équipement adapté (ceinture canicross + ligne de trait amortisseur + harnais X-back). Évite les races brachycéphales (carlin, bouledogue) qui supportent mal l'effort prolongé.</div>
         <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Je veux commencer à courir avec mon chien (canicross). Donne-moi un plan progressif sur 8 semaines adapté à sa race et son âge, le matériel à acheter, et les précautions par météo.' : 'I want to start running with my dog (canicross). Give me an 8-week progressive plan adapted to their breed and age, the gear to buy, and weather precautions.')"><span>✨</span> <span data-i18n="ask_ai_run">Demander à l'IA : plan canicross perso</span></button>
       </div>
+
+      <div class="card" style="margin-top: 12px;">
+        <div class="chip mb-10" style="background: #FEE4D6; color: #B33A1A;" data-i18n="tip_heat_chip">☀️ Canicule</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;" data-i18n="tip_heat_t">Gérer la chaleur pour ton chien</div>
+        <div style="font-size: 13px; color: var(--ink-2);" data-i18n="tip_heat_d">Les chiens régulent leur température principalement par halètement — au-delà de 25-28°C, le risque de coup de chaleur monte vite (mortel en 30 min). Promenades très tôt le matin ou après 21h, eau fraîche en accès libre 24/7, jamais en voiture stationnée (même 5 min), tapis rafraîchissant ou serviette mouillée à disposition. Signes d'alerte : halètement excessif, langue très rouge, salive épaisse, démarche titubante → urgence véto. Races à risque : brachycéphales, double-poil (Husky, Berger), seniors, chiens en surpoids.</div>
+        <button class="ask-ai-cta" onclick="openAIWith(currentLang==='fr' ? 'Quels sont les signes d\\'un coup de chaleur chez mon chien et que faire en urgence avant d\\'arriver chez le véto ? Donne-moi aussi 5 astuces pratiques pour passer un été serein avec mon chien.' : 'What are the signs of heatstroke in my dog and what to do urgently before reaching the vet? Also give me 5 practical tips for a calm summer with my dog.')"><span>✨</span> <span data-i18n="ask_ai_heat">Demander à l'IA : passer un été serein</span></button>
+      </div>
     </div>
 
     <!-- SOCIAL -->
@@ -3345,6 +3352,11 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
       </div>
 
       <div class="section-title" data-i18n="profile_settings">Réglages</div>
+      <div class="menu-row" onclick="shareK9App()">
+        <div class="ic">💌</div>
+        <div class="label" data-i18n="menu_invite">Inviter un ami</div>
+        <div class="arr">›</div>
+      </div>
       <div class="menu-row" onclick="openSub('sub-langs')">
         <div class="ic">🌐</div>
         <div class="label" data-i18n="menu_lang">Langue</div>
@@ -5129,6 +5141,10 @@ const I18N = {
     tip_run_t: "Comment courir avec son chien",
     tip_run_d: "Courir avec son chien c'est génial — à condition de respecter sa morphologie. Attendre 12-18 mois (croissance terminée selon la race), démarrer par 10-15 min puis monter progressivement, éviter le bitume brûlant l'été (test main 5s), prévoir de l'eau toutes les 20 min, équipement adapté (ceinture canicross + ligne de trait amortisseur + harnais X-back). Évite les races brachycéphales (carlin, bouledogue) qui supportent mal l'effort prolongé.",
     ask_ai_run: "Demander à l'IA : plan canicross perso",
+    tip_heat_chip: "☀️ Canicule",
+    tip_heat_t: "Gérer la chaleur pour ton chien",
+    tip_heat_d: "Les chiens régulent leur température principalement par halètement — au-delà de 25-28°C, le risque de coup de chaleur monte vite (mortel en 30 min). Promenades très tôt le matin ou après 21h, eau fraîche en accès libre 24/7, jamais en voiture stationnée (même 5 min), tapis rafraîchissant ou serviette mouillée à disposition. Signes d'alerte : halètement excessif, langue très rouge, salive épaisse, démarche titubante → urgence véto. Races à risque : brachycéphales, double-poil (Husky, Berger), seniors, chiens en surpoids.",
+    ask_ai_heat: "Demander à l'IA : passer un été serein",
     sec_reminders: "Prochains rappels",
     rem_vac: "Rappel vaccin CHPPL",
     rem_vac_desc: "Chez le vétérinaire du quartier",
@@ -5358,6 +5374,7 @@ const I18N = {
     badge_legend: "Légende", badge_bday: "Anniversaire",
     profile_settings: "Réglages",
     menu_lang: "Langue", menu_notif: "Notifications", menu_geo: "Géolocalisation",
+    menu_invite: "Inviter un ami",
     menu_a11y: "Grande police & haut contraste",
     menu_units: "Unités",
     menu_ai_soft: "Compagnon minimaliste — moins de suggestions",
@@ -5627,6 +5644,10 @@ const I18N = {
     tip_run_t: "How to run with your dog",
     tip_run_d: "Running with your dog is amazing — as long as you respect their build. Wait until 12-18 months (growth complete depending on breed), start with 10-15 min then ramp up, avoid burning pavement in summer (5s palm test), water break every 20 min, proper gear (canicross belt + bungee line + X-back harness). Skip brachycephalic breeds (pug, bulldog) — they don't handle sustained effort well.",
     ask_ai_run: "Ask the AI: my canicross plan",
+    tip_heat_chip: "☀️ Heatwave",
+    tip_heat_t: "Manage heat for your dog",
+    tip_heat_d: "Dogs regulate temperature mainly by panting — above 25-28°C, heatstroke risk rises fast (fatal in 30 min). Walks very early morning or after 9pm, fresh water 24/7, never in a parked car (even 5 min), cooling mat or wet towel ready. Warning signs: excessive panting, very red tongue, thick saliva, wobbly gait → vet emergency. At-risk breeds: brachycephalic, double-coat (Husky, Shepherd), seniors, overweight dogs.",
+    ask_ai_heat: "Ask the AI: a calm summer",
     sec_reminders: "Upcoming reminders",
     rem_vac: "DHPPL booster",
     rem_vac_desc: "At the local vet",
@@ -5856,6 +5877,7 @@ const I18N = {
     badge_legend: "Legend", badge_bday: "Birthday",
     profile_settings: "Settings",
     menu_lang: "Language", menu_notif: "Notifications", menu_geo: "Location",
+    menu_invite: "Invite a friend",
     menu_a11y: "Larger text & high contrast",
     menu_units: "Units",
     menu_ai_soft: "Minimalist companion — fewer prompts",
@@ -8500,6 +8522,91 @@ function openSub(id) {
   if (id === "sub-market" && typeof renderMarket === "function") renderMarket();
 }
 function closeSub(id) { document.getElementById(id).classList.remove("show"); }
+
+// ====================================================================
+// Partage de l'app K9 (Web Share API + fallback WhatsApp + Copier)
+// ====================================================================
+function shareK9App() {
+  const fr = currentLang === "fr";
+  const url = "https://k9-one.vercel.app";
+  const title = fr ? "K9 — L'app pour ton chien" : "K9 — The app for your dog";
+  const text = fr
+    ? "🐾 Découvre K9, l'app gratuite pour les compagnons de chiens : carnet santé, coach IA, balades GPS, communauté, alertes chien perdu. Tout-en-un, sans pub."
+    : "🐾 Discover K9, the free app for dog companions: health record, AI coach, GPS walks, community, lost dog alerts. All-in-one, ad-free.";
+  // 1. Web Share API native (Android, iOS, mobile Chrome) — propose toutes les apps
+  if (navigator.share) {
+    navigator.share({ title, text, url })
+      .catch(err => {
+        // L'utilisateur a annulé OU permissions refusées → fallback
+        if (err && err.name !== "AbortError") _showShareFallback(text, url);
+      });
+    return;
+  }
+  // 2. Fallback desktop : modal 2 boutons (WhatsApp + Copier)
+  _showShareFallback(text, url);
+}
+
+function _showShareFallback(text, url) {
+  const fr = currentLang === "fr";
+  let m = document.getElementById("shareModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "shareModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  const waLink = "https://wa.me/?text=" + encodeURIComponent(text + " " + url);
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">💌</div>
+      <h3 class="upsell-title">${fr ? "Inviter un ami sur K9" : "Invite a friend to K9"}</h3>
+      <p class="upsell-sub">${fr ? "Choisis comment partager le lien :" : "Choose how to share the link:"}</p>
+      <div class="upsell-actions">
+        <a class="upsell-cta" href="${waLink}" target="_blank" rel="noopener" style="display:block; text-align:center; text-decoration:none;">
+          💬 ${fr ? "Partager sur WhatsApp" : "Share on WhatsApp"}
+        </a>
+        <button class="upsell-cta" style="background: var(--forest);" onclick="_copyShareLink('${escapeHtml(url)}')">
+          📋 ${fr ? "Copier le lien" : "Copy the link"}
+        </button>
+        <button class="upsell-skip" onclick="document.getElementById('shareModal').classList.remove('show')">
+          ${fr ? "Fermer" : "Close"}
+        </button>
+      </div>
+      <p style="font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.5; margin: 10px 0 0; background: var(--cream); padding: 8px 10px; border-radius: 8px;">
+        <code style="background: none; padding: 0; color: var(--brand-dark); word-break: break-all;">${escapeHtml(url)}</code>
+      </p>
+    </div>`;
+  m.classList.add("show");
+}
+
+function _copyShareLink(url) {
+  const fr = currentLang === "fr";
+  const okMsg = fr ? "✅ Lien copié ! Colle-le où tu veux." : "✅ Link copied! Paste it wherever.";
+  const ko = fr ? "⚠️ Copie auto impossible — sélectionne et copie le lien à la main." : "⚠️ Auto-copy failed — select and copy the link manually.";
+  // Méthode moderne
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => {
+      if (typeof showToast === "function") showToast(okMsg); else alert(okMsg);
+      document.getElementById("shareModal").classList.remove("show");
+    }).catch(() => {
+      if (typeof showToast === "function") showToast(ko); else alert(ko);
+    });
+    return;
+  }
+  // Fallback execCommand (vieux navigateurs)
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = url; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+    if (typeof showToast === "function") showToast(okMsg); else alert(okMsg);
+    document.getElementById("shareModal").classList.remove("show");
+  } catch (e) {
+    if (typeof showToast === "function") showToast(ko); else alert(ko);
+  }
+}
 
 // ====================================================================
 // Pros K9 — preview / waitlist (coachs canins + pet-sitters)
