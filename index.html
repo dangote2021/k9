@@ -2935,7 +2935,6 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
           <div class="greeting" id="homeGreeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
           <div class="name"><span id="ownerNameDisp">Toi</span> & <span id="dogNameDisp">Nala</span></div>
         </div>
-        <button class="lang-toggle" onclick="toggleLang()"><span id="langLabel">EN</span></button>
       </div>
 
       <div class="dog-switcher" id="dogSwitcher"></div>
@@ -9119,9 +9118,11 @@ function setLang(lang) {
   if (chatInput) chatInput.placeholder = lang === "fr" ? "Pose ta question..." : "Ask your question...";
   const nameInput = document.getElementById("dogName");
   if (nameInput) nameInput.placeholder = lang === "fr" ? "Ex. Nala, Loki, Maya..." : "Ex. Nala, Loki, Maya...";
-  // Lang label
-  document.getElementById("langLabel").textContent = lang === "fr" ? "EN" : "FR";
-  document.getElementById("langCurrent").textContent = lang === "fr" ? "Français" : "English";
+  // Lang labels (langLabel a été retiré de la home — toggle déplacé dans Paramètres → Langue)
+  const langLabelEl = document.getElementById("langLabel");
+  if (langLabelEl) langLabelEl.textContent = lang === "fr" ? "EN" : "FR";
+  const langCurEl = document.getElementById("langCurrent");
+  if (langCurEl) langCurEl.textContent = lang === "fr" ? "Français" : "English";
   document.getElementById("check-fr").textContent = lang === "fr" ? "✓" : "";
   document.getElementById("check-en").textContent = lang === "en" ? "✓" : "";
   renderBreeds(document.getElementById("breedSearch")?.value || "");
