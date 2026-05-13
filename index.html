@@ -4363,7 +4363,10 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <div class="pros-become-body">
           <div class="pros-become-title" data-i18n="pros_become_t">Tu es pro du chien ?</div>
           <div class="pros-become-desc" data-i18n="pros_become_d">Coach canin, pet-sitter, toiletteur ou photographe canin ? Publie ton profil sur K9 et reçois des réservations directement dans l'app — réservé aux abonnés <strong>K9 Pro 12€/mois</strong>. Inclus : profil sponsorisé, agenda intégré, paiement sécurisé, messagerie modérée.</div>
-          <button class="btn ghost" style="margin-top: 10px; font-size: 12.5px;" onclick="closeSub('sub-pros'); switchTab('profile'); setTimeout(()=>openSub('sub-plans'), 100)" data-i18n="pros_become_cta">→ Devenir K9 Pro (12€/mois)</button>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+            <button class="btn ghost" style="font-size: 12.5px; flex: 1; min-width: 140px;" onclick="closeSub('sub-pros'); switchTab('profile'); setTimeout(()=>openSub('sub-plans'), 100)" data-i18n="pros_become_cta">→ Devenir K9 Pro</button>
+            <button class="btn forest" style="font-size: 12.5px; flex: 1; min-width: 140px;" onclick="_openProsApplication()" data-i18n="pros_apply_cta">📩 Candidater maintenant</button>
+          </div>
         </div>
       </div>
 
@@ -8547,6 +8550,84 @@ function switchProsTab(name) {
   document.getElementById("sub-pros").dataset.category = name;
 }
 
+// Modal de candidature pour devenir pro K9 (réservé K9 Pro 12€/mo)
+function _openProsApplication() {
+  const fr = (currentLang !== "en");
+  let m = document.getElementById("prosApplyModal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "prosApplyModal";
+    m.className = "upsell-modal";
+    document.body.appendChild(m);
+    m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("show"); });
+  }
+  m.innerHTML = `
+    <div class="upsell-card">
+      <div class="upsell-grip"></div>
+      <div class="upsell-emoji">📩</div>
+      <h3 class="upsell-title">${fr ? "Candidater comme pro K9" : "Apply as a K9 pro"}</h3>
+      <p class="upsell-sub">${fr
+        ? "On recrute en ce moment les pros qui rejoindront K9 au lancement (été 2026). Profils certifiés / vérifiés bienvenus — gratuit pour candidater, payant uniquement une fois actif (K9 Pro 12€/mois)."
+        : "We're currently recruiting pros who'll join K9 at launch (summer 2026). Certified / verified profiles welcome — free to apply, paid only when active (K9 Pro €12/month)."}</p>
+      <label class="field-label">${fr ? "Nom complet" : "Full name"}</label>
+      <input id="paName" class="input" placeholder="${fr ? 'Ex. Léa Martin' : 'e.g. Lea Martin'}" />
+      <label class="field-label">${fr ? "Métier" : "Profession"}</label>
+      <select id="paJob" class="select">
+        <option value="coach">${fr ? "🎓 Coach canin / comportementaliste" : "🎓 Dog trainer / behaviorist"}</option>
+        <option value="sitter">${fr ? "🏠 Pet-sitter / promenade" : "🏠 Pet-sitter / walker"}</option>
+        <option value="groomer">${fr ? "✂️ Toiletteur" : "✂️ Groomer"}</option>
+        <option value="photographer">${fr ? "📷 Photographe canin" : "📷 Dog photographer"}</option>
+      </select>
+      <label class="field-label">${fr ? "Email pro" : "Pro email"}</label>
+      <input id="paEmail" class="input" type="email" placeholder="${fr ? 'ton-email@exemple.fr' : 'your-email@example.com'}" />
+      <label class="field-label">${fr ? "Ville d'exercice" : "City"}</label>
+      <input id="paCity" class="input" placeholder="${fr ? 'Ex. Paris, Lyon, Bordeaux...' : 'e.g. Paris, Lyon, Bordeaux...'}" />
+      <label class="field-label">${fr ? "Certifications / expérience (optionnel)" : "Certifications / experience (optional)"}</label>
+      <textarea id="paCerts" class="input" rows="3" style="resize:vertical; font-family:inherit;" placeholder="${fr ? 'Ex. MFEC, EFC, 5 ans d\\'expérience, spécialisé chiots...' : 'e.g. IAABC, CPDT-KA, 5 yrs experience, puppy specialist...'}"></textarea>
+      <div id="paMsg" style="font-size: 12.5px; min-height: 18px; margin: 8px 0; text-align: center;"></div>
+      <div class="upsell-actions">
+        <button class="upsell-cta" onclick="_submitProsApplication()">${fr ? "📩 Envoyer ma candidature" : "📩 Send my application"}</button>
+        <button class="upsell-skip" onclick="document.getElementById('prosApplyModal').classList.remove('show')">${fr ? "Annuler" : "Cancel"}</button>
+      </div>
+      <p style="font-size: 10.5px; color: var(--gray); margin: 10px 0 0; text-align: center; line-height: 1.5;">${fr
+        ? "On te recontacte sous 7 jours avec les prochaines étapes (vérification certif + photos profil)."
+        : "We'll get back to you within 7 days with next steps (cert verification + profile photos)."}</p>
+    </div>`;
+  m.classList.add("show");
+}
+
+function _submitProsApplication() {
+  const fr = (currentLang !== "en");
+  const data = {
+    name: (document.getElementById("paName").value || "").trim(),
+    job: document.getElementById("paJob").value,
+    email: (document.getElementById("paEmail").value || "").trim(),
+    city: (document.getElementById("paCity").value || "").trim(),
+    certs: (document.getElementById("paCerts").value || "").trim(),
+    at: Date.now()
+  };
+  const msg = document.getElementById("paMsg");
+  if (!data.name || data.name.length < 2) {
+    msg.style.color = "#b91c1c"; msg.textContent = fr ? "Nom requis" : "Name required"; return;
+  }
+  if (!/^\S+@\S+\.\S+$/.test(data.email)) {
+    msg.style.color = "#b91c1c"; msg.textContent = fr ? "Email invalide" : "Invalid email"; return;
+  }
+  if (!data.city) {
+    msg.style.color = "#b91c1c"; msg.textContent = fr ? "Ville requise" : "City required"; return;
+  }
+  try {
+    const list = JSON.parse(localStorage.getItem("k9.prosApplications") || "[]");
+    list.push(data);
+    localStorage.setItem("k9.prosApplications", JSON.stringify(list));
+  } catch (e) {}
+  msg.style.color = "var(--forest)";
+  msg.textContent = fr ? "✅ Candidature envoyée ! Réponse sous 7 jours." : "✅ Application sent! We'll reply within 7 days.";
+  setTimeout(() => {
+    document.getElementById("prosApplyModal").classList.remove("show");
+  }, 1800);
+}
+
 function _submitProsWaitlist() {
   const fr = (currentLang !== "en");
   const email = (document.getElementById("prosWaitEmail") || {}).value || "";
@@ -9445,12 +9526,18 @@ function renderCalendar() {
 function updateNotifButtons() {
   const supported = "Notification" in window;
   const state = supported ? Notification.permission : "unsupported";
+  const muted = localStorage.getItem("k9.notifMuted") === "1";
   const btns = [document.getElementById("notifActivate"), document.getElementById("notifBtnCal")];
   btns.forEach(btn => {
     if (!btn) return;
     if (state === "granted") {
-      btn.classList.add("done");
-      btn.textContent = currentLang === "fr" ? "🔔 Rappels activés" : "🔔 Reminders on";
+      if (muted) {
+        btn.classList.remove("done");
+        btn.textContent = currentLang === "fr" ? "🔕 Rappels en pause — tape pour réactiver" : "🔕 Reminders paused — tap to resume";
+      } else {
+        btn.classList.add("done");
+        btn.textContent = currentLang === "fr" ? "🔔 Rappels activés — tape pour mettre en pause" : "🔔 Reminders on — tap to pause";
+      }
       btn.removeAttribute("data-i18n");
     } else if (state === "denied") {
       btn.classList.remove("done");
@@ -9470,12 +9557,22 @@ function requestNotifPermission() {
     alert(currentLang === "fr" ? "Ton navigateur ne supporte pas les notifications." : "Your browser doesn't support notifications.");
     return;
   }
+  // Si déjà activées : proposer de les désactiver localement (toggle facile pour F3 panel)
   if (Notification.permission === "granted") {
-    new Notification(currentLang === "fr" ? "K9 · rappels actifs" : "K9 · reminders on", {
-      body: currentLang === "fr" ? "On t'enverra un rappel avant chaque rendez-vous." : "We'll ping you before each appointment.",
-      icon: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='48' font-size='48'>🐶</text></svg>"
-    });
-    updateNotifButtons();
+    const fr = currentLang === "fr";
+    const wasMuted = localStorage.getItem("k9.notifMuted") === "1";
+    const action = wasMuted
+      ? confirm(fr ? "Réactiver les rappels K9 ?" : "Turn K9 reminders back on?")
+      : confirm(fr ? "Les rappels sont actuellement activés.\n\nMettre les rappels K9 en pause ? (tu pourras les réactiver à tout moment)" : "Reminders are currently on.\n\nMute K9 reminders? (you can turn them back on anytime)");
+    if (action) {
+      try { localStorage.setItem("k9.notifMuted", wasMuted ? "0" : "1"); } catch (e) {}
+      updateNotifButtons();
+      if (typeof showToast === "function") {
+        showToast(wasMuted
+          ? (fr ? "🔔 Rappels K9 réactivés" : "🔔 K9 reminders back on")
+          : (fr ? "🔕 Rappels K9 en pause" : "🔕 K9 reminders muted"));
+      }
+    }
     return;
   }
   Notification.requestPermission().then(p => {
@@ -9492,6 +9589,8 @@ function requestNotifPermission() {
 
 function checkAndFireReminders() {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
+  // Respecte le toggle "rappels en pause" (F3 panel v5.5)
+  if (localStorage.getItem("k9.notifMuted") === "1") return;
   const today = todayISO();
   // Only fire once per event per day — track in memory (session only)
   if (!window._k9firedToday) window._k9firedToday = new Set();
@@ -10200,7 +10299,7 @@ function _showAuthModal(mandatory) {
       <input id="authEmail" class="input" type="email" placeholder="${fr ? 'ton-email@exemple.fr' : 'your-email@example.com'}" autocomplete="email" style="margin: 4px 0 8px;" />
       <div id="authMsg" style="font-size: 12.5px; min-height: 18px; margin: 0 0 8px; color: var(--ink-2);"></div>
       <div class="upsell-actions">
-        <button class="upsell-cta" onclick="_authMagicLink()">${fr ? '📧 Recevoir un lien magique' : '📧 Send me a magic link'}</button>
+        <button class="upsell-cta" onclick="_authMagicLink()">${fr ? '📧 Recevoir un lien sécurisé par email' : '📧 Send me a secure email link'}</button>
         <button class="auth-google-btn" onclick="_authGoogle()">
           <svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle; margin-right:8px;"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
           ${fr ? 'Continuer avec Google' : 'Continue with Google'}
