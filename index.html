@@ -10254,8 +10254,8 @@ async function _authMagicLink() {
     if (msg) {
       msg.style.color = "var(--forest)";
       msg.innerHTML = fr
-        ? "✅ Vérifie tes emails — le lien arrive dans 30s."
-        : "✅ Check your inbox — the link arrives in 30s.";
+        ? "✅ Vérifie tes emails — le lien arrive dans 30s. Une fois cliqué, tu seras automatiquement connecté(e)."
+        : "✅ Check your inbox — the link arrives in 30s. Once clicked, you'll be auto-signed-in.";
     }
     // Ne pas dismiss : si user revient sans avoir cliqué le lien, le modal réapparaît
   } catch (e) {
@@ -11046,6 +11046,20 @@ function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (m) => ({ "&": "&a
       K9Cloud.onAuthChange(async () => {
         k9UpdateCloudUI();
         if (K9Cloud.isSignedIn()) {
+          // Ferme le modal d'auth si ouvert + toast de bienvenue
+          const authModal = document.getElementById("authModal");
+          if (authModal && authModal.classList.contains("show")) {
+            authModal.dataset.mandatory = "0";
+            authModal.classList.remove("show");
+          }
+          const user = K9Cloud.getUser && K9Cloud.getUser();
+          const emailShort = user?.email ? user.email.split("@")[0] : "";
+          const fr = (typeof currentLang !== "undefined" && currentLang === "fr");
+          const msg = fr
+            ? `🎉 Bienvenue${emailShort ? ", " + emailShort : ""} ! Tes données sont maintenant sauvegardées sur K9 Cloud.`
+            : `🎉 Welcome${emailShort ? ", " + emailShort : ""}! Your data is now safely backed up on K9 Cloud.`;
+          if (typeof showToast === "function") showToast(msg);
+          else setTimeout(() => alert(msg), 100);
           // Pull snapshot à la connexion
           await k9SyncPull();
         }
