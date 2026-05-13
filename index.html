@@ -1503,15 +1503,25 @@ body.a11y-large .btn, body.a11y-large .btn.ghost { font-size: 16px; padding: 14p
 .ai-home-bar {
   margin: 4px 16px 14px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FFF6EC 100%);
-  border: 1.5px solid var(--brand-soft);
+  background: linear-gradient(135deg, #FFF1E0 0%, #FFE0C2 100%);
+  border: 1.5px solid var(--brand);
   border-radius: 18px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 16px rgba(232, 122, 59, 0.14);
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
   transition: transform .1s ease;
+  position: relative;
+  overflow: hidden;
+}
+.ai-home-bar::after {
+  content: "";
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+  pointer-events: none;
 }
 .ai-home-bar:active { transform: scale(0.99); }
 .ai-home-bar .spark {
@@ -2974,6 +2984,15 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
         <button class="go" onclick="openSub('sub-walks')" data-i18n="walk_start">Démarrer</button>
       </div>
 
+      <div class="alert-home-cta" onclick="openSub('sub-alerts')" role="button">
+        <div class="ic">🚨</div>
+        <div class="txt">
+          <div class="title" data-i18n="alert_cta_t">Chien perdu ou trouvé ?</div>
+          <div class="sub" data-i18n="alert_cta_d">Signale et partage autour de toi en 30 secondes</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+
       <div class="quick-actions">
         <div class="qa-item" onclick="openSub('sub-calendar')">
           <div class="ic">📅</div><div class="label" data-i18n="qa_cal">Calendrier</div>
@@ -3025,15 +3044,6 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
           <p data-i18n="prog_baby_d">Préparer ton chien à l'arrivée d'un bébé, en douceur.</p>
           <div class="prog-bar"><div style="width: 0%;"></div></div>
         </div>
-      </div>
-
-      <div class="alert-home-cta" onclick="openSub('sub-alerts')" role="button">
-        <div class="ic">🚨</div>
-        <div class="txt">
-          <div class="title" data-i18n="alert_cta_t">Chien perdu ou trouvé ?</div>
-          <div class="sub" data-i18n="alert_cta_d">Signale et partage autour de toi en 30 secondes</div>
-        </div>
-        <div class="arr">›</div>
       </div>
 
       <div class="section-title" style="display:flex; align-items:center; justify-content: space-between; padding-right: 16px;">
