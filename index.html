@@ -2810,10 +2810,6 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
 </head>
 <body>
 <div class="phone">
-  <div class="status-bar">
-    <div>9:41</div>
-    <div class="right">●●● 5G ▓▓▓▓</div>
-  </div>
 
   <!-- ================== ONBOARDING ================== -->
   <div class="onboarding show" id="onboarding">
@@ -2932,7 +2928,6 @@ body.a11y-large .urgent-banner .sub { font-size: 13.5px; }
     <div class="screen active" id="screen-home">
       <div class="home-header">
         <div>
-          <div class="greeting" id="homeGreeting"><span data-i18n="greeting">Bonjour</span> 👋</div>
           <div class="name"><span id="ownerNameDisp">Toi</span> & <span id="dogNameDisp">Nala</span></div>
         </div>
       </div>
@@ -9584,29 +9579,30 @@ function renderCalendar() {
       let title, sub;
       if (currentLang === "fr") {
         if (isOverdue && overdue.length === total) {
-          title = overdue.length === 1 ? "1 rappel en retard" : `${overdue.length} rappels en retard`;
-          sub = "Pense à mettre à jour le carnet.";
+          // Tonalité positive et incitative au lieu d'anxiogène
+          title = overdue.length === 1 ? "Mets à jour les dates du carnet" : "Mets à jour les dates du carnet";
+          sub = "Vérifie et ajuste les rappels santé selon le rythme de ton chien.";
         } else if (isOverdue) {
-          title = `${overdue.length} en retard · ${thisWeekOnly.length} cette semaine`;
-          sub = "Vérifie ce qui est urgent.";
+          title = `${overdue.length + thisWeekOnly.length} rappels à vérifier`;
+          sub = "Confirme ou ajuste les dates si besoin.";
         } else {
           title = total === 1 ? "1 rappel cette semaine" : `${total} rappels cette semaine`;
           sub = total === 1 ? "Un petit geste pour ton chien." : "Quelques gestes à prévoir.";
         }
       } else {
         if (isOverdue && overdue.length === total) {
-          title = overdue.length === 1 ? "1 overdue reminder" : `${overdue.length} overdue reminders`;
-          sub = "Time to update the health record.";
+          title = overdue.length === 1 ? "Update your health record dates" : "Update your health record dates";
+          sub = "Review and adjust health reminders to fit your dog's pace.";
         } else if (isOverdue) {
-          title = `${overdue.length} overdue · ${thisWeekOnly.length} this week`;
-          sub = "Check what's urgent.";
+          title = `${overdue.length + thisWeekOnly.length} reminders to review`;
+          sub = "Confirm or adjust the dates if needed.";
         } else {
           title = total === 1 ? "1 reminder this week" : `${total} reminders this week`;
           sub = total === 1 ? "A small thing for your dog." : "A few things to plan.";
         }
       }
-      const icon = isOverdue ? "⚠️" : "🔔";
-      const cls = isOverdue ? "urgent-banner overdue" : "urgent-banner";
+      const icon = isOverdue ? "📅" : "🔔";
+      const cls = "urgent-banner"; // garder visuel doux, pas de variante "overdue" rouge
       urgentEl.innerHTML = `
         <div class="${cls}" onclick="switchTab('health'); setTimeout(() => openSub('sub-calendar'), 50);">
           <div class="ic">${icon}</div>
