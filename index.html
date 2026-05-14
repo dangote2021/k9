@@ -9697,8 +9697,8 @@ function renderCalendar() {
       if (currentLang === "fr") {
         if (isOverdue && overdue.length === total) {
           // Tonalité positive et incitative au lieu d'anxiogène
-          title = overdue.length === 1 ? "Mets à jour les dates du carnet" : "Mets à jour les dates du carnet";
-          sub = "Vérifie et ajuste les rappels santé selon le rythme de ton chien.";
+          title = "Actualiser les rappels santé de votre chien";
+          sub = "Vérifiez et ajustez les dates selon le rythme de votre chien.";
         } else if (isOverdue) {
           title = `${overdue.length + thisWeekOnly.length} rappels à vérifier`;
           sub = "Confirme ou ajuste les dates si besoin.";
@@ -9708,8 +9708,8 @@ function renderCalendar() {
         }
       } else {
         if (isOverdue && overdue.length === total) {
-          title = overdue.length === 1 ? "Update your health record dates" : "Update your health record dates";
-          sub = "Review and adjust health reminders to fit your dog's pace.";
+          title = "Refresh your dog's health reminders";
+          sub = "Review and adjust the dates to fit your dog's pace.";
         } else if (isOverdue) {
           title = `${overdue.length + thisWeekOnly.length} reminders to review`;
           sub = "Confirm or adjust the dates if needed.";
